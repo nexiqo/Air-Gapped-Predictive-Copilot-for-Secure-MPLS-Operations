@@ -144,6 +144,15 @@ class RAGService:
                 ids=all_ids
             )
 
+    def doc_count(self) -> int:
+        """Return total number of indexed documents."""
+        try:
+            if self.use_fallback:
+                return len(self.fallback_db.documents)
+            return self.collection.count()
+        except Exception:
+            return 0
+
     def query(self, query_text: str, limit: int = 4) -> list[dict[str, Any]]:
         if self.use_fallback:
             return self.fallback_db.search(query_text, limit=limit)

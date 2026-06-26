@@ -1,204 +1,301 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
-from typing import Any
-from urllib.error import URLError
+import re
+import time
+from typing import Any, Generator
 from urllib.request import Request, urlopen
+from urllib.error import URLError
 
 from backend.rag import RAGService
 from backend.data_loader import load_predictions, load_incidents, load_runbooks
 
 OLLAMA_URL = "http://127.0.0.1:11434/api/generate"
-OLLAMA_MODEL = "llama3:8b"
+OLLAMA_CHAT_URL = "http://127.0.0.1:11434/api/chat"
+OLLAMA_MODEL = "llama3"
+
+SYSTEM_PROMPT = """You are an elite NOC (Network Operations Center) Copilot deployed in an offline, air-gapped MPLS network environment for ISRO (Indian Space Research Organisation). You have deep expertise in:
+- MPLS/BGP routing protocols and SD-WAN operations
+- Network fault analysis and predictive maintenance
+- Runbook-driven incident response and remediation
+- SLA compliance and network health assessment
+
+You analyze real-time telemetry from 16 branch sites across India. You always provide:
+1. Clear, structured responses with confidence scores
+2. Specific actionable remediation steps from runbooks
+3. Impact assessment and urgency classification
+4. Root cause hypothesis based on telemetry patterns
+
+You are concise, technical, and precise. Never say you cannot help - always provide your best analysis based on available data. Format responses in clean sections without markdown headers - use CAPS labels instead."""
+
 
 class CopilotService:
     def __init__(self) -> None:
         self.rag = RAGService()
+        self._ollama_available: bool | None = None
+        self._last_check = 0.0
 
-    def query(self, question: str) -> dict[str, Any]:
-        # 1. Retrieve top 4 docs from ChromaDB
-        docs = self.rag.query(question, limit=4)
+    def _check_ollama(self) -> bool:
+        """Check if Ollama is running. Cache result for 10 seconds."""
+        now = time.time()
+        if self._ollama_available is not None and now - self._last_check < 10:
+            return self._ollama_available
+        try:
+            req = Request("http://127.0.0.1:11434/api/tags", method="GET")
+            with urlopen(req, timeout=2.0) as resp:
+                data = json.loads(resp.read())
+                models = [m["name"] for m in data.get("models", [])]
+                self._ollama_available = any("llama" in m for m in models)
+        except Exception:
+            self._ollama_available = False
+        self._last_check = now
+        return self._ollama_available
+
+    def status(self) -> dict[str, Any]:
+        available = self._check_ollama()
+        return {
+            "ollama_running": available,
+            "model": OLLAMA_MODEL if available else "fallback",
+            "rag_docs": self.rag.doc_count(),
+            "mode": "LLaMA 3 (Offline)" if available else "Deterministic Fallback"
+        }
+
+    def query(self, question: str, conversation_history: list[dict] | None = None) -> dict[str, Any]:
+        """Main query method - tries Ollama first, falls back to deterministic analysis."""
+        docs = self.rag.query(question, limit=5)
         
-        # 2. Try to query local Ollama LLM
-        llm_response = self._try_ollama(question, docs)
-        
-        if llm_response:
-            try:
-                # Parse structured JSON if returned
-                parsed_json = json.loads(llm_response)
-                # Ensure it has all the required keys
-                required_keys = ["predicted_issue", "current_state", "why_risky", "affected_scope", "time_to_impact", "recommended_actions", "evidence"]
-                if all(key in parsed_json for key in required_keys):
-                    parsed_json["generated_by"] = "AI Response"
-                    # Format evidence as a list of dicts to match frontend expectation
-                    parsed_json["evidence"] = [
-                        {"source": ev, "title": "Network Log/Runbook Document"} if isinstance(ev, str) else ev
-                        for ev in parsed_json["evidence"]
-                    ]
-                    # Ensure time_to_impact_minutes is present
-                    if "time_to_impact_minutes" not in parsed_json:
-                        try:
-                            time_val = parsed_json["time_to_impact"]
-                            nums = [float(s) for s in time_val.replace("min", " ").replace("minute", " ").split() if s.replace(".", "", 1).isdigit()]
-                            parsed_json["time_to_impact_minutes"] = nums[0] if nums else 10.0
-                        except Exception:
-                            parsed_json["time_to_impact_minutes"] = 10.0
-                    return parsed_json
-            except (json.JSONDecodeError, TypeError):
-                # If LLM didn't return valid JSON, we can try to extract or proceed to fallback
-                pass
-        
-        # 3. Fallback to deterministic rule-based response
+        if self._check_ollama():
+            result = self._query_ollama_chat(question, docs, conversation_history or [])
+            if result:
+                return result
+
         return self._generate_deterministic_fallback(question, docs)
 
-    def _try_ollama(self, question: str, docs: list[dict[str, Any]]) -> str | None:
-        # Build context from retrieved docs
-        context_str = "\n\n".join([
-            f"Doc {i+1} ({doc['metadata'].get('type', 'unknown')}: {doc['id']}): {doc['document']}"
-            for i, doc in enumerate(docs)
-        ])
+    def stream_query(self, question: str, conversation_history: list[dict] | None = None) -> Generator[str, None, None]:
+        """Stream tokens from Ollama for real-time response display."""
+        docs = self.rag.query(question, limit=5)
+        context_str = self._build_context(docs)
+
+        messages = [{"role": "system", "content": SYSTEM_PROMPT}]
         
-        prompt = f"""
-You are an expert Network Operations Center (NOC) Copilot operating in an offline, air-gapped system.
-Answer the user's question based on the retrieved local network topology, runbook, and incident records.
-
-User Question: {question}
-
-Retrieved Knowledge Base Context:
+        # Add conversation history (last 6 messages max)
+        for msg in (conversation_history or [])[-6:]:
+            messages.append({"role": msg["role"], "content": msg["content"]})
+        
+        # Add context-enriched user message
+        augmented_question = f"""Context from NOC knowledge base:
 {context_str}
 
-Instruction:
-You MUST respond with a single valid JSON object. Do not include any conversational text outside the JSON.
-The JSON object must have exactly the following keys:
-1. "predicted_issue": A string identifying the predicted fault type or network problem.
-2. "current_state": A string describing the current telemetry values or network conditions.
-3. "why_risky": A string explaining why this scenario poses an operational threat.
-4. "affected_scope": A string listing the branches, links, or hubs impacted.
-5. "time_to_impact": A string indicating when the failure is expected to occur (e.g., "7.5 minutes").
-6. "recommended_actions": A list of strings detailing step-by-step remediation commands/tasks from runbooks.
-7. "evidence": A list of strings representing the IDs of the matched runbooks (e.g. "RB-001") or incidents (e.g. "INC-0001").
+User question: {question}
 
-Response:
-"""
+Provide a structured analysis. Start with ANALYSIS, then CONFIDENCE (0-100%), then ROOT CAUSE, then AFFECTED SCOPE, then REMEDIATION STEPS (numbered), then end with a one-line SUMMARY."""
+
+        messages.append({"role": "user", "content": augmented_question})
+        
         payload = json.dumps({
             "model": OLLAMA_MODEL,
-            "prompt": prompt,
-            "stream": False,
+            "messages": messages,
+            "stream": True,
             "options": {
-                "temperature": 0.1
+                "temperature": 0.15,
+                "top_p": 0.9,
+                "num_predict": 1024
             }
         }).encode("utf-8")
 
-        request = Request(
-            OLLAMA_URL,
-            data=payload,
-            headers={"Content-Type": "application/json"},
-            method="POST"
-        )
         try:
-            # Short timeout to fail quickly and use fallback if Ollama is not running
-            with urlopen(request, timeout=5.0) as response:
-                data = json.loads(response.read().decode("utf-8"))
-                return data.get("response", "").strip()
+            req = Request(OLLAMA_CHAT_URL, data=payload, headers={"Content-Type": "application/json"}, method="POST")
+            with urlopen(req, timeout=60.0) as response:
+                for line in response:
+                    if line:
+                        try:
+                            chunk = json.loads(line.decode("utf-8"))
+                            token = chunk.get("message", {}).get("content", "")
+                            if token:
+                                yield token
+                            if chunk.get("done", False):
+                                break
+                        except (json.JSONDecodeError, KeyError):
+                            continue
         except Exception as e:
-            print(f"[Copilot] Ollama connection failed: {e}. Falling back to deterministic analysis.")
-            return None
+            # Fall back to deterministic
+            fallback = self._generate_deterministic_fallback(question, docs)
+            yield self._format_fallback_as_text(fallback)
 
-    def _generate_deterministic_fallback(self, question: str, docs: list[dict[str, Any]]) -> dict[str, Any]:
-        # 1. Find the highest-confidence prediction in predictions.csv
+    def _build_context(self, docs: list[dict]) -> str:
+        return "\n\n".join([
+            f"[{doc['metadata'].get('type', 'doc').upper()} - {doc['id']}]: {doc['document'][:400]}"
+            for doc in docs
+        ])
+
+    def _query_ollama_chat(self, question: str, docs: list[dict], history: list[dict]) -> dict[str, Any] | None:
+        context_str = self._build_context(docs)
+
+        messages = [{"role": "system", "content": SYSTEM_PROMPT}]
+        for msg in history[-6:]:
+            messages.append({"role": msg["role"], "content": msg["content"]})
+
+        user_content = f"""Knowledge Base Context:
+{context_str}
+
+Question: {question}
+
+Respond with a JSON object with these exact keys:
+- "predicted_issue": string (fault type)
+- "confidence": number 0.0-1.0
+- "current_state": string (network state description)
+- "why_risky": string (threat explanation)
+- "affected_scope": string (impacted nodes/sites)
+- "time_to_impact": string (e.g. "8 minutes")
+- "time_to_impact_minutes": number
+- "recommended_actions": array of strings (step-by-step)
+- "evidence": array of objects with "source" and "title"
+- "narrative": string (one-paragraph summary)
+- "generated_by": "LLaMA 3 (Offline)"
+
+Return ONLY valid JSON, no other text."""
+
+        messages.append({"role": "user", "content": user_content})
+
+        payload = json.dumps({
+            "model": OLLAMA_MODEL,
+            "messages": messages,
+            "stream": False,
+            "options": {"temperature": 0.05, "num_predict": 1024}
+        }).encode("utf-8")
+
+        try:
+            req = Request(OLLAMA_CHAT_URL, data=payload, headers={"Content-Type": "application/json"}, method="POST")
+            with urlopen(req, timeout=30.0) as response:
+                data = json.loads(response.read())
+                raw = data.get("message", {}).get("content", "").strip()
+
+                # Try to extract JSON even if model wraps it
+                json_match = re.search(r'\{.*\}', raw, re.DOTALL)
+                if json_match:
+                    parsed = json.loads(json_match.group())
+                    if "predicted_issue" in parsed:
+                        # Ensure evidence is in correct format
+                        evidence = parsed.get("evidence", [])
+                        parsed["evidence"] = [
+                            {"source": ev, "title": "Network Document"} if isinstance(ev, str) else ev
+                            for ev in evidence
+                        ]
+                        # Add RAG evidence
+                        for doc in docs[:2]:
+                            if not any(e.get("source") == doc["id"] for e in parsed["evidence"]):
+                                parsed["evidence"].append({
+                                    "source": doc["id"],
+                                    "title": f"{doc['metadata'].get('type','doc').title()}: {doc['document'][:60]}..."
+                                })
+                        return parsed
+        except Exception as e:
+            print(f"[Copilot] Ollama chat query failed: {e}")
+        return None
+
+    def _format_fallback_as_text(self, fb: dict) -> str:
+        lines = [
+            f"ANALYSIS: {fb.get('predicted_issue', 'Unknown')}",
+            f"CONFIDENCE: {int(float(fb.get('confidence', 0.75)) * 100)}%",
+            f"ROOT CAUSE: {fb.get('why_risky', 'Telemetry analysis')}",
+            f"STATE: {fb.get('current_state', '')}",
+            f"AFFECTED SCOPE: {fb.get('affected_scope', 'Unknown')}",
+            f"ETA: {fb.get('time_to_impact', 'Unknown')}",
+            "",
+            "REMEDIATION STEPS:"
+        ]
+        for i, action in enumerate(fb.get("recommended_actions", []), 1):
+            lines.append(f"{i}. {action}")
+        lines.append("")
+        lines.append(f"SUMMARY: {fb.get('narrative', fb.get('why_risky', ''))}")
+        return "\n".join(lines)
+
+    def _generate_deterministic_fallback(self, question: str, docs: list[dict]) -> dict[str, Any]:
         predictions = load_predictions()
         incidents = load_incidents()
         runbooks = load_runbooks()
 
         if not predictions:
-            # Absolute fallback if data files are missing
             return {
-                "predicted_issue": "Unknown Network Anomaly",
-                "current_state": "Telemetry data unavailable.",
-                "why_risky": "Unable to evaluate network signals.",
-                "affected_scope": "Global",
+                "predicted_issue": "Telemetry Data Unavailable",
+                "confidence": 0.5,
+                "current_state": "Cannot retrieve telemetry data from local store.",
+                "why_risky": "Without telemetry, SLA compliance cannot be verified.",
+                "affected_scope": "All Sites",
                 "time_to_impact": "Unknown",
-                "recommended_actions": ["Verify data directory path", "Check local database health"],
-                "evidence": ["SYS-001"],
-                "generated_by": "Local Analysis"
+                "time_to_impact_minutes": 0.0,
+                "recommended_actions": ["Verify data directory integrity", "Restart backend service", "Check local database health"],
+                "evidence": [{"source": "SYS-001", "title": "System Diagnostic"}],
+                "narrative": "Data unavailable. Manual verification required.",
+                "generated_by": "Deterministic Fallback"
             }
 
-        # Highest confidence prediction
-        best_pred = predictions[0]  # sorted by confidence desc in data_loader
+        # Find most relevant prediction
+        q_lower = question.lower()
+        best_pred = None
+        for p in predictions:
+            site = p.get("predicted_at_site", "").lower()
+            fault = p.get("predicted_fault_type", "").lower()
+            if any(kw in q_lower for kw in [site, fault.replace("_", " "), fault]):
+                best_pred = p
+                break
+        if not best_pred:
+            best_pred = predictions[0]
+
         predicted_fault_type = best_pred.get("predicted_fault_type", "congestion_buildup")
         confidence = float(best_pred.get("confidence", 0.8))
-        eta = best_pred.get("prophet_breach_eta_minutes", "Unknown")
+        eta = best_pred.get("prophet_breach_eta_minutes", "10")
         site = best_pred.get("predicted_at_site", "Unknown")
         reasoning = best_pred.get("reasoning", "")
-        rec_action = best_pred.get("recommended_action_1", "")
         inc_ref = best_pred.get("incident_reference", "")
-        
-        # 2. Find matching incident in incidents.csv
-        matching_inc = None
-        for inc in incidents:
-            if inc.get("incident_id") == inc_ref:
-                matching_inc = inc
-                break
-        
-        # 3. Find matching runbook in runbooks.json
-        matching_rb = None
+
+        matching_inc = next((i for i in incidents if i.get("incident_id") == inc_ref), None)
         related_rb_str = best_pred.get("related_runbooks", "")
         rb_ids = [r.strip() for r in related_rb_str.split(",") if r.strip()]
-        
-        for rb in runbooks:
-            if rb.get("runbook_id") in rb_ids:
-                matching_rb = rb
-                break
+        matching_rb = next((rb for rb in runbooks if rb.get("runbook_id") in rb_ids), None)
         if not matching_rb and runbooks:
             matching_rb = runbooks[0]
 
-        # Gather actions from runbook
         recommended_actions = []
         if matching_rb:
-            for step_key in [f"step_{i}" for i in range(1, 9)]:
-                step_val = matching_rb.get(step_key)
-                if step_val:
-                    recommended_actions.append(step_val)
-        else:
-            recommended_actions = [rec_action] if rec_action else ["Verify network interface configuration."]
+            for i in range(1, 9):
+                step = matching_rb.get(f"step_{i}")
+                if step:
+                    recommended_actions.append(step)
+        if not recommended_actions:
+            recommended_actions = [
+                "Verify interface status and error counters",
+                "Check BGP session state and route table",
+                "Review MPLS label forwarding table",
+                "Activate backup link if primary is degraded",
+                "Notify on-call NOC engineer for escalation"
+            ]
 
-        # Gather evidence items
         evidence = []
         if matching_rb:
-            rb_id = matching_rb.get("runbook_id")
-            rb_name = matching_rb.get("name", "Standard Operating Procedure")
-            evidence.append({"source": rb_id, "title": f"Runbook: {rb_name}"})
+            evidence.append({"source": matching_rb.get("runbook_id"), "title": f"Runbook: {matching_rb.get('title', 'SOP')}"})
         if matching_inc:
-            inc_id = matching_inc.get("incident_id")
-            inc_desc = matching_inc.get("description", "Incident details")
-            evidence.append({"source": inc_id, "title": f"Incident: {inc_desc[:50]}..."})
-        
-        # Add retrieved documents from ChromaDB to evidence
-        for doc in docs:
-            doc_id = doc["id"]
-            doc_type = doc["metadata"].get("type", "Document")
-            if not any(ev["source"] == doc_id for ev in evidence):
-                doc_text = doc["document"]
-                evidence.append({"source": doc_id, "title": f"{doc_type}: {doc_text[:50]}..."})
-
-        # Build response
-        current_state = f"Active monitoring of {site} shows elevated signals: {reasoning}"
-        why_risky = f"Signals match known precursor patterns for {predicted_fault_type} failures, threatening SLA targets."
+            evidence.append({"source": matching_inc.get("incident_id"), "title": f"Incident: {matching_inc.get('description', '')[:50]}..."})
+        for doc in docs[:3]:
+            if not any(e.get("source") == doc["id"] for e in evidence):
+                evidence.append({"source": doc["id"], "title": f"{doc['metadata'].get('type', 'doc').title()}: {doc['document'][:60]}..."})
 
         try:
-            time_val_min = float(eta) if eta != "Unknown" else 0.0
-        except ValueError:
-            time_val_min = 0.0
+            eta_float = float(eta)
+        except (ValueError, TypeError):
+            eta_float = 10.0
 
         return {
             "predicted_issue": predicted_fault_type.upper().replace("_", " "),
-            "current_state": current_state,
-            "why_risky": why_risky,
+            "confidence": confidence,
+            "current_state": f"Site {site} shows elevated risk signals: {reasoning}",
+            "why_risky": f"Pattern matches known precursor for {predicted_fault_type.replace('_', ' ')} failures, threatening SLA compliance.",
             "affected_scope": best_pred.get("affected_scope", site),
-            "time_to_impact": f"{eta} minutes" if eta != "Unknown" else "Immediate",
-            "time_to_impact_minutes": time_val_min,
+            "time_to_impact": f"{eta} minutes",
+            "time_to_impact_minutes": eta_float,
             "recommended_actions": recommended_actions,
             "evidence": evidence,
-            "generated_by": "Local Analysis"
+            "narrative": f"Predictive engine forecasts {predicted_fault_type.replace('_', ' ')} at {site} with {int(confidence*100)}% confidence. "
+                         f"Estimated impact in {eta} minutes. Immediate execution of runbook procedures is recommended.",
+            "generated_by": "Deterministic Fallback"
         }

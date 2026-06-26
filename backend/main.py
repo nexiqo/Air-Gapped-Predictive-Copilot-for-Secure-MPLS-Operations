@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import Any
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
 from backend.data_loader import (
@@ -40,14 +41,23 @@ class AnalyzeRequest(BaseModel):
 
 class CopilotQueryRequest(BaseModel):
     question: str
+    conversation_history: list[dict[str, Any]] = []
+
+class CopilotStreamRequest(BaseModel):
+    question: str
+    conversation_history: list[dict[str, Any]] = []
 
 @app.get("/health")
 def health() -> dict[str, Any]:
+    copilot_status = copilot.status()
     return {
         "status": "ok",
         "air_gapped": True,
-        "llm": "ollama/llama3:8b",
-        "rag": "chromadb"
+        "llm": copilot_status["model"],
+        "rag": "chromadb",
+        "ollama_running": copilot_status["ollama_running"],
+        "mode": copilot_status["mode"],
+        "rag_docs": copilot_status["rag_docs"]
     }
 
 @app.get("/topology")
@@ -298,10 +308,27 @@ def analyze(payload: AnalyzeRequest) -> dict[str, Any]:
         "copilot_response": copilot_res
     }
 
+@app.get("/copilot/status")
+def copilot_status() -> dict[str, Any]:
+    """Returns current copilot mode (Ollama LLM or fallback), model name, RAG doc count."""
+    return copilot.status()
+
 @app.post("/copilot/query")
 def copilot_query(payload: CopilotQueryRequest) -> dict[str, Any]:
-    """Accept { question } -> RAG pipeline -> LLM -> return structured copilot response"""
-    return copilot.query(payload.question)
+    """Accept { question, conversation_history } -> RAG pipeline -> LLM -> return structured copilot response"""
+    return copilot.query(payload.question, payload.conversation_history)
+
+@app.post("/copilot/stream")
+def copilot_stream(payload: CopilotStreamRequest):
+    """Stream tokens from Ollama LLM for real-time display. Falls back to deterministic text if Ollama unavailable."""
+    def generate():
+        for token in copilot.stream_query(payload.question, payload.conversation_history):
+            # SSE format
+            yield f"data: {json.dumps({'token': token})}\n\n"
+        yield "data: [DONE]\n\n"
+
+    import json
+    return StreamingResponse(generate(), media_type="text/event-stream", headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
 
 @app.get("/bgp-events")
 def get_bgp_events() -> list[dict[str, Any]]:
