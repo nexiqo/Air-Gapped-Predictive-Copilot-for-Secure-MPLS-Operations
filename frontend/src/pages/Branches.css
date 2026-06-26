@@ -1,221 +1,344 @@
+/* =========================================================
+   Branches Page — GitHub Branches style dark UI
+   ========================================================= */
+
 .branches-page {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  padding: 1rem;
+  gap: 16px;
+  padding: 24px;
   overflow-y: auto;
+  font-family: var(--sans);
+  color: var(--text-primary);
 }
 
+/* ── Page header ── */
 .branches-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid #30363d;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
 }
 
 .branches-header h2 {
   margin: 0;
-  font-size: 1.5rem;
-  color: #ffffff;
+  font-size: 20px;
   font-weight: 600;
+  color: var(--text-primary);
 }
 
+/* ── GitHub-style secondary button ── */
 .action-btn {
-  padding: 0.5rem 1rem;
-  background-color: #ffffff;
-  border: 1px solid #ffffff;
-  border-radius: 4px;
-  color: #000000;
-  font-size: 0.85rem;
-  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 16px;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: var(--text-primary);
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   cursor: pointer;
-  transition: all 0.2s ease;
+  white-space: nowrap;
+  transition: background-color 0.12s ease, border-color 0.12s ease;
 }
 
 .action-btn:hover {
-  background-color: #000000;
-  color: #ffffff;
+  background-color: var(--bg-tertiary, #21262d);
+  border-color: var(--text-secondary);
 }
 
+/* ── Search bar ── */
+.branches-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.search-input {
+  width: 320px;
+  max-width: 100%;
+  padding: 5px 12px;
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--text-primary);
+  background-color: var(--bg-canvas);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  outline: none;
+  transition: border-color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.search-input::placeholder {
+  color: var(--text-muted);
+}
+
+.search-input:focus {
+  border-color: var(--accent, #58a6ff);
+  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.12);
+}
+
+/* ── Loading ── */
 .loading-state {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 3rem;
-  color: #8b949e;
+  padding: 48px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  gap: 12px;
 }
 
 .loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid #30363d;
-  border-top-color: #ffffff;
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--border);
+  border-top-color: var(--text-secondary);
   border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 1rem;
+  animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
 
-.branches-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1rem;
+/* ── Branches table container (GitHub branches list) ── */
+.branches-table-container {
+  background-color: var(--bg-overlay);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
 }
 
-.branch-card {
-  background-color: #0d1117;
-  border: 1px solid #30363d;
-  border-radius: 8px;
-  padding: 1rem;
+/* ── Stats header strip (like GitHub branches count bar) ── */
+.branches-stats-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 16px;
+  background-color: var(--bg-subtle);
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.stat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.stat-pill strong {
+  color: var(--text-primary);
+}
+
+/* ── Table ── */
+.branches-grid {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  transition: border-color 0.2s ease;
+}
+
+/* Legacy card-grid fallback kept for backwards compat */
+.branch-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  background-color: var(--bg-overlay);
+  transition: background-color 0.12s ease;
+}
+
+.branch-card:last-child {
+  border-bottom: none;
 }
 
 .branch-card:hover {
-  border-color: #ffffff;
+  background-color: var(--bg-subtle);
 }
 
+/* ── Branch row: left — status badge + name ── */
 .branch-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid #30363d;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  padding-bottom: 0;
+  border-bottom: none;
 }
 
 .branch-header h3 {
   margin: 0;
-  font-size: 1rem;
-  color: #ffffff;
+  font-size: 14px;
   font-weight: 600;
+  color: var(--text-primary);
+  font-family: var(--mono);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
+/* ── Status badge (GitHub branch tag style) ── */
 .status-badge {
-  padding: 0.25rem 0.75rem;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 7px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  border-radius: 2em;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .status-critical {
-  background-color: #da3633;
-  color: #ffffff;
+  background-color: rgba(248, 81, 73, 0.15);
+  color: var(--red);
+  border-color: rgba(248, 81, 73, 0.4);
 }
 
 .status-warning {
-  background-color: #d29922;
-  color: #000000;
+  background-color: rgba(210, 153, 34, 0.15);
+  color: var(--yellow);
+  border-color: rgba(210, 153, 34, 0.4);
 }
 
 .status-normal {
-  background-color: #238636;
-  color: #ffffff;
+  background-color: rgba(63, 185, 80, 0.15);
+  color: var(--green);
+  border-color: rgba(63, 185, 80, 0.4);
 }
 
+/* ── Branch info column (location / type) ── */
 .branch-info {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 2px;
+  min-width: 0;
 }
 
 .branch-location {
   margin: 0;
-  color: #8b949e;
-  font-size: 0.85rem;
+  font-size: 13px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .branch-type {
   margin: 0;
-  color: #ffffff;
-  font-size: 0.8rem;
-  font-weight: 500;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-family: var(--mono);
 }
 
+/* ── Metrics block (latency right-aligned) ── */
 .branch-metrics {
   display: flex;
-  justify-content: space-between;
-  gap: 0.5rem;
-  padding: 0.5rem;
-  background-color: #161b22;
-  border-radius: 4px;
-  border: 1px solid #30363d;
+  align-items: center;
+  gap: 24px;
+  flex-shrink: 0;
+  padding: 6px 10px;
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
 }
 
 .metric {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.25rem;
+  align-items: flex-end;
+  gap: 2px;
+  min-width: 56px;
 }
 
 .metric-label {
-  font-size: 0.7rem;
-  color: #8b949e;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
 }
 
 .metric-value {
-  font-size: 0.9rem;
-  color: #ffffff;
+  font-size: 13px;
   font-weight: 600;
+  color: var(--text-primary);
+  font-family: var(--mono);
 }
 
+/* ── Prediction banner ── */
 .branch-prediction {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.5rem;
-  background-color: rgba(210, 153, 34, 0.1);
-  border: 1px solid #d29922;
-  border-radius: 4px;
-  font-size: 0.85rem;
-  color: #d29922;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  gap: 6px;
+  padding: 3px 10px;
+  background-color: rgba(210, 153, 34, 0.08);
+  border: 1px solid rgba(210, 153, 34, 0.3);
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--yellow);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
+/* ── Secondary ghost button ── */
 .detail-btn {
-  padding: 0.5rem 1rem;
-  background-color: #161b22;
-  border: 1px solid #30363d;
-  border-radius: 4px;
-  color: #ffffff;
-  font-size: 0.85rem;
-  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   cursor: pointer;
-  transition: all 0.2s ease;
-  margin-top: auto;
-  text-align: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background-color 0.12s ease, border-color 0.12s ease;
 }
 
 .detail-btn:hover {
-  background-color: #ffffff;
-  color: #000000;
-  border-color: #ffffff;
+  background-color: var(--bg-tertiary, #21262d);
+  border-color: var(--text-secondary);
 }
 
-/* Responsive design */
+/* ── Responsive ── */
 @media (max-width: 768px) {
+  .branches-page {
+    padding: 16px;
+  }
+
   .branches-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.5rem;
+    gap: 12px;
   }
-  
-  .branches-grid {
-    grid-template-columns: 1fr;
+
+  .branch-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
-  
+
   .branch-metrics {
-    flex-wrap: wrap;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .search-input {
+    width: 100%;
   }
 }

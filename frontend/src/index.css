@@ -1,101 +1,180 @@
+/* ============================================================
+   GLOBAL DESIGN SYSTEM — GitHub Dark UI
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 :root {
-  --bg: #000000;
-  --bg-surface: #0d1117;
-  --bg-card: #161b22;
-  --border: #30363d;
-  --border-active: #ffffff;
-  --text-primary: #ffffff;
+  /* Backgrounds */
+  --bg-canvas:    #0d1117;
+  --bg-overlay:   #161b22;
+  --bg-inset:     #010409;
+  --bg-subtle:    #21262d;
+
+  /* Borders */
+  --border:       #30363d;
+  --border-muted: #21262d;
+
+  /* Text */
+  --text-primary:   #e6edf3;
   --text-secondary: #8b949e;
-  --text-muted: #484f58;
-  --accent: #ffffff;
-  
-  /* Status Colors (strictly reserved for alert/critical conditions) */
-  --status-ok: #238636;
-  --status-warning: #d29922;
-  --status-critical: #da3633;
+  --text-muted:     #6e7781;
+  --text-link:      #58a6ff;
 
-  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, SFMono-Regular, Consolas, monospace;
+  /* Status colors (only for real status indicators) */
+  --red:    #f85149;
+  --yellow: #d29922;
+  --green:  #3fb950;
 
-  font: 15px/1.5 var(--sans);
-  color-scheme: dark;
-  color: var(--text-primary);
-  background-color: var(--bg);
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* Typography */
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+  /* Sizes */
+  --radius:       6px;
+  --radius-sm:    3px;
+  --radius-full:  100px;
+  --header-h:     60px;
+  --sidebar-w:    220px;
 }
 
-body {
-  margin: 0;
-  padding: 0;
-  background-color: var(--bg);
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body, #root {
+  height: 100%;
+  background: var(--bg-canvas);
   color: var(--text-primary);
   font-family: var(--sans);
-  overflow: hidden;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
-#root {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+a { color: var(--text-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+button {
+  font-family: var(--sans);
+  cursor: pointer;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  color: var(--text-primary);
-  font-weight: 600;
-  margin: 0;
-}
-
-a {
-  color: var(--text-primary);
-  text-decoration: none;
-}
-
-button, input, select, textarea {
-  font-family: inherit;
-  font-size: inherit;
-  color: inherit;
-  background: none;
-  border: none;
-}
-
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--bg);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--text-secondary);
-}
-
-/* Global utility classes */
-.mono {
+pre, code {
   font-family: var(--mono);
 }
 
-.text-secondary {
-  color: var(--text-secondary);
+/* Scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--bg-subtle) transparent;
+}
+*::-webkit-scrollbar { width: 6px; height: 6px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb { background: var(--bg-subtle); border-radius: 3px; }
+
+/* ============================================================
+   UTILITY CLASSES
+   ============================================================ */
+
+/* GitHub-style button */
+.gh-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 5px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease;
+  white-space: nowrap;
+  font-family: var(--sans);
+}
+.gh-btn:hover { background: #30363d; border-color: #8b949e; }
+.gh-btn:active { background: #282e33; }
+
+.gh-btn-primary {
+  background: #238636;
+  border-color: rgba(240,246,252,0.1);
+  color: #fff;
+}
+.gh-btn-primary:hover { background: #2ea043; }
+
+.gh-btn-danger {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--red);
+}
+.gh-btn-danger:hover { background: rgba(248,81,73,0.1); border-color: var(--red); }
+
+/* GitHub-style label/badge */
+.gh-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 7px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  border-radius: var(--radius-full);
+  border: 1px solid transparent;
+  white-space: nowrap;
+  font-family: var(--sans);
+}
+.gh-badge-default  { background: var(--bg-subtle); color: var(--text-secondary); border-color: var(--border); }
+.gh-badge-critical { background: rgba(248,81,73,0.15); color: var(--red); border-color: rgba(248,81,73,0.4); }
+.gh-badge-warning  { background: rgba(210,153,34,0.15); color: var(--yellow); border-color: rgba(210,153,34,0.4); }
+.gh-badge-success  { background: rgba(63,185,80,0.15); color: var(--green); border-color: rgba(63,185,80,0.4); }
+
+/* GitHub-style card */
+.gh-card {
+  background: var(--bg-overlay);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
 }
 
-.status-text-ok {
-  color: var(--status-ok) !important;
+.gh-card-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.status-text-warning {
-  color: var(--status-warning) !important;
+.gh-card-header h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
-.status-text-critical {
-  color: var(--status-critical) !important;
+.gh-card-body { padding: 16px; }
+
+/* Status dot */
+.status-dot-sm {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.dot-green    { background: var(--green); box-shadow: 0 0 0 2px rgba(63,185,80,0.2); }
+.dot-yellow   { background: var(--yellow); box-shadow: 0 0 0 2px rgba(210,153,34,0.2); }
+.dot-red      { background: var(--red); box-shadow: 0 0 0 2px rgba(248,81,73,0.2); }
+.dot-gray     { background: var(--text-muted); }
+
+/* Divider */
+.gh-divider { height: 1px; background: var(--border); margin: 16px 0; }
+
+/* Label text */
+.gh-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Mono value */
+.gh-mono {
+  font-family: var(--mono);
+  font-size: 12px;
 }

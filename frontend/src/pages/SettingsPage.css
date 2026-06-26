@@ -1,122 +1,211 @@
+/* =========================================================
+   Settings Page — GitHub Settings style dark UI
+   ========================================================= */
+
 .settings-page {
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
-  background-color: #000000;
+  background-color: var(--bg-canvas);
   overflow-y: auto;
+  font-family: var(--sans);
+  color: var(--text-primary);
 }
 
+/* ── Page header ── */
 .settings-header {
-  padding: 2rem;
-  border-bottom: 1px solid #30363d;
-  background: #000000;
+  padding: 24px;
+  border-bottom: 1px solid var(--border);
+  background-color: var(--bg-canvas);
+  flex-shrink: 0;
 }
 
 .settings-header h2 {
-  font-size: 2rem;
-  color: #ffffff;
-  margin: 0 0 0.5rem 0;
-  font-weight: 700;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 4px;
 }
 
 .settings-header p {
-  color: #8b949e;
+  color: var(--text-secondary);
   margin: 0;
-  font-size: 1rem;
+  font-size: 13px;
 }
 
+/* ── Two-column layout: sidebar + panel ── */
+.settings-layout {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  align-items: flex-start;
+}
+
+/* ── Left category sidebar ── */
+.settings-sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  padding: 16px 0;
+  border-right: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background-color: var(--bg-canvas);
+}
+
+.settings-sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-primary);
+  cursor: pointer;
+  border-radius: 0;
+  border-left: 2px solid transparent;
+  transition: background-color 0.1s ease, border-color 0.1s ease;
+  text-decoration: none;
+  background: none;
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
+  width: 100%;
+  text-align: left;
+  font-family: var(--sans);
+}
+
+.settings-sidebar-item:hover {
+  background-color: var(--bg-subtle);
+}
+
+.settings-sidebar-item.active {
+  font-weight: 600;
+  border-left-color: var(--text-primary);
+  background-color: var(--bg-subtle);
+}
+
+/* ── Right form panel ── */
 .settings-content {
   flex: 1;
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  width: 100%;
+  padding: 24px;
+  max-width: 760px;
+  min-width: 0;
 }
 
+/* ── Section card ── */
 .settings-section {
-  background-color: #0d1117;
-  border: 1px solid #30363d;
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
+  background-color: var(--bg-overlay);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  overflow: hidden;
 }
 
+/* ── Section heading ── */
 .settings-section h3 {
-  color: #ffffff;
-  margin: 0 0 1.5rem 0;
-  font-size: 1.25rem;
+  margin: 0;
+  font-size: 14px;
   font-weight: 600;
-  border-bottom: 1px solid #30363d;
-  padding-bottom: 0.75rem;
+  color: var(--text-primary);
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  background-color: var(--bg-subtle);
 }
 
+/* ── Individual setting row ── */
 .setting-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 0;
-  border-bottom: 1px solid #21262d;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
 }
 
 .setting-item:last-child {
   border-bottom: none;
 }
 
+/* ── Label + description ── */
 .setting-label {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 4px;
+  padding-right: 16px;
 }
 
 .setting-label span:first-child {
-  color: #ffffff;
+  font-size: 14px;
   font-weight: 500;
-  font-size: 0.95rem;
+  color: var(--text-primary);
 }
 
 .setting-description {
-  color: #8b949e;
-  font-size: 0.85rem;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
 }
 
+/* ── Control area ── */
 .setting-control {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  min-width: 200px;
-  justify-content: flex-end;
+  gap: 10px;
+  flex-shrink: 0;
 }
 
+/* ── Input fields ── */
 .number-input,
 .select-input {
-  background-color: #0d1117;
-  border: 1px solid #30363d;
-  color: #ffffff;
-  padding: 0.5rem 0.75rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  width: 100px;
+  padding: 5px 10px;
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--text-primary);
+  background-color: var(--bg-canvas);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   outline: none;
-  transition: border-color 0.2s ease;
+  width: 110px;
+  transition: border-color 0.12s ease, box-shadow 0.12s ease;
+  font-family: var(--mono);
 }
 
 .number-input:focus,
 .select-input:focus {
-  border-color: #ffffff;
+  border-color: var(--accent, #58a6ff);
+  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.12);
 }
 
 .number-input:disabled,
 .select-input:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  background-color: var(--bg-subtle);
 }
 
+.select-input {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%238b949e' d='M4.427 7.427l3.396 3.396a.25.25 0 00.354 0l3.396-3.396A.25.25 0 0011.396 7H4.604a.25.25 0 00-.177.427z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 28px;
+  cursor: pointer;
+  font-family: var(--sans);
+}
+
+.select-input option {
+  background-color: var(--bg-overlay);
+  color: var(--text-primary);
+}
+
+/* ── Range slider ── */
 .range-input {
   flex: 1;
-  max-width: 150px;
-  accent-color: #ffffff;
+  max-width: 140px;
+  accent-color: var(--accent, #58a6ff);
+  cursor: pointer;
 }
 
 .range-input:disabled {
@@ -124,24 +213,27 @@
   cursor: not-allowed;
 }
 
+/* ── Unit label ── */
 .unit {
-  color: #8b949e;
-  font-size: 0.85rem;
-  min-width: 50px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  min-width: 36px;
 }
 
-/* Toggle Switch */
+/* ── Toggle switch ── */
 .toggle-switch {
   position: relative;
   display: inline-block;
-  width: 50px;
-  height: 26px;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
 }
 
 .toggle-switch input {
   opacity: 0;
   width: 0;
   height: 0;
+  position: absolute;
 }
 
 .toggle-slider {
@@ -151,103 +243,166 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #30363d;
-  transition: 0.3s;
-  border-radius: 26px;
+  background-color: var(--border);
+  transition: background-color 0.2s ease;
+  border-radius: 24px;
 }
 
-.toggle-slider:before {
+.toggle-slider::before {
   position: absolute;
   content: "";
-  height: 20px;
-  width: 20px;
+  height: 18px;
+  width: 18px;
   left: 3px;
   bottom: 3px;
-  background-color: white;
-  transition: 0.3s;
+  background-color: #ffffff;
   border-radius: 50%;
+  transition: transform 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.4);
 }
 
 .toggle-switch input:checked + .toggle-slider {
   background-color: #238636;
 }
 
-.toggle-switch input:checked + .toggle-slider:before {
-  transform: translateX(24px);
+.toggle-switch input:checked + .toggle-slider::before {
+  transform: translateX(20px);
 }
 
 .toggle-switch input:disabled + .toggle-slider {
-  opacity: 0.5;
+  opacity: 0.45;
   cursor: not-allowed;
 }
 
-/* Action Buttons */
+/* ── Action buttons row ── */
 .settings-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 2rem;
-  padding-top: 2rem;
-  border-top: 1px solid #30363d;
+  align-items: center;
+  gap: 10px;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
 }
 
+/* Base action button */
 .action-btn {
-  padding: 0.75rem 1.5rem;
-  border-radius: 6px;
-  font-weight: 600;
-  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 16px;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  border-radius: var(--radius);
   cursor: pointer;
-  transition: all 0.2s ease;
-  border: none;
+  white-space: nowrap;
+  transition: background-color 0.12s ease, border-color 0.12s ease;
+  border: 1px solid transparent;
 }
 
+/* Primary — GitHub green */
 .primary-btn {
-  background: #ffffff;
-  color: #000000;
-  border: 1px solid #ffffff;
+  color: #ffffff;
+  background-color: #238636;
+  border-color: rgba(240, 246, 252, 0.1);
 }
 
 .primary-btn:hover {
-  background: #000000;
-  color: #ffffff;
-  border-color: #ffffff;
-  transform: translateY(-1px);
+  background-color: #2ea043;
 }
 
+.primary-btn:active {
+  background-color: #238636;
+}
+
+/* Secondary — ghost */
 .secondary-btn {
-  background: #161b22;
-  color: #ffffff;
-  border: 1px solid #30363d;
+  color: var(--text-primary);
+  background-color: var(--bg-subtle);
+  border-color: var(--border);
 }
 
 .secondary-btn:hover {
-  background: #ffffff;
-  color: #000000;
-  border-color: #ffffff;
+  background-color: var(--bg-tertiary, #21262d);
+  border-color: var(--text-secondary);
 }
 
-/* Responsive Design */
+/* Danger — red */
+.danger-btn {
+  color: var(--red);
+  background-color: rgba(248, 81, 73, 0.1);
+  border-color: rgba(248, 81, 73, 0.4);
+}
+
+.danger-btn:hover {
+  background-color: rgba(248, 81, 73, 0.2);
+}
+
+/* ── Danger zone section ── */
+.danger-zone {
+  border-color: rgba(248, 81, 73, 0.5);
+}
+
+.danger-zone .settings-section h3 {
+  color: var(--red);
+  border-bottom-color: rgba(248, 81, 73, 0.3);
+}
+
+/* ── Responsive ── */
 @media (max-width: 768px) {
-  .settings-content {
-    padding: 1rem;
+  .settings-layout {
+    flex-direction: column;
   }
-  
+
+  .settings-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    position: static;
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 0;
+  }
+
+  .settings-sidebar-item {
+    white-space: nowrap;
+    border-left: none;
+    border-bottom: 2px solid transparent;
+    padding: 12px 16px;
+  }
+
+  .settings-sidebar-item.active {
+    border-left-color: transparent;
+    border-bottom-color: var(--text-primary);
+  }
+
+  .settings-content {
+    padding: 16px;
+  }
+
   .setting-item {
     flex-direction: column;
     align-items: flex-start;
-    gap: 1rem;
+    gap: 10px;
   }
-  
+
+  .setting-label {
+    padding-right: 0;
+  }
+
   .setting-control {
     width: 100%;
-    justify-content: flex-start;
   }
-  
+
   .settings-actions {
     flex-direction: column;
+    align-items: stretch;
   }
-  
+
   .action-btn {
-    width: 100%;
+    justify-content: center;
   }
 }

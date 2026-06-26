@@ -1,160 +1,176 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './AppShell.css';
 
-function AppShell({ networkSummary, currentToast, onCloseToast, onResolveIncident, children }) {
+const NAV_ITEMS = [
+  { path: '/',           label: 'Overview',    icon: '⊞' },
+  { path: '/topology',   label: 'Topology',    icon: '◈' },
+  { path: '/branches',   label: 'Branches',    icon: '◑' },
+  { path: '/alerts',     label: 'Alerts',      icon: '⚑' },
+  { path: '/predictions',label: 'Predictions', icon: '◎' },
+  { path: '/reports',    label: 'Reports',     icon: '☰' },
+  { path: '/settings',   label: 'Settings',    icon: '⚙' },
+];
+
+function AppShell({ networkSummary, currentToast, onCloseToast, onResolveIncident, activeIncidents = [], children }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  
-  const navItems = [
-    { path: '/', label: 'Overview', icon: '■' },
-    { path: '/topology', label: 'Topology', icon: '■' },
-    { path: '/branches', label: 'Branches', icon: '■' },
-    { path: '/alerts', label: 'Alerts', icon: '■' },
-    { path: '/predictions', label: 'Predictions', icon: '■' },
-    { path: '/reports', label: 'Reports', icon: '■' },
-    { path: '/settings', label: 'Settings', icon: '■' },
-  ];
+  const [time, setTime] = useState(new Date());
 
-  const getHealthBadgeClass = (health) => {
-    switch (health) {
-      case 'CRITICAL': return 'badge-critical';
-      case 'DEGRADED': return 'badge-warning';
-      default: return 'badge-normal';
-    }
-  };
+  useEffect(() => {
+    const t = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(t);
+  }, []);
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      // Dispatch search query via custom event to the CopilotWidget
-      const event = new CustomEvent('copilotQuery', { detail: searchQuery });
-      window.dispatchEvent(event);
+      window.dispatchEvent(new CustomEvent('copilotQuery', { detail: searchQuery }));
       setSearchQuery('');
-      setSearchOpen(false);
     }
   };
 
   const handleResolveAuto = () => {
     if (currentToast) {
       onResolveIncident(currentToast.id, 'copilot');
-      // Dispatch custom event to notify CopilotWidget to print logs
-      window.dispatchEvent(new CustomEvent('copilotRemediate', { 
-        detail: { nodeId: currentToast.nodeId, type: currentToast.type, method: 'auto' } 
+      window.dispatchEvent(new CustomEvent('copilotRemediate', {
+        detail: { nodeId: currentToast.nodeId, type: currentToast.type, method: 'auto' }
       }));
     }
   };
 
   const handleResolveManual = () => {
     if (currentToast) {
-      // Select node in topology map
       window.dispatchEvent(new CustomEvent('selectTopologyNode', { detail: currentToast.nodeId }));
       onCloseToast();
       navigate('/topology');
     }
   };
 
+  const healthBadge = () => {
+    const h = networkSummary?.overall_health;
+    if (h === 'CRITICAL') return 'hdr-badge-critical';
+    if (h === 'DEGRADED') return 'hdr-badge-warning';
+    return 'hdr-badge-normal';
+  };
+
+  const criticalCount = activeIncidents.filter(i => i.status === 'active' && i.severity === 'critical').length;
+  const warningCount  = activeIncidents.filter(i => i.status === 'active' && i.severity !== 'critical').length;
+
+  const timeStr = time.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+
   return (
     <div className="app-shell">
-      {/* Top Header */}
+      {/* ===== TOP HEADER ===== */}
       <header className="cockpit-header">
         <div className="header-content">
-          <div className="header-title">
-            <h1>NOC Cockpit</h1>
-            <span className="product-version">Enterprise Operations</span>
-          </div>
-          
-          <div className="header-center">
-            <div className="header-badges">
-              <span className="status-badge badge-offline">OFFLINE</span>
-              <span className="status-badge badge-simulation">SIMULATION ACTIVE</span>
-              {networkSummary && (
-                <>
-                  <span className={`status-badge ${getHealthBadgeClass(networkSummary.overall_health)}`}>
-                    {networkSummary.overall_health}
-                  </span>
-                  {networkSummary.most_critical_issue && (
-                    <span className="status-badge badge-critical">
-                      CRITICAL: {networkSummary.most_critical_issue.substring(0, 30)}...
-                    </span>
-                  )}
-                  {networkSummary.eta_to_failure > 0 && (
-                    <span className="status-badge badge-warning">
-                      ETA: {networkSummary.eta_to_failure} min
-                    </span>
-                  )}
-                </>
-              )}
+          {/* Logo */}
+          <div className="header-logo">
+            <div className="header-logo-mark">
+              <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+              </svg>
             </div>
+            <span className="header-logo-text">NOC Cockpit</span>
+            <span className="header-logo-sub">MPLS Operations</span>
           </div>
 
-          <div className="header-actions">
-            <button 
-              className="search-toggle-btn"
-              onClick={() => setSearchOpen(!searchOpen)}
-              aria-label="Global Search"
-            >
-              SEARCH
-            </button>
-            {searchOpen && (
-              <form className="search-bar" onSubmit={handleSearch}>
-                <input
-                  type="text"
-                  placeholder="Query Copilot..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="search-input"
-                  autoFocus
-                />
-                <button type="submit" className="search-submit">GO</button>
-              </form>
-            )}
+          {/* Search */}
+          <div className="header-center">
+            <form className="header-search-box" onSubmit={handleSearch}>
+              <span className="header-search-icon">⌕</span>
+              <input
+                type="text"
+                className="header-search-input"
+                placeholder="Search or ask the Copilot..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <span className="header-search-kbd">/</span>
+            </form>
+          </div>
+
+          {/* Right: badges + time */}
+          <div className="header-right">
+            <div className="header-badge-row">
+              <span className="hdr-status-badge hdr-badge-offline">AIR-GAPPED</span>
+              <span className="hdr-status-badge hdr-badge-sim">LIVE SIM</span>
+              {networkSummary && (
+                <span className={`hdr-status-badge ${healthBadge()}`}>
+                  {networkSummary.overall_health}
+                </span>
+              )}
+              {criticalCount > 0 && (
+                <span className="hdr-status-badge hdr-badge-critical">{criticalCount} CRITICAL</span>
+              )}
+              {warningCount > 0 && (
+                <span className="hdr-status-badge hdr-badge-warning">{warningCount} WARNING</span>
+              )}
+            </div>
+            <div className="header-divider" />
+            <span style={{ fontFamily: 'var(--mono)', fontSize: 12, color: 'var(--text-muted)' }}>{timeStr}</span>
+            <div className="header-avatar-btn">NC</div>
           </div>
         </div>
       </header>
 
-      {/* Incident Warning Toast Center Overlay */}
+      {/* ===== INCIDENT TOAST ===== */}
       {currentToast && (
         <div className="incident-toast">
           <div className="toast-header">
-            <span className="toast-severity-dot">●</span>
-            <strong className="toast-title">{currentToast.severity} ALERT: {currentToast.type}</strong>
+            <span className="toast-severity-dot" />
+            <strong className="toast-title">
+              {currentToast.severity?.toUpperCase()} — {currentToast.type}
+            </strong>
             <button className="toast-close" onClick={onCloseToast}>✕</button>
           </div>
           <div className="toast-body">
-            <p>{currentToast.message} on node {currentToast.nodeId.replace('branch-', '').toUpperCase()}</p>
+            <p>Incident detected on node <strong>{currentToast.nodeId?.replace('branch-', '').toUpperCase()}</strong>. {currentToast.message}</p>
             <div className="toast-actions">
-              <button className="toast-btn auto-btn" onClick={handleResolveAuto}>
-                Auto-Resolve via Copilot
-              </button>
-              <button className="toast-btn manual-btn" onClick={handleResolveManual}>
-                Resolve Manually
-              </button>
+              <button className="toast-btn auto-btn" onClick={handleResolveAuto}>Auto-Resolve via Copilot</button>
+              <button className="toast-btn manual-btn" onClick={handleResolveManual}>View in Topology</button>
             </div>
           </div>
         </div>
       )}
 
       <div className="main-layout">
-        {/* Left Navigation Rail */}
+        {/* ===== SIDEBAR ===== */}
         <nav className="nav-rail">
           <div className="nav-items">
-            {navItems.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={`nav-item ${location.pathname === item.path ? 'active' : ''}`}
-              >
-                <span className="nav-icon">{item.icon}</span>
-                <span className="nav-label">{item.label}</span>
-              </Link>
-            ))}
+            {NAV_ITEMS.map((item) => {
+              const isActive = location.pathname === item.path;
+              const badge = item.path === '/alerts' && criticalCount > 0 ? criticalCount : null;
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`nav-item ${isActive ? 'active' : ''}`}
+                >
+                  <span className="nav-icon">{item.icon}</span>
+                  <span className="nav-label">{item.label}</span>
+                  {badge && <span className="nav-badge critical">{badge}</span>}
+                </Link>
+              );
+            })}
+          </div>
+
+          <div className="nav-footer">
+            <div className="nav-footer-item" onClick={() => window.dispatchEvent(new CustomEvent('copilotQuery', { detail: 'What is the current network health status?' }))}>
+              <span style={{ fontSize: 14 }}>◈</span>
+              <span>Ask Copilot</span>
+            </div>
+            <div className="nav-footer-item">
+              <span style={{ fontSize: 14 }}>◯</span>
+              <span style={{ fontFamily: 'var(--mono)', fontSize: 11 }}>
+                {networkSummary ? `${networkSummary.total_nodes || 16} nodes` : 'Loading...'}
+              </span>
+            </div>
           </div>
         </nav>
 
-        {/* Main Content Area */}
+        {/* ===== MAIN ===== */}
         <main className="main-content">
           {children}
         </main>
