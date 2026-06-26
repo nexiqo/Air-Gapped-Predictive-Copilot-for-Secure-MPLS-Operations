@@ -1,0 +1,26 @@
+[
+  {
+    "ts": "2026-06-26T05:01:45.338230+00:00",
+    "scenario": "progressive_congestion",
+    "link": "hub1-branch-a",
+    "label": 1
+  },
+  {
+    "ts": "2026-06-26T05:36:45.338230+00:00",
+    "scenario": "bgp_route_flap",
+    "link": "hub1-branch-a",
+    "label": 1
+  },
+  {
+    "ts": "2026-06-26T06:16:45.338230+00:00",
+    "scenario": "mpls_tunnel_degradation",
+    "link": "hub1-branch-a",
+    "label": 1
+  },
+  {
+    "ts": "2026-06-26T06:51:45.338230+00:00",
+    "scenario": "controller_policy_drift",
+    "link": "branch-b-dc-core",
+    "label": 1
+  }
+]

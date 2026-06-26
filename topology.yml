@@ -1,0 +1,38 @@
+name: techcorp-india-network-lab
+
+topology:
+  nodes:
+    mumbai-hub:
+      kind: linux
+      image: frrouting/frr:latest
+      binds:
+        - configs/mumbai-hub/frr.conf:/etc/frr/frr.conf
+      description: "Mumbai Headquarters - Main NOC and Network Operations Center"
+    bangalore-branch:
+      kind: linux
+      image: frrouting/frr:latest
+      binds:
+        - configs/bangalore-branch/frr.conf:/etc/frr/frr.conf
+      description: "Bangalore Regional Branch - Major Technology Hub"
+    chennai-branch:
+      kind: linux
+      image: frrouting/frr:latest
+      binds:
+        - configs/chennai-branch/frr.conf:/etc/frr/frr.conf
+      description: "Chennai Regional Branch - South India Operations"
+    dc-core:
+      kind: linux
+      image: frrouting/frr:latest
+      binds:
+        - configs/dc-core/frr.conf:/etc/frr/frr.conf
+      description: "Primary Data Center - Core Banking Services Hosting"
+
+  links:
+    - endpoints: ["mumbai-hub:eth1", "bangalore-branch:eth1"]
+      description: "Mumbai-Bangalore MPLS Link - Primary South Route"
+    - endpoints: ["mumbai-hub:eth2", "chennai-branch:eth1"]
+      description: "Mumbai-Chennai MPLS Link - Alternative South Route"
+    - endpoints: ["mumbai-hub:eth3", "dc-core:eth1"]
+      description: "Mumbai-Data Center Core Link - Critical Infrastructure"
+    - endpoints: ["bangalore-branch:eth2", "chennai-branch:eth2"]
+      description: "Bangalore-Chennai Inter-Branch Link - Regional Redundancy"

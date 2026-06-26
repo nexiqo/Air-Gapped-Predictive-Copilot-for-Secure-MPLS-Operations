@@ -1,0 +1,16 @@
+[
+  {
+    "scenario": "progressive_congestion",
+    "lead_time_minutes": 8.5,
+    "confidence": 0.88,
+    "severity": "high",
+    "status": "sample"
+  },
+  {
+    "scenario": "bgp_route_flap",
+    "lead_time_minutes": 6.0,
+    "confidence": 0.79,
+    "severity": "high",
+    "status": "sample"
+  }
+]

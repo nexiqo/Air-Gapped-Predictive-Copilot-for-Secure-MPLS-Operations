@@ -1,0 +1,26 @@
+[
+  {
+    "id": "RB-001",
+    "title": "BGP Route Flap Containment",
+    "keywords": ["bgp", "flap", "routing", "instability", "path"],
+    "body": "Check neighbor state history, validate hold timers, inspect recent config drift, and damp unstable advertisements before they cascade across the WAN."
+  },
+  {
+    "id": "RB-002",
+    "title": "Congestion Buildup Response",
+    "keywords": ["congestion", "utilization", "latency", "queue", "qos"],
+    "body": "Validate queue depth, confirm QoS class saturation, reroute non-critical flows if possible, and protect delay-sensitive traffic before SLA breach."
+  },
+  {
+    "id": "RB-003",
+    "title": "Tunnel Degradation Triage",
+    "keywords": ["tunnel", "loss", "jitter", "ipsec", "rekey"],
+    "body": "Inspect packet loss trend, rekey failures, and underlay reachability. Fail over to the healthiest path and confirm tunnel crypto timers are stable."
+  },
+  {
+    "id": "RB-004",
+    "title": "Controller Drift Investigation",
+    "keywords": ["controller", "drift", "policy", "ospf", "config"],
+    "body": "Compare active policy to the golden configuration, revert unintended routing preference changes, and revalidate service path intent after rollback."
+  }
+]

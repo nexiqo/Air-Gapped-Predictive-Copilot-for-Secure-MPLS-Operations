@@ -1,0 +1,12 @@
+[
+  {
+    "id": "INC-001",
+    "summary": "Previous branch latency event started with queue depth growth 12 minutes before packet loss crossed 5 percent.",
+    "tags": ["latency", "queue", "packet-loss", "branch-a"]
+  },
+  {
+    "id": "INC-002",
+    "summary": "Route instability at a provider edge caused oscillation between preferred and backup paths before an outage window.",
+    "tags": ["bgp", "route-flap", "provider-edge"]
+  }
+]
