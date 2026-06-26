@@ -2,25 +2,25 @@
   {
     "name": "progressive_congestion",
     "issue_type": "congestion_buildup",
-    "target_link": "hub1-branch-a",
+    "target_link": "mumbai-bangalore",
     "success_criteria": "Alert at least 5 minutes before utilization exceeds 85 percent."
   },
   {
     "name": "bgp_route_flap",
     "issue_type": "routing_instability",
-    "target_link": "hub1-branch-a",
+    "target_link": "mumbai-delhi",
     "success_criteria": "Alert after repeated flap precursor events and before downstream impact."
   },
   {
     "name": "mpls_tunnel_degradation",
     "issue_type": "tunnel_health_drop",
-    "target_link": "hub1-dc-core",
+    "target_link": "mumbai-kochi",
     "success_criteria": "Detect rising loss and jitter before service disruption severity turns critical."
   },
   {
     "name": "controller_policy_drift",
     "issue_type": "policy_drift",
-    "target_link": "branch-b-dc-core",
+    "target_link": "mumbai-ahmedabad",
     "success_criteria": "Surface config-risk evidence and recommended rollback actions."
   }
 ]

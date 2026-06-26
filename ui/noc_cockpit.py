@@ -197,7 +197,7 @@ def fetch_topology() -> Optional[Dict[str, Any]]:
         pass
     
     # Offline fallback - use embedded topology data
-    from api.topology_models import NetworkTopology
+    from backend.topology_models import NetworkTopology
     return NetworkTopology.generate_demo_topology().dict()
 
 
@@ -211,7 +211,7 @@ def fetch_summary() -> Optional[Dict[str, Any]]:
         pass
     
     # Offline fallback
-    from api.topology_models import NetworkSummary
+    from backend.topology_models import NetworkSummary
     return NetworkSummary.generate_demo_summary().dict()
 
 
@@ -255,7 +255,7 @@ def fetch_branch_detail(branch_id: str) -> Optional[Dict[str, Any]]:
         pass
     
     # Offline fallback
-    from api.topology_models import NetworkTopology, BranchDetail
+    from backend.topology_models import NetworkTopology, BranchDetail
     topology = NetworkTopology.generate_demo_topology()
     if branch_id in topology.nodes:
         return BranchDetail.from_topology_node(topology, branch_id).dict()
@@ -323,7 +323,7 @@ def fetch_reports(report_type: str = "executive") -> Optional[Dict[str, Any]]:
         pass
     
     # Offline fallback
-    from api.topology_models import ReportData
+    from backend.topology_models import ReportData
     return ReportData.generate_report(report_type).dict()
 
 
@@ -508,9 +508,14 @@ def render_topology_graph(topology: Dict[str, Any]):
     pos = {}
     for node_id, node_data in topology["nodes"].items():
         G.add_node(node_id, **node_data)
-        # Use coordinates if available, otherwise use a layout
+        # Use coordinates if available, mapping [lat, lon] to [lon, lat] for (x, y)
         if "coordinates" in node_data:
-            pos[node_id] = node_data["coordinates"]
+            # Swap lat/lon so x is longitude and y is latitude
+            pos[node_id] = [node_data["coordinates"][1], node_data["coordinates"][0]]
+            # Offset Navi Mumbai Data Center slightly so it doesn't overlap Mumbai Hub
+            if node_id == "dc-core":
+                pos[node_id][0] += 0.08
+                pos[node_id][1] -= 0.05
     
     # If no coordinates, use spring layout
     if not pos:

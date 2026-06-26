@@ -1,0 +1,276 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './Overview.css';
+
+function OverviewPage({ networkSummary, topology: propTopology, alerts: propAlerts, onNodeSelect }) {
+  const navigate = useNavigate();
+  const [localTopology, setLocalTopology] = useState(null);
+  const [localAlerts, setLocalAlerts] = useState([]);
+
+  useEffect(() => {
+    if (!propTopology || !propAlerts.length) {
+      fetchOverviewData();
+    }
+  }, [propTopology, propAlerts]);
+
+  const fetchOverviewData = async () => {
+    try {
+      const [topologyResponse, alertsResponse] = await Promise.all([
+        fetch('http://127.0.0.1:8000/topology'),
+        fetch('http://127.0.0.1:8000/alerts')
+      ]);
+
+      if (topologyResponse.ok) {
+        setLocalTopology(await topologyResponse.json());
+      }
+
+      if (alertsResponse.ok) {
+        const data = await alertsResponse.json();
+        setLocalAlerts(data.alerts || []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch overview data:', error);
+    }
+  };
+
+  const topology = propTopology || localTopology;
+  const alerts = propAlerts.length > 0 ? propAlerts : localAlerts;
+
+  const getHealthBadgeClass = (health) => {
+    switch (health) {
+      case 'CRITICAL': return 'badge-critical';
+      case 'DEGRADED': return 'badge-warning';
+      default: return 'badge-normal';
+    }
+  };
+
+  const handleSelectSite = (node) => {
+    onNodeSelect?.(node);
+    navigate('/topology');
+  };
+
+  return (
+    <div className="overview-page">
+      <div className="overview-header">
+        <div>
+          <h2>Shift Overview</h2>
+          <p className="header-subtitle">NOC Operations & Predictor Cockpit</p>
+        </div>
+        <button className="action-btn" onClick={() => navigate('/topology')}>
+          View Full Topology
+        </button>
+      </div>
+
+      {networkSummary && (
+        <div className="overview-grid">
+          {/* Global Risk Summary */}
+          <div className="overview-card">
+            <h3>Network Health</h3>
+            <div className="health-display">
+              <span className={`health-badge ${getHealthBadgeClass(networkSummary.overall_health)}`}>
+                {networkSummary.overall_health}
+              </span>
+            </div>
+            <div className="health-details">
+              <div className="detail-item">
+                <span className="label">Total Nodes:</span>
+                <span className="value">{networkSummary.total_nodes}</span>
+              </div>
+              <div className="detail-item">
+                <span className="label">Critical:</span>
+                <span className="value critical">{networkSummary.critical_nodes}</span>
+              </div>
+              <div className="detail-item">
+                <span className="label">Warning:</span>
+                <span className="value warning">{networkSummary.warning_nodes}</span>
+              </div>
+              <div className="detail-item">
+                <span className="label">Normal:</span>
+                <span className="value normal">{networkSummary.normal_nodes}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Most Critical Issue */}
+          <div className="overview-card critical-card">
+            <h3>Most Critical Issue</h3>
+            <div className="critical-content">
+              <span className="status-dot-indicator critical"></span>
+              <div className="critical-text">
+                <p>{networkSummary.most_critical_issue}</p>
+                <div className="critical-meta">
+                  <span>ETA: {networkSummary.eta_to_failure} minutes</span>
+                  <span>Confidence: {(networkSummary.confidence * 100).toFixed(0)}%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* At-Risk Branch */}
+          <div className="overview-card warning-card">
+            <h3>At-Risk Branch</h3>
+            <div className="warning-content">
+              <span className="status-dot-indicator warning"></span>
+              <div className="warning-text">
+                <p className="branch-name">{networkSummary.most_at_risk_branch}</p>
+                <p className="next-failure">Next: {networkSummary.next_likely_failure}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Main Sections Layout */}
+      <div className="overview-sections-container">
+        
+        {/* Left Side: Top Risk & Compact Topology */}
+        <div className="overview-sections-left">
+          
+          {/* Top At-Risk Branches */}
+          {networkSummary?.top_risk_branches && (
+            <div className="overview-section">
+              <h3>Top At-Risk Branches</h3>
+              <div className="risk-branches-grid">
+                {networkSummary.top_risk_branches.slice(0, 5).map((branch) => (
+                  <div 
+                    key={branch.id} 
+                    className={`risk-branch-card risk-${branch.risk_level.toLowerCase()}`}
+                    onClick={() => handleSelectSite({ id: branch.id })}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <div className="branch-info">
+                      <span className="branch-name">{branch.name}</span>
+                      <span className="branch-risk">Score: {branch.risk_score}</span>
+                    </div>
+                    <div className="risk-bar-container">
+                      <div 
+                        className="risk-bar" 
+                        style={{ 
+                          width: `${Math.min(100, branch.risk_score * 10)}%`,
+                          backgroundColor: branch.risk_score >= 5 ? '#da3633' : branch.risk_score >= 3 ? '#d29922' : '#238636'
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Compact Topology Map Preview */}
+          {topology?.nodes && (
+            <div className="overview-section">
+              <h3>Topology Site Monitor</h3>
+              <div className="compact-topology-grid">
+                {Object.values(topology.nodes).map((node) => {
+                  let statusColor = '#238636';
+                  if (node.status === 'CRITICAL') statusColor = '#da3633';
+                  else if (node.status === 'WARNING') statusColor = '#d29922';
+                  
+                  return (
+                    <div 
+                      key={node.id} 
+                      className="compact-node-item"
+                      onClick={() => handleSelectSite(node)}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <span className="status-dot" style={{ backgroundColor: statusColor }}></span>
+                      <div className="node-details">
+                        <span className="node-name">{node.name}</span>
+                        <span className="node-meta">{node.type} | {node.metrics?.latency_ms}ms</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+        </div>
+
+        {/* Right Side: Copilot Findings & Alerts */}
+        <div className="overview-sections-right">
+          
+          {/* Recent Copilot Findings */}
+          {networkSummary?.recent_predictions && (
+            <div className="overview-section">
+              <h3>Recent Copilot Findings</h3>
+              <div className="findings-feed">
+                {networkSummary.recent_predictions.slice(0, 4).map((pred) => (
+                  <div key={pred.prediction_id} className="finding-item">
+                    <div className="finding-header">
+                      <span className="finding-title">{pred.predicted_fault_type.toUpperCase().replace("_", " ")}</span>
+                      <span className="finding-time">{pred.timestamp.split('T')[1].slice(0, 8)}</span>
+                    </div>
+                    <p className="finding-body">{pred.reasoning}</p>
+                    <div className="finding-meta">
+                      <span>Site: {pred.predicted_at_site}</span>
+                      <span>Confidence: {(pred.confidence * 100).toFixed(0)}%</span>
+                      <span>ETA: {pred.prophet_breach_eta_minutes}min</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Recent Alerts */}
+          <div className="overview-section">
+            <h3>Recent Active Alerts</h3>
+            {alerts.length > 0 ? (
+              <div className="alerts-list">
+                {alerts.slice(0, 5).map((alert) => (
+                  <div key={alert.id} className={`alert-item ${alert.severity}`}>
+                    <div className="alert-header">
+                      <span className="alert-entity">{alert.entity_name}</span>
+                      <span className={`alert-severity ${alert.severity}`}>
+                        {alert.severity.toUpperCase()}
+                      </span>
+                    </div>
+                    <p className="alert-message">{alert.message}</p>
+                    <div className="alert-metrics">
+                      {alert.metrics?.latency_ms && (
+                        <span>Latency: {alert.metrics.latency_ms}ms</span>
+                      )}
+                      {alert.metrics?.utilization_pct && (
+                        <span>Util: {alert.metrics.utilization_pct}%</span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="no-data">No active alerts</p>
+            )}
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* Quick Actions */}
+      <div className="overview-section">
+        <h3>Quick Actions</h3>
+        <div className="quick-actions">
+          <button className="quick-action-btn" onClick={() => navigate('/topology')}>
+            View Topology
+          </button>
+          <button className="quick-action-btn" onClick={() => navigate('/branches')}>
+            Check Branches
+          </button>
+          <button className="quick-action-btn" onClick={() => navigate('/alerts')}>
+            View Alerts
+          </button>
+          <button className="quick-action-btn" onClick={() => navigate('/predictions')}>
+            See Predictions
+          </button>
+          <button className="quick-action-btn" onClick={() => navigate('/reports')}>
+            Generate Reports
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default OverviewPage;

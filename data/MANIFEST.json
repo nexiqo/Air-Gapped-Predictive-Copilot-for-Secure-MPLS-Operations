@@ -1,0 +1,261 @@
+{
+  "project": "Air-Gapped Predictive NOC Copilot",
+  "hackathon": "Bharatiya Antariksh Hackathon 2026 \u2014 Challenge 13",
+  "generated_at": "2026-06-26T11:11:33.171364",
+  "files": {
+    "snmp_metrics.csv": {
+      "rows": 138240,
+      "description": "Per-site SNMP telemetry every 30s for 72h across all 16 sites",
+      "columns": [
+        "timestamp",
+        "site_id",
+        "site_type",
+        "city",
+        "region",
+        "latency_ms",
+        "jitter_ms",
+        "packet_loss_pct",
+        "bandwidth_util_pct",
+        "bgp_prefix_count",
+        "ospf_neighbor_count",
+        "tunnel_health_score",
+        "error_rate",
+        "queue_depth_ms",
+        "anomaly_score",
+        "status",
+        "fault_label",
+        "fault_type",
+        "fault_severity"
+      ],
+      "use_for": "ML training \u2014 LSTM, XGBoost, Prophet"
+    },
+    "bgp_events.csv": {
+      "rows": 204,
+      "description": "BGP peer up/down, prefix withdrawal/announcement, flap events",
+      "columns": [
+        "event_id",
+        "timestamp",
+        "site_id",
+        "peer_ip",
+        "peer_asn",
+        "event_type",
+        "prefix",
+        "prefixes_affected",
+        "hold_time_sec",
+        "severity",
+        "note"
+      ],
+      "use_for": "RAG knowledge base, syslog correlation, routing instability detection"
+    },
+    "syslog_events.csv": {
+      "rows": 718,
+      "description": "Device syslog across all sites with fault-correlated messages",
+      "columns": [
+        "event_id",
+        "timestamp",
+        "site_id",
+        "severity",
+        "facility",
+        "message",
+        "fault_type",
+        "correlated_scenario"
+      ],
+      "use_for": "RAG knowledge base, log-based anomaly detection"
+    },
+    "tunnel_health.csv": {
+      "rows": 1296,
+      "description": "IPSec/IKEv2 tunnel health, DPD failures, rekey anomalies",
+      "columns": [
+        "timestamp",
+        "tunnel_id",
+        "source",
+        "target",
+        "overlay_type",
+        "ike_state",
+        "sa_bytes_tx",
+        "rekey_seconds_remaining",
+        "latency_ms",
+        "jitter_ms",
+        "packet_loss_pct",
+        "tunnel_health_score",
+        "dpd_failures",
+        "fault_active",
+        "fault_type"
+      ],
+      "use_for": "Tunnel degradation detection, VPN health monitoring"
+    },
+    "incidents.csv": {
+      "rows": 22,
+      "description": "22 structured incidents with title, description, root cause, resolution",
+      "columns": [
+        "incident_id",
+        "timestamp_start",
+        "timestamp_detected",
+        "timestamp_resolved",
+        "site_id",
+        "all_sites",
+        "fault_type",
+        "severity",
+        "title",
+        "description",
+        "impact",
+        "root_cause",
+        "prediction_lead_time_minutes",
+        "prediction_accuracy_pct",
+        "ml_confidence",
+        "resolution_action",
+        "duration_minutes",
+        "sla_breached",
+        "users_affected",
+        "scenario_index"
+      ],
+      "use_for": "RAG past incidents, ML ground truth labels"
+    },
+    "predictions.csv": {
+      "rows": 22,
+      "description": "ML engine predictions with lead time, confidence, reasoning",
+      "columns": [
+        "prediction_id",
+        "timestamp",
+        "predicted_fault_type",
+        "predicted_at_site",
+        "affected_scope",
+        "confidence",
+        "anomaly_score",
+        "xgb_fault_probability",
+        "prophet_breach_eta_minutes",
+        "severity_forecast",
+        "reasoning",
+        "related_runbooks",
+        "recommended_action_1",
+        "actual_fault_start",
+        "actual_lead_time_achieved",
+        "prediction_correct",
+        "incident_reference"
+      ],
+      "use_for": "Validation results, dashboard prediction feed"
+    },
+    "runbooks.json": {
+      "count": 6,
+      "description": "6 operational runbooks with step-by-step procedures",
+      "use_for": "RAG knowledge base \u2014 copilot grounding"
+    },
+    "topology.json": {
+      "nodes": 16,
+      "edges": 19,
+      "description": "Full topology graph with node/edge metrics for frontend",
+      "use_for": "Dashboard topology canvas, GET /topology endpoint"
+    },
+    "branch_details.json": {
+      "branches": 14,
+      "description": "Per-branch drill-down data with history, incidents, predictions",
+      "use_for": "Dashboard branch detail panel, GET /branches/{id} endpoint"
+    },
+    "netflow.csv": {
+      "rows": 5964,
+      "description": "NetFlow records across all sites for application traffic analysis",
+      "use_for": "Top-talker analysis, application-level congestion detection"
+    },
+    "network_summary.json": {
+      "description": "Global network summary for header and overview panel",
+      "use_for": "Dashboard overview page, GET /summary endpoint"
+    },
+    "validation_results.json": {
+      "scenarios": 22,
+      "description": "Hackathon validation results \u2014 prediction accuracy and lead times",
+      "use_for": "Judge-facing validation report, Reports page"
+    }
+  },
+  "network_topology": {
+    "sites": 16,
+    "branches": 14,
+    "hubs": 1,
+    "datacenters": 1,
+    "links": 19,
+    "fault_scenarios": 22,
+    "simulation_hours": 72,
+    "sample_interval_seconds": 30
+  },
+  "sites_list": {
+    "hub-delhi": {
+      "city": "New Delhi",
+      "type": "hub",
+      "region": "North"
+    },
+    "dc-mumbai": {
+      "city": "Mumbai",
+      "type": "datacenter",
+      "region": "West"
+    },
+    "branch-bengaluru": {
+      "city": "Bengaluru",
+      "type": "branch",
+      "region": "South"
+    },
+    "branch-chennai": {
+      "city": "Chennai",
+      "type": "branch",
+      "region": "South"
+    },
+    "branch-hyderabad": {
+      "city": "Hyderabad",
+      "type": "branch",
+      "region": "South"
+    },
+    "branch-pune": {
+      "city": "Pune",
+      "type": "branch",
+      "region": "West"
+    },
+    "branch-ahmedabad": {
+      "city": "Ahmedabad",
+      "type": "branch",
+      "region": "West"
+    },
+    "branch-kolkata": {
+      "city": "Kolkata",
+      "type": "branch",
+      "region": "East"
+    },
+    "branch-bhubaneswar": {
+      "city": "Bhubaneswar",
+      "type": "branch",
+      "region": "East"
+    },
+    "branch-guwahati": {
+      "city": "Guwahati",
+      "type": "branch",
+      "region": "Northeast"
+    },
+    "branch-chandigarh": {
+      "city": "Chandigarh",
+      "type": "branch",
+      "region": "North"
+    },
+    "branch-jaipur": {
+      "city": "Jaipur",
+      "type": "branch",
+      "region": "North"
+    },
+    "branch-lucknow": {
+      "city": "Lucknow",
+      "type": "branch",
+      "region": "North"
+    },
+    "branch-kochi": {
+      "city": "Kochi",
+      "type": "branch",
+      "region": "South"
+    },
+    "branch-nagpur": {
+      "city": "Nagpur",
+      "type": "branch",
+      "region": "Central"
+    },
+    "branch-bhopal": {
+      "city": "Bhopal",
+      "type": "branch",
+      "region": "Central"
+    }
+  }
+}

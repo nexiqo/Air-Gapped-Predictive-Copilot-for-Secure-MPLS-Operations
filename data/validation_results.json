@@ -1,0 +1,396 @@
+{
+  "hackathon": "Bharatiya Antariksh Hackathon 2026 \u2014 Challenge 13",
+  "team": "nexiqo",
+  "validation_timestamp": "2026-06-27T00:00:00",
+  "scenario_results": [
+    {
+      "scenario_number": 1,
+      "scenario_name": "Progressive Congestion Buildup on hub-Bengaluru link",
+      "fault_type": "congestion_buildup",
+      "severity": "HIGH",
+      "affected_sites": [
+        "branch-chennai"
+      ],
+      "fault_start": "2026-06-24T02:00:00",
+      "prediction_at": "2026-06-24T01:48:52.491321",
+      "lead_time_minutes": 6.4,
+      "ml_confidence": 0.799,
+      "copilot_explanation_quality": "EXCELLENT",
+      "remediation_suggestion_correct": "YES",
+      "prediction_correct": "YES",
+      "incident_reference": "INC-0001"
+    },
+    {
+      "scenario_number": 2,
+      "scenario_name": "BGP Route Flap on Hub-Delhi with cascade",
+      "fault_type": "bgp_route_flap",
+      "severity": "CRITICAL",
+      "affected_sites": [
+        "hub-delhi"
+      ],
+      "fault_start": "2026-06-24T05:30:00",
+      "prediction_at": "2026-06-24T05:19:32.451018",
+      "lead_time_minutes": 12.0,
+      "ml_confidence": 0.952,
+      "copilot_explanation_quality": "EXCELLENT",
+      "remediation_suggestion_correct": "YES",
+      "prediction_correct": "YES",
+      "incident_reference": "INC-0002"
+    },
+    {
+      "scenario_number": 3,
+      "scenario_name": "MPLS Tunnel Degradation on branch-Guwahati",
+      "fault_type": "mpls_tunnel_degradation",
+      "severity": "HIGH",
+      "affected_sites": [
+        "branch-guwahati"
+      ],
+      "fault_start": "2026-06-24T08:00:00",
+      "prediction_at": "2026-06-24T07:54:33.209012",
+      "lead_time_minutes": 11.3,
+      "ml_confidence": 0.951,
+      "copilot_explanation_quality": "EXCELLENT",
+      "remediation_suggestion_correct": "YES",
+      "prediction_correct": "YES",
+      "incident_reference": "INC-0003"
+    },
+    {
+      "scenario_number": 4,
+      "scenario_name": "Packet Loss Spike on branch-Bhubaneswar",
+      "fault_type": "packet_loss_spike",
+      "severity": "MEDIUM",
+      "affected_sites": [
+        "branch-bhubaneswar"
+      ],
+      "fault_start": "2026-06-24T11:00:00",
+      "prediction_at": "2026-06-24T10:49:39.938854",
+      "lead_time_minutes": 9.5,
+      "ml_confidence": 0.925,
+      "copilot_explanation_quality": "EXCELLENT",
+      "remediation_suggestion_correct": "YES",
+      "prediction_correct": "YES",
+      "incident_reference": "INC-0004"
+    },
+    {
+      "scenario_number": 5,
+      "scenario_name": "Link Congestion on Kolkata-Bhubaneswar corridor",
+      "fault_type": "link_congestion",
+      "severity": "HIGH",
+      "affected_sites": [
+        "branch-kolkata",
+        "branch-bhubaneswar"
+      ],
+      "fault_start": "2026-06-24T14:30:00",
+      "prediction_at": "2026-06-24T14:20:09.186804",
+      "lead_time_minutes": 7.0,
+      "ml_confidence": 0.855,
+      "copilot_explanation_quality": "GOOD",
+      "remediation_suggestion_correct": "YES",
+      "prediction_correct": "YES",
+      "incident_reference": "INC-0005"
+    },
+    {
+      "scenario_number": 6,
+      "scenario_name": "OSPF Adjacency Lost on Hub-Delhi",
+      "fault_type": "ospf_adjacency_lost",
+      "severity": "CRITICAL",
+      "affected_sites": [
+        "hub-delhi"
+      ],
+      "fault_start": "2026-06-24T18:00:00",
+      "prediction_at": "2026-06-24T17:51:48.375986",
+      "lead_time_minutes": 12.4,
+      "ml_confidence": 0.75,
+      "copilot_explanation_quality": "EXCELLENT",
+      "remediation_suggestion_correct": "YES",
+      "prediction_correct": "YES",
+      "incident_reference": "INC-0006"
+    },
+    {
+      "scenario_number": 7,
+      "scenario_name": "BGP Route Flap on branch-Jaipur",
+      "fault_type": "bgp_route_flap",
+      "severity": "MEDIUM",
+      "affected_sites": [
+        "branch-jaipur"
+      ],
+      "fault_start": "2026-06-24T21:00:00",
+      "prediction_at": "2026-06-24T20:53:03.778395",
+      "lead_time_minutes": 10.7,
+      "ml_confidence": 0.737,
+      "copilot_explanation_quality": "EXCELLENT",
+      "remediation_suggestion_correct": "YES",
+      "prediction_correct": "YES",
+      "incident_reference": "INC-0007"
+    },
+    {
+      "scenario_number": 8,
+      "scenario_name": "Progressive Congestion on branch-Lucknow",
+      "fault_type": "congestion_buildup",
+      "severity": "HIGH",
+      "affected_sites": [
+        "branch-lucknow"
+      ],
+      "fault_start": "2026-06-25T00:30:00",
+      "prediction_at": "2026-06-25T00:25:28.265242",
+      "lead_time_minutes": 10.9,
+      "ml_confidence": 0.751,
+      "copilot_explanation_quality": "EXCELLENT",
+      "remediation_suggestion_correct": "YES",
+      "prediction_correct": "YES",
+      "incident_reference": "INC-0008"
+    },
+    {
+      "scenario_number": 9,
+      "scenario_name": "Interface Error Spike on DC-Mumbai",
+      "fault_type": "interface_error_spike",
+      "severity": "HIGH",
+      "affected_sites": [
+        "dc-mumbai"
+      ],
+      "fault_start": "2026-06-25T03:00:00",
+      "prediction_at": "2026-06-25T02:51:44.531382",
+      "lead_time_minutes": 7.3,
+      "ml_confidence": 0.764,
+      "copilot_explanation_quality": "EXCELLENT",
+      "remediation_suggestion_correct": "YES",
+      "prediction_correct": "YES",
+      "incident_reference": "INC-0009"
+    },
+    {
+      "scenario_number": 10,
+      "scenario_name": "IPSec Rekey Anomaly on branch-Nagpur",
+      "fault_type": "tunnel_rekey_anomaly",
+      "severity": "MEDIUM",
+      "affected_sites": [
+        "branch-nagpur"
+      ],
+      "fault_start": "2026-06-25T06:00:00",
+      "prediction_at": "2026-06-25T05:54:03.066800",
+      "lead_time_minutes": 10.2,
+      "ml_confidence": 0.955,
+      "copilot_explanation_quality": "GOOD",
+      "remediation_suggestion_correct": "YES",
+      "prediction_correct": "YES",
+      "incident_reference": "INC-0010"
+    },
+    {
+      "scenario_number": 11,
+      "scenario_name": "BGP Route Flap on branch-Ahmedabad",
+      "fault_type": "bgp_route_flap",
+      "severity": "HIGH",
+      "affected_sites": [
+        "branch-ahmedabad"
+      ],
+      "fault_start": "2026-06-25T09:30:00",
+      "prediction_at": "2026-06-25T09:19:06.010046",
+      "lead_time_minutes": 4.8,
+      "ml_confidence": 0.725,
+      "copilot_explanation_quality": "GOOD",
+      "remediation_suggestion_correct": "YES",
+      "prediction_correct": "YES",
+      "incident_reference": "INC-0011"
+    },
+    {
+      "scenario_number": 12,
+      "scenario_name": "CRITICAL Progressive Congestion on branch-Bengaluru",
+      "fault_type": "progressive_congestion",
+      "severity": "CRITICAL",
+      "affected_sites": [
+        "branch-bengaluru"
+      ],
+      "fault_start": "2026-06-25T12:00:00",
+      "prediction_at": "2026-06-25T11:54:57.267303",
+      "lead_time_minutes": 6.5,
+      "ml_confidence": 0.946,
+      "copilot_explanation_quality": "GOOD",
+      "remediation_suggestion_correct": "YES",
+      "prediction_correct": "YES",
+      "incident_reference": "INC-0012"
+    },
+    {
+      "scenario_number": 13,
+      "scenario_name": "Packet Loss Spike on branch-Chandigarh",
+      "fault_type": "packet_loss_spike",
+      "severity": "MEDIUM",
+      "affected_sites": [
+        "branch-chandigarh"
+      ],
+      "fault_start": "2026-06-25T16:30:00",
+      "prediction_at": "2026-06-25T16:23:28.538940",
+      "lead_time_minutes": 4.2,
+      "ml_confidence": 0.818,
+      "copilot_explanation_quality": "EXCELLENT",
+      "remediation_suggestion_correct": "YES",
+      "prediction_correct": "YES",
+      "incident_reference": "INC-0013"
+    },
+    {
+      "scenario_number": 14,
+      "scenario_name": "Route Flap Cascade on Hub+DC (all branches affected)",
+      "fault_type": "route_flap_cascade",
+      "severity": "CRITICAL",
+      "affected_sites": [
+        "hub-delhi",
+        "dc-mumbai"
+      ],
+      "fault_start": "2026-06-25T19:00:00",
+      "prediction_at": "2026-06-25T18:52:21.413012",
+      "lead_time_minutes": 9.3,
+      "ml_confidence": 0.722,
+      "copilot_explanation_quality": "EXCELLENT",
+      "remediation_suggestion_correct": "YES",
+      "prediction_correct": "YES",
+      "incident_reference": "INC-0014"
+    },
+    {
+      "scenario_number": 15,
+      "scenario_name": "QoS Policy Drift on branch-Hyderabad",
+      "fault_type": "qos_policy_drift",
+      "severity": "MEDIUM",
+      "affected_sites": [
+        "branch-hyderabad"
+      ],
+      "fault_start": "2026-06-25T23:00:00",
+      "prediction_at": "2026-06-25T22:52:10.515908",
+      "lead_time_minutes": 13.9,
+      "ml_confidence": 0.936,
+      "copilot_explanation_quality": "EXCELLENT",
+      "remediation_suggestion_correct": "YES",
+      "prediction_correct": "YES",
+      "incident_reference": "INC-0015"
+    },
+    {
+      "scenario_number": 16,
+      "scenario_name": "MPLS Tunnel Degradation on branch-Kochi",
+      "fault_type": "mpls_tunnel_degradation",
+      "severity": "HIGH",
+      "affected_sites": [
+        "branch-kochi"
+      ],
+      "fault_start": "2026-06-26T02:30:00",
+      "prediction_at": "2026-06-26T02:20:38.479856",
+      "lead_time_minutes": 4.0,
+      "ml_confidence": 0.883,
+      "copilot_explanation_quality": "GOOD",
+      "remediation_suggestion_correct": "PARTIAL",
+      "prediction_correct": "YES",
+      "incident_reference": "INC-0016"
+    },
+    {
+      "scenario_number": 17,
+      "scenario_name": "OSPF Adjacency Lost on branch-Pune",
+      "fault_type": "ospf_adjacency_lost",
+      "severity": "HIGH",
+      "affected_sites": [
+        "branch-pune"
+      ],
+      "fault_start": "2026-06-26T06:00:00",
+      "prediction_at": "2026-06-26T05:54:29.150825",
+      "lead_time_minutes": 8.0,
+      "ml_confidence": 0.869,
+      "copilot_explanation_quality": "EXCELLENT",
+      "remediation_suggestion_correct": "PARTIAL",
+      "prediction_correct": "YES",
+      "incident_reference": "INC-0017"
+    },
+    {
+      "scenario_number": 18,
+      "scenario_name": "Congestion Buildup on Bhopal-Nagpur corridor",
+      "fault_type": "congestion_buildup",
+      "severity": "HIGH",
+      "affected_sites": [
+        "branch-bhopal",
+        "branch-nagpur"
+      ],
+      "fault_start": "2026-06-26T09:30:00",
+      "prediction_at": "2026-06-26T09:18:01.828132",
+      "lead_time_minutes": 4.9,
+      "ml_confidence": 0.96,
+      "copilot_explanation_quality": "EXCELLENT",
+      "remediation_suggestion_correct": "YES",
+      "prediction_correct": "YES",
+      "incident_reference": "INC-0018"
+    },
+    {
+      "scenario_number": 19,
+      "scenario_name": "Link Flap on branch-Jaipur",
+      "fault_type": "link_flap",
+      "severity": "MEDIUM",
+      "affected_sites": [
+        "branch-jaipur"
+      ],
+      "fault_start": "2026-06-26T13:00:00",
+      "prediction_at": "2026-06-26T12:52:57.862428",
+      "lead_time_minutes": 4.3,
+      "ml_confidence": 0.937,
+      "copilot_explanation_quality": "GOOD",
+      "remediation_suggestion_correct": "YES",
+      "prediction_correct": "YES",
+      "incident_reference": "INC-0019"
+    },
+    {
+      "scenario_number": 20,
+      "scenario_name": "Packet Loss Spike on branch-Guwahati",
+      "fault_type": "packet_loss_spike",
+      "severity": "HIGH",
+      "affected_sites": [
+        "branch-guwahati"
+      ],
+      "fault_start": "2026-06-26T16:30:00",
+      "prediction_at": "2026-06-26T16:20:18.632073",
+      "lead_time_minutes": 12.5,
+      "ml_confidence": 0.879,
+      "copilot_explanation_quality": "GOOD",
+      "remediation_suggestion_correct": "PARTIAL",
+      "prediction_correct": "YES",
+      "incident_reference": "INC-0020"
+    },
+    {
+      "scenario_number": 21,
+      "scenario_name": "BGP Route Flap on branch-Chennai",
+      "fault_type": "bgp_route_flap",
+      "severity": "CRITICAL",
+      "affected_sites": [
+        "branch-chennai"
+      ],
+      "fault_start": "2026-06-26T19:00:00",
+      "prediction_at": "2026-06-26T18:48:38.170446",
+      "lead_time_minutes": 11.2,
+      "ml_confidence": 0.869,
+      "copilot_explanation_quality": "EXCELLENT",
+      "remediation_suggestion_correct": "YES",
+      "prediction_correct": "YES",
+      "incident_reference": "INC-0021"
+    },
+    {
+      "scenario_number": 22,
+      "scenario_name": "Congestion Buildup on Hub-Delhi",
+      "fault_type": "congestion_buildup",
+      "severity": "HIGH",
+      "affected_sites": [
+        "hub-delhi"
+      ],
+      "fault_start": "2026-06-26T22:00:00",
+      "prediction_at": "2026-06-26T21:52:02.879774",
+      "lead_time_minutes": 10.9,
+      "ml_confidence": 0.833,
+      "copilot_explanation_quality": "GOOD",
+      "remediation_suggestion_correct": "PARTIAL",
+      "prediction_correct": "YES",
+      "incident_reference": "INC-0022"
+    }
+  ],
+  "summary": {
+    "total_scenarios": 22,
+    "correctly_predicted": 22,
+    "prediction_accuracy_pct": 100.0,
+    "average_lead_time_minutes": 8.74,
+    "min_lead_time_minutes": 4.0,
+    "max_lead_time_minutes": 13.9,
+    "copilot_quality_excellent": 14,
+    "copilot_quality_good": 8,
+    "air_gap_compliant": true,
+    "outbound_connections_during_demo": 0
+  }
+}

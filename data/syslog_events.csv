@@ -1,0 +1,719 @@
+event_id,timestamp,site_id,severity,facility,message,fault_type,correlated_scenario
+SLOG-000362,2026-06-24T00:13:23,hub-delhi,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000367,2026-06-24T00:22:50,branch-chennai,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface Loopback0, changed state to up",normal,none
+SLOG-000365,2026-06-24T00:24:48,branch-bengaluru,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000364,2026-06-24T00:35:04,branch-jaipur,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.10.1,normal,none
+SLOG-000366,2026-06-24T00:49:53,branch-hyderabad,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.3.1 Up,normal,none
+SLOG-000368,2026-06-24T00:52:17,branch-bengaluru,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface GigabitEthernet0/1, changed state to up",normal,none
+SLOG-000363,2026-06-24T00:58:45,branch-kochi,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000370,2026-06-24T01:36:39,branch-ahmedabad,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.5.1 Up,normal,none
+SLOG-000372,2026-06-24T01:37:33,branch-bhopal,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.14.1 Up,normal,none
+SLOG-000369,2026-06-24T01:45:43,branch-kolkata,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.6.1 Up,normal,none
+SLOG-000371,2026-06-24T01:48:57,branch-kochi,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.12.1 on Tunnel1 from LOADING to FULL",normal,none
+SLOG-000013,2026-06-24T02:06:04.668320,branch-chennai,WARN,LOCAL7,"%IP-4-RTCHANGE: Route table instability detected, 498 routes flapping",congestion_buildup,scenario-1
+SLOG-000015,2026-06-24T02:06:16.015471,branch-chennai,WARN,LOCAL7,%MPLS-4-LDP_CONGESTION: LDP label space pressure on Tunnel0,congestion_buildup,scenario-1
+SLOG-000001,2026-06-24T02:06:48.161641,branch-chennai,WARN,LOCAL7,%INTERFACE-3-QUEUE_LIMIT: Interface Loopback0 output queue depth 74% of max,congestion_buildup,scenario-1
+SLOG-000009,2026-06-24T02:12:46.349635,branch-chennai,WARN,LOCAL7,%MPLS-4-LDP_CONGESTION: LDP label space pressure on GigabitEthernet0/1,congestion_buildup,scenario-1
+SLOG-000374,2026-06-24T02:14:48,branch-lucknow,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.11.1 on GigabitEthernet0/1 from LOADING to FULL",normal,none
+SLOG-000375,2026-06-24T02:18:23,branch-pune,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.4.1,normal,none
+SLOG-000014,2026-06-24T02:19:10.315644,branch-chennai,WARN,LOCAL7,%INTERFACE-3-QUEUE_LIMIT: Interface Loopback0 output queue depth 94% of max,congestion_buildup,scenario-1
+SLOG-000005,2026-06-24T02:20:20.310050,branch-chennai,WARN,LOCAL7,%INTERFACE-3-QUEUE_LIMIT: Interface Tunnel0 output queue depth 85% of max,congestion_buildup,scenario-1
+SLOG-000017,2026-06-24T02:23:00.355402,branch-chennai,WARN,LOCAL7,"%IP-4-RTCHANGE: Route table instability detected, 124 routes flapping",congestion_buildup,scenario-1
+SLOG-000007,2026-06-24T02:29:25.183207,branch-chennai,WARN,LOCAL7,%MPLS-4-LDP_CONGESTION: LDP label space pressure on Tunnel1,congestion_buildup,scenario-1
+SLOG-000373,2026-06-24T02:38:26,branch-kolkata,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.6.1,normal,none
+SLOG-000011,2026-06-24T02:41:55.517816,branch-chennai,WARN,LOCAL7,"%IP-4-RTCHANGE: Route table instability detected, 364 routes flapping",congestion_buildup,scenario-1
+SLOG-000012,2026-06-24T02:53:18.715222,branch-chennai,WARN,LOCAL7,%MPLS-4-LDP_CONGESTION: LDP label space pressure on GigabitEthernet0/0,congestion_buildup,scenario-1
+SLOG-000004,2026-06-24T02:54:07.367814,branch-chennai,ERROR,LOCAL7,"%QOS-4-POLICY_BREACH: VoIP traffic dropped on GigabitEthernet0/0, queue utilization 91%",congestion_buildup,scenario-1
+SLOG-000006,2026-06-24T03:08:28.971498,branch-chennai,ERROR,LOCAL7,"%QOS-4-POLICY_BREACH: VoIP traffic dropped on GigabitEthernet0/1, queue utilization 95%",congestion_buildup,scenario-1
+SLOG-000018,2026-06-24T03:12:34.484865,branch-chennai,WARN,LOCAL7,"%IP-4-RTCHANGE: Route table instability detected, 169 routes flapping",congestion_buildup,scenario-1
+SLOG-000008,2026-06-24T03:13:09.929604,branch-chennai,WARN,LOCAL7,%INTERFACE-3-QUEUE_LIMIT: Interface Tunnel1 output queue depth 83% of max,congestion_buildup,scenario-1
+SLOG-000016,2026-06-24T03:14:37.040359,branch-chennai,WARN,LOCAL7,"%IP-4-RTCHANGE: Route table instability detected, 244 routes flapping",congestion_buildup,scenario-1
+SLOG-000002,2026-06-24T03:18:50.428058,branch-chennai,WARN,LOCAL7,%INTERFACE-3-QUEUE_LIMIT: Interface Tunnel1 output queue depth 88% of max,congestion_buildup,scenario-1
+SLOG-000010,2026-06-24T03:28:58.413424,branch-chennai,WARN,LOCAL7,%INTERFACE-3-QUEUE_LIMIT: Interface Loopback0 output queue depth 80% of max,congestion_buildup,scenario-1
+SLOG-000003,2026-06-24T03:29:00.645149,branch-chennai,ERROR,LOCAL7,"%QOS-4-POLICY_BREACH: VoIP traffic dropped on Tunnel1, queue utilization 74%",congestion_buildup,scenario-1
+SLOG-000377,2026-06-24T03:43:03,branch-kochi,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.12.1,normal,none
+SLOG-000378,2026-06-24T03:43:31,branch-bhopal,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.14.1,normal,none
+SLOG-000376,2026-06-24T03:51:53,branch-chennai,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.2.1 Up,normal,none
+SLOG-000379,2026-06-24T04:25:55,branch-chennai,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.2.1,normal,none
+SLOG-000380,2026-06-24T04:43:53,branch-chennai,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.2.1 on TenGigabitEthernet0/0 from LOADING to FULL",normal,none
+SLOG-000388,2026-06-24T05:05:06,branch-chandigarh,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.9.1,normal,none
+SLOG-000386,2026-06-24T05:18:34,branch-guwahati,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface GigabitEthernet0/0, changed state to up",normal,none
+SLOG-000384,2026-06-24T05:31:03,branch-jaipur,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.10.1,normal,none
+SLOG-000025,2026-06-24T05:33:53.423799,hub-delhi,WARN,LOCAL7,%BGP-4-MAXPFX: Maximum prefix limit approaching on 10.0.0.1,bgp_route_flap,scenario-2
+SLOG-000381,2026-06-24T05:35:13,branch-kolkata,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000021,2026-06-24T05:36:37.359333,hub-delhi,ERROR,LOCAL7,"%BGP-3-NOTIFICATION: BGP neighbor 10.0.0.1 Down, hold timer expired",bgp_route_flap,scenario-2
+SLOG-000026,2026-06-24T05:37:17.604205,hub-delhi,WARN,LOCAL7,%BGP-4-MAXPFX: Maximum prefix limit approaching on 10.0.0.1,bgp_route_flap,scenario-2
+SLOG-000027,2026-06-24T05:38:27.031575,hub-delhi,WARN,LOCAL7,"%BGP-4-DAMP: Route 10.18.0.0/30 dampened, penalty 3252",bgp_route_flap,scenario-2
+SLOG-000024,2026-06-24T05:45:30.037514,hub-delhi,ERROR,LOCAL7,%BGP-3-ADJCHANGE: neighbor 10.0.0.1 Down BGP Notification sent,bgp_route_flap,scenario-2
+SLOG-000019,2026-06-24T05:47:10.544588,hub-delhi,WARN,LOCAL7,%BGP-4-MAXPFX: Maximum prefix limit approaching on 10.0.0.1,bgp_route_flap,scenario-2
+SLOG-000382,2026-06-24T05:49:02,dc-mumbai,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.0.0.2 Up,normal,none
+SLOG-000385,2026-06-24T05:50:32,branch-bengaluru,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000023,2026-06-24T05:53:16.656220,hub-delhi,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.0.0.1 Up,bgp_route_flap,scenario-2
+SLOG-000387,2026-06-24T05:54:32,branch-jaipur,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface GigabitEthernet0/1, changed state to up",normal,none
+SLOG-000383,2026-06-24T05:55:44,branch-pune,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface GigabitEthernet0/2, changed state to up",normal,none
+SLOG-000022,2026-06-24T05:57:18.798695,hub-delhi,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.0.0.1 Up,bgp_route_flap,scenario-2
+SLOG-000020,2026-06-24T05:58:11.355048,hub-delhi,ERROR,LOCAL7,%BGP-3-ADJCHANGE: neighbor 10.0.0.1 Down BGP Notification sent,bgp_route_flap,scenario-2
+SLOG-000394,2026-06-24T06:02:33,branch-bengaluru,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.1.1 Up,normal,none
+SLOG-000389,2026-06-24T06:05:04,branch-chandigarh,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface Tunnel0, changed state to up",normal,none
+SLOG-000393,2026-06-24T06:09:53,branch-kolkata,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.6.1,normal,none
+SLOG-000392,2026-06-24T06:14:31,dc-mumbai,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.0.0.2,normal,none
+SLOG-000391,2026-06-24T06:16:11,branch-bengaluru,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.1.1,normal,none
+SLOG-000396,2026-06-24T06:25:52,branch-bhopal,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.14.1,normal,none
+SLOG-000390,2026-06-24T06:40:08,branch-kolkata,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.6.1 Up,normal,none
+SLOG-000395,2026-06-24T06:45:13,branch-bhubaneswar,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000397,2026-06-24T07:23:46,branch-bhubaneswar,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000399,2026-06-24T07:39:25,dc-mumbai,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000398,2026-06-24T07:49:43,dc-mumbai,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.0.0.2 on TenGigabitEthernet0/0 from LOADING to FULL",normal,none
+SLOG-000406,2026-06-24T08:00:05,branch-pune,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface Loopback0, changed state to up",normal,none
+SLOG-000032,2026-06-24T08:13:46.245044,branch-guwahati,WARN,LOCAL7,%MPLS-4-PATH_SWITCH: Traffic rerouted from primary to backup LSP,mpls_tunnel_degradation,scenario-3
+SLOG-000046,2026-06-24T08:18:44.898170,branch-guwahati,WARN,LOCAL7,"%MPLS-4-TUNNEL_DEGRADE: LDP session 10.1.8.1 degraded, loss 86%",mpls_tunnel_degradation,scenario-3
+SLOG-000401,2026-06-24T08:20:41,branch-chennai,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface Tunnel0, changed state to up",normal,none
+SLOG-000407,2026-06-24T08:21:59,branch-nagpur,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000403,2026-06-24T08:22:05,branch-chennai,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.2.1 on GigabitEthernet0/2 from LOADING to FULL",normal,none
+SLOG-000405,2026-06-24T08:23:15,branch-jaipur,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface Tunnel1, changed state to up",normal,none
+SLOG-000035,2026-06-24T08:26:03.771512,branch-guwahati,ERROR,LOCAL7,%VPN-3-TUNNEL_DOWN: GRE over IPSec tunnel Tunnel2 DOWN,mpls_tunnel_degradation,scenario-3
+SLOG-000031,2026-06-24T08:26:49.347840,branch-guwahati,WARN,LOCAL7,%MPLS-4-PATH_SWITCH: Traffic rerouted from primary to backup LSP,mpls_tunnel_degradation,scenario-3
+SLOG-000045,2026-06-24T08:27:34.986283,branch-guwahati,ERROR,LOCAL7,%IPSEC-3-REKEY_FAIL: IPSec SA rekey failed for tunnel Tunnel1,mpls_tunnel_degradation,scenario-3
+SLOG-000400,2026-06-24T08:33:40,branch-nagpur,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.13.1 Up,normal,none
+SLOG-000040,2026-06-24T08:38:37.971673,branch-guwahati,WARN,LOCAL7,"%MPLS-4-TUNNEL_DEGRADE: LDP session 10.1.8.1 degraded, loss 83%",mpls_tunnel_degradation,scenario-3
+SLOG-000047,2026-06-24T08:46:09.505300,branch-guwahati,ERROR,LOCAL7,%IPSEC-3-REKEY_FAIL: IPSec SA rekey failed for tunnel Tunnel1,mpls_tunnel_degradation,scenario-3
+SLOG-000034,2026-06-24T08:46:21.460804,branch-guwahati,ERROR,LOCAL7,%IPSEC-3-REKEY_FAIL: IPSec SA rekey failed for tunnel Tunnel3,mpls_tunnel_degradation,scenario-3
+SLOG-000043,2026-06-24T08:48:28.648107,branch-guwahati,ERROR,LOCAL7,%VPN-3-TUNNEL_DOWN: GRE over IPSec tunnel Tunnel0 DOWN,mpls_tunnel_degradation,scenario-3
+SLOG-000042,2026-06-24T08:54:29.862850,branch-guwahati,WARN,LOCAL7,%MPLS-4-PATH_SWITCH: Traffic rerouted from primary to backup LSP,mpls_tunnel_degradation,scenario-3
+SLOG-000029,2026-06-24T08:56:12.329848,branch-guwahati,ERROR,LOCAL7,%IPSEC-3-REKEY_FAIL: IPSec SA rekey failed for tunnel Tunnel2,mpls_tunnel_degradation,scenario-3
+SLOG-000404,2026-06-24T08:57:04,hub-delhi,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface Tunnel1, changed state to up",normal,none
+SLOG-000402,2026-06-24T08:58:28,branch-lucknow,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.11.1,normal,none
+SLOG-000041,2026-06-24T09:05:12.058518,branch-guwahati,ERROR,LOCAL7,%VPN-3-TUNNEL_DOWN: GRE over IPSec tunnel Tunnel0 DOWN,mpls_tunnel_degradation,scenario-3
+SLOG-000039,2026-06-24T09:05:14.411972,branch-guwahati,ERROR,LOCAL7,%VPN-3-TUNNEL_DOWN: GRE over IPSec tunnel Tunnel1 DOWN,mpls_tunnel_degradation,scenario-3
+SLOG-000033,2026-06-24T09:08:13.523374,branch-guwahati,WARN,LOCAL7,"%MPLS-4-TUNNEL_DEGRADE: LDP session 10.1.8.1 degraded, loss 84%",mpls_tunnel_degradation,scenario-3
+SLOG-000408,2026-06-24T09:13:02,branch-bengaluru,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.1.1 Up,normal,none
+SLOG-000410,2026-06-24T09:13:06,branch-nagpur,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.13.1,normal,none
+SLOG-000037,2026-06-24T09:30:25.881629,branch-guwahati,ERROR,LOCAL7,%IPSEC-3-REKEY_FAIL: IPSec SA rekey failed for tunnel Tunnel1,mpls_tunnel_degradation,scenario-3
+SLOG-000028,2026-06-24T09:35:38.798471,branch-guwahati,WARN,LOCAL7,"%MPLS-4-TUNNEL_DEGRADE: LDP session 10.1.8.1 degraded, loss 70%",mpls_tunnel_degradation,scenario-3
+SLOG-000044,2026-06-24T09:36:23.837560,branch-guwahati,ERROR,LOCAL7,%VPN-3-TUNNEL_DOWN: GRE over IPSec tunnel Tunnel1 DOWN,mpls_tunnel_degradation,scenario-3
+SLOG-000036,2026-06-24T09:39:08.112448,branch-guwahati,ERROR,LOCAL7,%IPSEC-3-REKEY_FAIL: IPSec SA rekey failed for tunnel Tunnel3,mpls_tunnel_degradation,scenario-3
+SLOG-000038,2026-06-24T09:47:47.599618,branch-guwahati,WARN,LOCAL7,%MPLS-4-PATH_SWITCH: Traffic rerouted from primary to backup LSP,mpls_tunnel_degradation,scenario-3
+SLOG-000048,2026-06-24T09:49:04.464180,branch-guwahati,ERROR,LOCAL7,%VPN-3-TUNNEL_DOWN: GRE over IPSec tunnel Tunnel1 DOWN,mpls_tunnel_degradation,scenario-3
+SLOG-000409,2026-06-24T09:55:21,hub-delhi,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface GigabitEthernet0/0, changed state to up",normal,none
+SLOG-000030,2026-06-24T09:56:19.583843,branch-guwahati,WARN,LOCAL7,"%MPLS-4-TUNNEL_DEGRADE: LDP session 10.1.8.1 degraded, loss 83%",mpls_tunnel_degradation,scenario-3
+SLOG-000411,2026-06-24T09:57:05,dc-mumbai,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.0.0.2 Up,normal,none
+SLOG-000412,2026-06-24T10:20:19,branch-kolkata,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.6.1 Up,normal,none
+SLOG-000413,2026-06-24T10:30:28,branch-ahmedabad,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000414,2026-06-24T10:48:11,branch-pune,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.4.1 Up,normal,none
+SLOG-000417,2026-06-24T10:48:27,branch-ahmedabad,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.5.1,normal,none
+SLOG-000415,2026-06-24T10:55:32,dc-mumbai,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.0.0.2 on Loopback0 from LOADING to FULL",normal,none
+SLOG-000416,2026-06-24T10:56:12,branch-bhubaneswar,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface Tunnel1, changed state to up",normal,none
+SLOG-000418,2026-06-24T10:59:44,branch-hyderabad,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000049,2026-06-24T11:01:11.033793,branch-bhubaneswar,CRIT,LOCAL7,%SLA-2-BREACH: Packet loss 88% exceeds SLA threshold of 1%,packet_loss_spike,scenario-4
+SLOG-000052,2026-06-24T11:02:51.295138,branch-bhubaneswar,CRIT,LOCAL7,%SLA-2-BREACH: Packet loss 71% exceeds SLA threshold of 1%,packet_loss_spike,scenario-4
+SLOG-000054,2026-06-24T11:04:13.009900,branch-bhubaneswar,WARN,LOCAL7,"%BFD-4-ECHO_FAIL: BFD echo failure on 10.1.7.1, loss detected",packet_loss_spike,scenario-4
+SLOG-000420,2026-06-24T11:04:15,branch-pune,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.4.1 Up,normal,none
+SLOG-000058,2026-06-24T11:04:29.397290,branch-bhubaneswar,CRIT,LOCAL7,%SLA-2-BREACH: Packet loss 88% exceeds SLA threshold of 1%,packet_loss_spike,scenario-4
+SLOG-000423,2026-06-24T11:04:55,branch-chandigarh,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000061,2026-06-24T11:05:00.383707,branch-bhubaneswar,WARN,LOCAL7,"%BFD-4-ECHO_FAIL: BFD echo failure on 10.1.7.1, loss detected",packet_loss_spike,scenario-4
+SLOG-000065,2026-06-24T11:08:15.679182,branch-bhubaneswar,WARN,LOCAL7,"%BFD-4-ECHO_FAIL: BFD echo failure on 10.1.7.1, loss detected",packet_loss_spike,scenario-4
+SLOG-000063,2026-06-24T11:15:40.597691,branch-bhubaneswar,WARN,LOCAL7,"%BFD-4-ECHO_FAIL: BFD echo failure on 10.1.7.1, loss detected",packet_loss_spike,scenario-4
+SLOG-000051,2026-06-24T11:16:25.764553,branch-bhubaneswar,ERROR,LOCAL7,%INTERFACE-3-EXCESSIVE_LOSS: Packet loss 81% on Tunnel0,packet_loss_spike,scenario-4
+SLOG-000067,2026-06-24T11:18:36.432076,branch-bhubaneswar,WARN,LOCAL7,"%BFD-4-ECHO_FAIL: BFD echo failure on 10.1.7.1, loss detected",packet_loss_spike,scenario-4
+SLOG-000055,2026-06-24T11:19:07.821920,branch-bhubaneswar,ERROR,LOCAL7,%INTERFACE-3-EXCESSIVE_LOSS: Packet loss 88% on GigabitEthernet0/0,packet_loss_spike,scenario-4
+SLOG-000053,2026-06-24T11:19:10.496880,branch-bhubaneswar,ERROR,LOCAL7,%INTERFACE-3-EXCESSIVE_LOSS: Packet loss 76% on TenGigabitEthernet0/0,packet_loss_spike,scenario-4
+SLOG-000424,2026-06-24T11:20:24,branch-lucknow,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.11.1 Up,normal,none
+SLOG-000057,2026-06-24T11:24:46.522903,branch-bhubaneswar,CRIT,LOCAL7,%SLA-2-BREACH: Packet loss 80% exceeds SLA threshold of 1%,packet_loss_spike,scenario-4
+SLOG-000422,2026-06-24T11:29:27,branch-bengaluru,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface TenGigabitEthernet0/0, changed state to up",normal,none
+SLOG-000050,2026-06-24T11:29:36.790386,branch-bhubaneswar,CRIT,LOCAL7,%SLA-2-BREACH: Packet loss 78% exceeds SLA threshold of 1%,packet_loss_spike,scenario-4
+SLOG-000068,2026-06-24T11:30:55.803210,branch-bhubaneswar,WARN,LOCAL7,"%BFD-4-ECHO_FAIL: BFD echo failure on 10.1.7.1, loss detected",packet_loss_spike,scenario-4
+SLOG-000060,2026-06-24T11:32:56.495596,branch-bhubaneswar,WARN,LOCAL7,"%BFD-4-ECHO_FAIL: BFD echo failure on 10.1.7.1, loss detected",packet_loss_spike,scenario-4
+SLOG-000064,2026-06-24T11:33:12.093621,branch-bhubaneswar,WARN,LOCAL7,"%BFD-4-ECHO_FAIL: BFD echo failure on 10.1.7.1, loss detected",packet_loss_spike,scenario-4
+SLOG-000056,2026-06-24T11:34:03.083662,branch-bhubaneswar,CRIT,LOCAL7,%SLA-2-BREACH: Packet loss 87% exceeds SLA threshold of 1%,packet_loss_spike,scenario-4
+SLOG-000066,2026-06-24T11:35:04.999449,branch-bhubaneswar,ERROR,LOCAL7,%INTERFACE-3-EXCESSIVE_LOSS: Packet loss 80% on GigabitEthernet0/0,packet_loss_spike,scenario-4
+SLOG-000059,2026-06-24T11:37:21.602866,branch-bhubaneswar,WARN,LOCAL7,"%BFD-4-ECHO_FAIL: BFD echo failure on 10.1.7.1, loss detected",packet_loss_spike,scenario-4
+SLOG-000421,2026-06-24T11:40:11,branch-bengaluru,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.1.1 on TenGigabitEthernet0/0 from LOADING to FULL",normal,none
+SLOG-000069,2026-06-24T11:40:46.031182,branch-bhubaneswar,ERROR,LOCAL7,%INTERFACE-3-EXCESSIVE_LOSS: Packet loss 91% on Tunnel0,packet_loss_spike,scenario-4
+SLOG-000062,2026-06-24T11:41:44.528878,branch-bhubaneswar,CRIT,LOCAL7,%SLA-2-BREACH: Packet loss 73% exceeds SLA threshold of 1%,packet_loss_spike,scenario-4
+SLOG-000419,2026-06-24T11:58:13,branch-bengaluru,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.1.1,normal,none
+SLOG-000425,2026-06-24T12:14:52,branch-kolkata,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.6.1 on Tunnel1 from LOADING to FULL",normal,none
+SLOG-000426,2026-06-24T12:25:05,branch-nagpur,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000428,2026-06-24T12:31:55,branch-chennai,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.2.1 Up,normal,none
+SLOG-000427,2026-06-24T12:58:39,branch-ahmedabad,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.5.1 Up,normal,none
+SLOG-000433,2026-06-24T13:07:59,dc-mumbai,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.0.0.2 Up,normal,none
+SLOG-000432,2026-06-24T13:08:16,branch-lucknow,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.11.1,normal,none
+SLOG-000434,2026-06-24T13:17:49,branch-lucknow,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface TenGigabitEthernet0/0, changed state to up",normal,none
+SLOG-000431,2026-06-24T13:36:29,branch-pune,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface GigabitEthernet0/0, changed state to up",normal,none
+SLOG-000435,2026-06-24T13:44:01,branch-ahmedabad,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000429,2026-06-24T13:56:42,branch-guwahati,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.8.1 on GigabitEthernet0/2 from LOADING to FULL",normal,none
+SLOG-000430,2026-06-24T13:58:57,branch-pune,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.4.1,normal,none
+SLOG-000442,2026-06-24T14:01:38,branch-ahmedabad,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000441,2026-06-24T14:31:57,dc-mumbai,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.0.0.2 on Loopback0 from LOADING to FULL",normal,none
+SLOG-000436,2026-06-24T14:31:58,branch-guwahati,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.8.1 on Tunnel1 from LOADING to FULL",normal,none
+SLOG-000437,2026-06-24T14:32:18,branch-bengaluru,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.1.1,normal,none
+SLOG-000438,2026-06-24T14:33:13,branch-pune,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.4.1 Up,normal,none
+SLOG-000439,2026-06-24T14:33:37,branch-lucknow,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.11.1,normal,none
+SLOG-000440,2026-06-24T14:39:26,branch-jaipur,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000081,2026-06-24T14:50:34.894035,branch-bhubaneswar,WARN,LOCAL7,%INTERFACE-4-UTIL_HIGH: Interface TenGigabitEthernet0/0 utilization 81%,link_congestion,scenario-5
+SLOG-000080,2026-06-24T14:51:19.654253,branch-kolkata,WARN,LOCAL7,"%QUEUE-4-TAIL_DROP: Tail drop enabled on Tunnel1, queue 90%",link_congestion,scenario-5
+SLOG-000085,2026-06-24T14:59:09.443452,branch-kolkata,WARN,LOCAL7,%INTERFACE-4-UTIL_HIGH: Interface TenGigabitEthernet0/0 utilization 77%,link_congestion,scenario-5
+SLOG-000446,2026-06-24T15:00:08,branch-chennai,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.2.1 Up,normal,none
+SLOG-000078,2026-06-24T15:03:31.528367,branch-kolkata,WARN,LOCAL7,%INTERFACE-4-UTIL_HIGH: Interface GigabitEthernet0/0 utilization 91%,link_congestion,scenario-5
+SLOG-000447,2026-06-24T15:03:38,branch-lucknow,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface Tunnel1, changed state to up",normal,none
+SLOG-000075,2026-06-24T15:22:45.117389,branch-kolkata,WARN,LOCAL7,%INTERFACE-4-UTIL_HIGH: Interface GigabitEthernet0/1 utilization 87%,link_congestion,scenario-5
+SLOG-000073,2026-06-24T15:27:36.634106,branch-bhubaneswar,WARN,LOCAL7,%INTERFACE-4-UTIL_HIGH: Interface TenGigabitEthernet0/0 utilization 81%,link_congestion,scenario-5
+SLOG-000448,2026-06-24T15:32:29,hub-delhi,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.0.0.1 Up,normal,none
+SLOG-000443,2026-06-24T15:43:17,branch-pune,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.4.1 on GigabitEthernet0/0 from LOADING to FULL",normal,none
+SLOG-000077,2026-06-24T15:44:02.314689,branch-bhubaneswar,WARN,LOCAL7,%INTERFACE-4-UTIL_HIGH: Interface TenGigabitEthernet0/0 utilization 80%,link_congestion,scenario-5
+SLOG-000445,2026-06-24T15:44:03,branch-bhubaneswar,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000444,2026-06-24T15:49:49,branch-lucknow,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.11.1 on GigabitEthernet0/0 from LOADING to FULL",normal,none
+SLOG-000071,2026-06-24T15:52:53.017025,branch-bhubaneswar,WARN,LOCAL7,%INTERFACE-4-UTIL_HIGH: Interface Tunnel0 utilization 99%,link_congestion,scenario-5
+SLOG-000070,2026-06-24T15:57:26.866499,branch-kolkata,WARN,LOCAL7,"%QUEUE-4-TAIL_DROP: Tail drop enabled on GigabitEthernet0/0, queue 73%",link_congestion,scenario-5
+SLOG-000449,2026-06-24T16:00:21,branch-bhubaneswar,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.7.1,normal,none
+SLOG-000451,2026-06-24T16:02:22,branch-kolkata,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.6.1 Up,normal,none
+SLOG-000450,2026-06-24T16:10:20,branch-kochi,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.12.1 Up,normal,none
+SLOG-000074,2026-06-24T16:14:56.544786,branch-kolkata,WARN,LOCAL7,"%QUEUE-4-TAIL_DROP: Tail drop enabled on Tunnel1, queue 92%",link_congestion,scenario-5
+SLOG-000453,2026-06-24T16:22:41,branch-chandigarh,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.9.1 Up,normal,none
+SLOG-000086,2026-06-24T16:23:27.449037,branch-kolkata,WARN,LOCAL7,"%QUEUE-4-TAIL_DROP: Tail drop enabled on GigabitEthernet0/0, queue 79%",link_congestion,scenario-5
+SLOG-000454,2026-06-24T16:23:59,branch-guwahati,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.8.1 on TenGigabitEthernet0/0 from LOADING to FULL",normal,none
+SLOG-000084,2026-06-24T16:25:00.844235,branch-kolkata,WARN,LOCAL7,%INTERFACE-4-UTIL_HIGH: Interface Tunnel1 utilization 85%,link_congestion,scenario-5
+SLOG-000452,2026-06-24T16:25:38,branch-kolkata,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000082,2026-06-24T16:33:54.793547,branch-kolkata,WARN,LOCAL7,%INTERFACE-4-UTIL_HIGH: Interface TenGigabitEthernet0/0 utilization 72%,link_congestion,scenario-5
+SLOG-000455,2026-06-24T17:01:50,branch-guwahati,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000457,2026-06-24T17:02:31,branch-bhopal,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.14.1 on Tunnel0 from LOADING to FULL",normal,none
+SLOG-000076,2026-06-24T17:04:12.550630,branch-bhubaneswar,WARN,LOCAL7,%INTERFACE-4-UTIL_HIGH: Interface Tunnel0 utilization 88%,link_congestion,scenario-5
+SLOG-000083,2026-06-24T17:06:32.793517,branch-kolkata,WARN,LOCAL7,%INTERFACE-4-UTIL_HIGH: Interface Loopback0 utilization 94%,link_congestion,scenario-5
+SLOG-000079,2026-06-24T17:16:15.003076,branch-kolkata,WARN,LOCAL7,%INTERFACE-4-UTIL_HIGH: Interface Tunnel1 utilization 86%,link_congestion,scenario-5
+SLOG-000456,2026-06-24T17:17:24,branch-ahmedabad,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000072,2026-06-24T17:29:00.875893,branch-bhubaneswar,WARN,LOCAL7,"%QUEUE-4-TAIL_DROP: Tail drop enabled on GigabitEthernet0/0, queue 82%",link_congestion,scenario-5
+SLOG-000458,2026-06-24T17:29:32,branch-lucknow,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.11.1 on GigabitEthernet0/0 from LOADING to FULL",normal,none
+SLOG-000089,2026-06-24T18:04:46.223492,hub-delhi,CRIT,LOCAL7,"%OSPF-2-ADJ_CHG: Process 1, Nbr 10.0.0.1 on GigabitEthernet0/0 from FULL to DOWN",ospf_adjacency_lost,scenario-6
+SLOG-000087,2026-06-24T18:07:05.926451,hub-delhi,WARN,LOCAL7,%OSPF-4-HELLO_FAIL: Hello packets not received from 10.0.0.1,ospf_adjacency_lost,scenario-6
+SLOG-000088,2026-06-24T18:07:26.156782,hub-delhi,CRIT,LOCAL7,"%OSPF-2-ADJ_CHG: Process 1, Nbr 10.0.0.1 on Tunnel1 from FULL to DOWN",ospf_adjacency_lost,scenario-6
+SLOG-000090,2026-06-24T18:09:26.155612,hub-delhi,CRIT,LOCAL7,"%OSPF-2-ADJ_CHG: Process 1, Nbr 10.0.0.1 on GigabitEthernet0/0 from FULL to DOWN",ospf_adjacency_lost,scenario-6
+SLOG-000460,2026-06-24T18:13:10,branch-nagpur,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.13.1,normal,none
+SLOG-000093,2026-06-24T18:14:49.408358,hub-delhi,WARN,LOCAL7,%OSPF-4-HELLO_FAIL: Hello packets not received from 10.0.0.1,ospf_adjacency_lost,scenario-6
+SLOG-000097,2026-06-24T18:18:42.874802,hub-delhi,CRIT,LOCAL7,"%OSPF-2-ADJ_CHG: Process 1, Nbr 10.0.0.1 on GigabitEthernet0/2 from FULL to DOWN",ospf_adjacency_lost,scenario-6
+SLOG-000461,2026-06-24T18:19:38,branch-ahmedabad,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.5.1,normal,none
+SLOG-000092,2026-06-24T18:20:16.065966,hub-delhi,WARN,LOCAL7,%OSPF-4-HELLO_FAIL: Hello packets not received from 10.0.0.1,ospf_adjacency_lost,scenario-6
+SLOG-000459,2026-06-24T18:22:29,hub-delhi,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.0.0.1 on Tunnel1 from LOADING to FULL",normal,none
+SLOG-000091,2026-06-24T18:23:46.609747,hub-delhi,ERROR,LOCAL7,"%OSPF-3-DEAD_INTERVAL: Neighbor 10.0.0.1 dead, interface TenGigabitEthernet0/0",ospf_adjacency_lost,scenario-6
+SLOG-000095,2026-06-24T18:24:47.820823,hub-delhi,CRIT,LOCAL7,"%OSPF-2-ADJ_CHG: Process 1, Nbr 10.0.0.1 on Tunnel1 from FULL to DOWN",ospf_adjacency_lost,scenario-6
+SLOG-000096,2026-06-24T18:27:07.634638,hub-delhi,ERROR,LOCAL7,"%OSPF-3-DEAD_INTERVAL: Neighbor 10.0.0.1 dead, interface Tunnel0",ospf_adjacency_lost,scenario-6
+SLOG-000094,2026-06-24T18:28:12.765732,hub-delhi,CRIT,LOCAL7,"%OSPF-2-ADJ_CHG: Process 1, Nbr 10.0.0.1 on Tunnel1 from FULL to DOWN",ospf_adjacency_lost,scenario-6
+SLOG-000462,2026-06-24T18:38:28,branch-chandigarh,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000465,2026-06-24T19:01:09,branch-kolkata,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.6.1 Up,normal,none
+SLOG-000468,2026-06-24T19:18:00,hub-delhi,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000467,2026-06-24T19:31:18,branch-guwahati,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface GigabitEthernet0/2, changed state to up",normal,none
+SLOG-000463,2026-06-24T19:37:05,branch-kolkata,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.6.1,normal,none
+SLOG-000464,2026-06-24T19:39:24,branch-bhopal,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.14.1,normal,none
+SLOG-000466,2026-06-24T19:42:30,branch-kochi,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.12.1 Up,normal,none
+SLOG-000473,2026-06-24T20:28:56,branch-guwahati,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.8.1 on TenGigabitEthernet0/0 from LOADING to FULL",normal,none
+SLOG-000474,2026-06-24T20:36:05,branch-bhubaneswar,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.7.1,normal,none
+SLOG-000470,2026-06-24T20:36:27,branch-chennai,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000469,2026-06-24T20:37:38,branch-nagpur,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.13.1 Up,normal,none
+SLOG-000472,2026-06-24T20:45:19,branch-pune,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000471,2026-06-24T20:47:43,branch-nagpur,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.13.1,normal,none
+SLOG-000111,2026-06-24T21:01:24.765149,branch-jaipur,WARN,LOCAL7,%BGP-4-MAXPFX: Maximum prefix limit approaching on 10.1.10.1,bgp_route_flap,scenario-7
+SLOG-000104,2026-06-24T21:03:22.693555,branch-jaipur,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.10.1 Up,bgp_route_flap,scenario-7
+SLOG-000103,2026-06-24T21:07:56.007508,branch-jaipur,WARN,LOCAL7,%BGP-4-MAXPFX: Maximum prefix limit approaching on 10.1.10.1,bgp_route_flap,scenario-7
+SLOG-000108,2026-06-24T21:17:23.037039,branch-jaipur,WARN,LOCAL7,%BGP-4-MAXPFX: Maximum prefix limit approaching on 10.1.10.1,bgp_route_flap,scenario-7
+SLOG-000114,2026-06-24T21:21:55.263922,branch-jaipur,ERROR,LOCAL7,%BGP-3-ADJCHANGE: neighbor 10.1.10.1 Down BGP Notification sent,bgp_route_flap,scenario-7
+SLOG-000475,2026-06-24T21:22:23,branch-chandigarh,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.9.1 on Tunnel1 from LOADING to FULL",normal,none
+SLOG-000107,2026-06-24T21:23:23.559861,branch-jaipur,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.10.1 Up,bgp_route_flap,scenario-7
+SLOG-000101,2026-06-24T21:32:16.940926,branch-jaipur,ERROR,LOCAL7,%BGP-3-ADJCHANGE: neighbor 10.1.10.1 Down BGP Notification sent,bgp_route_flap,scenario-7
+SLOG-000477,2026-06-24T21:33:28,branch-bhopal,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000112,2026-06-24T21:39:50.330360,branch-jaipur,WARN,LOCAL7,"%BGP-4-DAMP: Route 10.10.8.0/30 dampened, penalty 1566",bgp_route_flap,scenario-7
+SLOG-000109,2026-06-24T21:41:14.998808,branch-jaipur,ERROR,LOCAL7,%BGP-3-ADJCHANGE: neighbor 10.1.10.1 Down BGP Notification sent,bgp_route_flap,scenario-7
+SLOG-000105,2026-06-24T21:44:37.233352,branch-jaipur,ERROR,LOCAL7,%BGP-3-ADJCHANGE: neighbor 10.1.10.1 Down BGP Notification sent,bgp_route_flap,scenario-7
+SLOG-000113,2026-06-24T21:46:43.676021,branch-jaipur,WARN,LOCAL7,%BGP-4-MAXPFX: Maximum prefix limit approaching on 10.1.10.1,bgp_route_flap,scenario-7
+SLOG-000102,2026-06-24T21:47:27.036867,branch-jaipur,ERROR,LOCAL7,%BGP-3-ADJCHANGE: neighbor 10.1.10.1 Down BGP Notification sent,bgp_route_flap,scenario-7
+SLOG-000116,2026-06-24T21:48:37.999637,branch-jaipur,ERROR,LOCAL7,"%BGP-3-NOTIFICATION: BGP neighbor 10.1.10.1 Down, hold timer expired",bgp_route_flap,scenario-7
+SLOG-000098,2026-06-24T21:49:48.739760,branch-jaipur,WARN,LOCAL7,"%BGP-4-DAMP: Route 10.0.6.0/30 dampened, penalty 1699",bgp_route_flap,scenario-7
+SLOG-000100,2026-06-24T21:50:56.477892,branch-jaipur,WARN,LOCAL7,%BGP-4-MAXPFX: Maximum prefix limit approaching on 10.1.10.1,bgp_route_flap,scenario-7
+SLOG-000115,2026-06-24T21:51:26.059307,branch-jaipur,ERROR,LOCAL7,%BGP-3-ADJCHANGE: neighbor 10.1.10.1 Down BGP Notification sent,bgp_route_flap,scenario-7
+SLOG-000478,2026-06-24T21:52:46,branch-kochi,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.12.1,normal,none
+SLOG-000106,2026-06-24T21:54:56.514247,branch-jaipur,ERROR,LOCAL7,"%BGP-3-NOTIFICATION: BGP neighbor 10.1.10.1 Down, hold timer expired",bgp_route_flap,scenario-7
+SLOG-000476,2026-06-24T21:55:34,branch-bhopal,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.14.1 on Loopback0 from LOADING to FULL",normal,none
+SLOG-000099,2026-06-24T21:55:48.125879,branch-jaipur,WARN,LOCAL7,%BGP-4-MAXPFX: Maximum prefix limit approaching on 10.1.10.1,bgp_route_flap,scenario-7
+SLOG-000110,2026-06-24T21:58:54.761260,branch-jaipur,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.10.1 Up,bgp_route_flap,scenario-7
+SLOG-000483,2026-06-24T22:02:34,branch-guwahati,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.8.1 on GigabitEthernet0/2 from LOADING to FULL",normal,none
+SLOG-000480,2026-06-24T22:38:41,branch-nagpur,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.13.1 Up,normal,none
+SLOG-000481,2026-06-24T22:40:36,branch-hyderabad,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000479,2026-06-24T22:44:22,branch-chandigarh,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.9.1,normal,none
+SLOG-000482,2026-06-24T22:50:24,branch-bhubaneswar,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000484,2026-06-24T23:12:00,branch-chandigarh,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000486,2026-06-24T23:29:52,branch-kolkata,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.6.1 on Tunnel1 from LOADING to FULL",normal,none
+SLOG-000485,2026-06-24T23:38:01,branch-lucknow,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000487,2026-06-24T23:55:33,branch-ahmedabad,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.5.1,normal,none
+SLOG-000491,2026-06-25T00:02:25,branch-bhopal,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000492,2026-06-25T00:05:10,branch-chandigarh,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.9.1,normal,none
+SLOG-000488,2026-06-25T00:15:20,branch-chandigarh,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.9.1 Up,normal,none
+SLOG-000490,2026-06-25T00:28:56,branch-ahmedabad,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000117,2026-06-25T00:35:08.664638,branch-lucknow,ERROR,LOCAL7,"%QOS-4-POLICY_BREACH: VoIP traffic dropped on TenGigabitEthernet0/0, queue utilization 83%",congestion_buildup,scenario-8
+SLOG-000135,2026-06-25T00:36:18.847165,branch-lucknow,ERROR,LOCAL7,"%QOS-4-POLICY_BREACH: VoIP traffic dropped on GigabitEthernet0/1, queue utilization 97%",congestion_buildup,scenario-8
+SLOG-000136,2026-06-25T00:38:14.803967,branch-lucknow,ERROR,LOCAL7,"%QOS-4-POLICY_BREACH: VoIP traffic dropped on GigabitEthernet0/0, queue utilization 93%",congestion_buildup,scenario-8
+SLOG-000140,2026-06-25T00:45:07.649036,branch-lucknow,WARN,LOCAL7,%MPLS-4-LDP_CONGESTION: LDP label space pressure on GigabitEthernet0/0,congestion_buildup,scenario-8
+SLOG-000119,2026-06-25T00:45:31.757302,branch-lucknow,ERROR,LOCAL7,"%QOS-4-POLICY_BREACH: VoIP traffic dropped on Tunnel0, queue utilization 71%",congestion_buildup,scenario-8
+SLOG-000489,2026-06-25T00:50:07,branch-bengaluru,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.1.1,normal,none
+SLOG-000139,2026-06-25T00:58:45.022048,branch-lucknow,ERROR,LOCAL7,"%QOS-4-POLICY_BREACH: VoIP traffic dropped on TenGigabitEthernet0/0, queue utilization 99%",congestion_buildup,scenario-8
+SLOG-000123,2026-06-25T01:07:33.986954,branch-lucknow,WARN,LOCAL7,%INTERFACE-3-QUEUE_LIMIT: Interface GigabitEthernet0/1 output queue depth 85% of max,congestion_buildup,scenario-8
+SLOG-000122,2026-06-25T01:08:36.212606,branch-lucknow,WARN,LOCAL7,"%IP-4-RTCHANGE: Route table instability detected, 76 routes flapping",congestion_buildup,scenario-8
+SLOG-000126,2026-06-25T01:10:39.822704,branch-lucknow,WARN,LOCAL7,%MPLS-4-LDP_CONGESTION: LDP label space pressure on Tunnel1,congestion_buildup,scenario-8
+SLOG-000132,2026-06-25T01:14:31.209456,branch-lucknow,WARN,LOCAL7,%INTERFACE-3-QUEUE_LIMIT: Interface Tunnel1 output queue depth 81% of max,congestion_buildup,scenario-8
+SLOG-000494,2026-06-25T01:17:36,branch-bhubaneswar,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.7.1,normal,none
+SLOG-000493,2026-06-25T01:18:17,branch-jaipur,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface GigabitEthernet0/0, changed state to up",normal,none
+SLOG-000131,2026-06-25T01:19:26.214411,branch-lucknow,WARN,LOCAL7,"%IP-4-RTCHANGE: Route table instability detected, 467 routes flapping",congestion_buildup,scenario-8
+SLOG-000138,2026-06-25T01:21:23.017429,branch-lucknow,ERROR,LOCAL7,"%QOS-4-POLICY_BREACH: VoIP traffic dropped on TenGigabitEthernet0/0, queue utilization 75%",congestion_buildup,scenario-8
+SLOG-000124,2026-06-25T01:28:50.964480,branch-lucknow,WARN,LOCAL7,"%IP-4-RTCHANGE: Route table instability detected, 41 routes flapping",congestion_buildup,scenario-8
+SLOG-000495,2026-06-25T01:37:14,branch-lucknow,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.11.1 on GigabitEthernet0/2 from LOADING to FULL",normal,none
+SLOG-000128,2026-06-25T01:40:14.274394,branch-lucknow,WARN,LOCAL7,%MPLS-4-LDP_CONGESTION: LDP label space pressure on Loopback0,congestion_buildup,scenario-8
+SLOG-000134,2026-06-25T01:42:55.064339,branch-lucknow,WARN,LOCAL7,%INTERFACE-3-QUEUE_LIMIT: Interface Loopback0 output queue depth 98% of max,congestion_buildup,scenario-8
+SLOG-000118,2026-06-25T01:44:41.239316,branch-lucknow,WARN,LOCAL7,%INTERFACE-3-QUEUE_LIMIT: Interface TenGigabitEthernet0/0 output queue depth 89% of max,congestion_buildup,scenario-8
+SLOG-000129,2026-06-25T01:48:42.610291,branch-lucknow,WARN,LOCAL7,"%IP-4-RTCHANGE: Route table instability detected, 448 routes flapping",congestion_buildup,scenario-8
+SLOG-000496,2026-06-25T01:57:55,branch-nagpur,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.13.1 on Loopback0 from LOADING to FULL",normal,none
+SLOG-000130,2026-06-25T02:05:10.804019,branch-lucknow,ERROR,LOCAL7,"%QOS-4-POLICY_BREACH: VoIP traffic dropped on GigabitEthernet0/1, queue utilization 89%",congestion_buildup,scenario-8
+SLOG-000133,2026-06-25T02:05:14.118094,branch-lucknow,WARN,LOCAL7,"%IP-4-RTCHANGE: Route table instability detected, 458 routes flapping",congestion_buildup,scenario-8
+SLOG-000137,2026-06-25T02:13:59.079380,branch-lucknow,WARN,LOCAL7,%MPLS-4-LDP_CONGESTION: LDP label space pressure on Tunnel0,congestion_buildup,scenario-8
+SLOG-000503,2026-06-25T02:15:48,branch-ahmedabad,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.5.1,normal,none
+SLOG-000121,2026-06-25T02:16:12.963017,branch-lucknow,WARN,LOCAL7,"%IP-4-RTCHANGE: Route table instability detected, 294 routes flapping",congestion_buildup,scenario-8
+SLOG-000127,2026-06-25T02:17:28.699742,branch-lucknow,ERROR,LOCAL7,"%QOS-4-POLICY_BREACH: VoIP traffic dropped on GigabitEthernet0/0, queue utilization 70%",congestion_buildup,scenario-8
+SLOG-000120,2026-06-25T02:22:02.767953,branch-lucknow,WARN,LOCAL7,%MPLS-4-LDP_CONGESTION: LDP label space pressure on GigabitEthernet0/1,congestion_buildup,scenario-8
+SLOG-000499,2026-06-25T02:24:48,branch-hyderabad,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface Tunnel0, changed state to up",normal,none
+SLOG-000125,2026-06-25T02:27:04.705084,branch-lucknow,WARN,LOCAL7,%INTERFACE-3-QUEUE_LIMIT: Interface Tunnel0 output queue depth 74% of max,congestion_buildup,scenario-8
+SLOG-000502,2026-06-25T02:27:53,branch-pune,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000500,2026-06-25T02:37:20,branch-bengaluru,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.1.1 Up,normal,none
+SLOG-000497,2026-06-25T02:51:29,branch-bengaluru,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.1.1 on GigabitEthernet0/2 from LOADING to FULL",normal,none
+SLOG-000498,2026-06-25T02:51:30,branch-nagpur,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface GigabitEthernet0/1, changed state to up",normal,none
+SLOG-000501,2026-06-25T02:51:57,branch-chennai,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.2.1 Up,normal,none
+SLOG-000148,2026-06-25T03:03:23.005047,dc-mumbai,WARN,LOCAL7,%IF-4-INPUT_ERROR: 417 input errors on Tunnel1,interface_error_spike,scenario-9
+SLOG-000143,2026-06-25T03:06:35.194422,dc-mumbai,ERROR,LOCAL7,%LINEPROTO-3-UPDOWN: Interface Tunnel0 changed state to down,interface_error_spike,scenario-9
+SLOG-000151,2026-06-25T03:06:38.488012,dc-mumbai,WARN,LOCAL7,%IF-4-CRC_ERROR: CRC errors on GigabitEthernet0/0: 182 in last 5 minutes,interface_error_spike,scenario-9
+SLOG-000146,2026-06-25T03:09:04.554182,dc-mumbai,WARN,LOCAL7,%IF-4-INPUT_ERROR: 500 input errors on Loopback0,interface_error_spike,scenario-9
+SLOG-000163,2026-06-25T03:09:19.176778,dc-mumbai,WARN,LOCAL7,%IF-4-INPUT_ERROR: 42 input errors on GigabitEthernet0/2,interface_error_spike,scenario-9
+SLOG-000157,2026-06-25T03:10:22.691701,dc-mumbai,WARN,LOCAL7,%IF-4-INPUT_ERROR: 459 input errors on GigabitEthernet0/2,interface_error_spike,scenario-9
+SLOG-000160,2026-06-25T03:11:39.329465,dc-mumbai,WARN,LOCAL7,%IF-4-INPUT_ERROR: 493 input errors on GigabitEthernet0/0,interface_error_spike,scenario-9
+SLOG-000155,2026-06-25T03:13:44.193396,dc-mumbai,WARN,LOCAL7,%IF-4-INPUT_ERROR: 11 input errors on GigabitEthernet0/1,interface_error_spike,scenario-9
+SLOG-000149,2026-06-25T03:15:02.321376,dc-mumbai,ERROR,LOCAL7,%LINEPROTO-3-UPDOWN: Interface GigabitEthernet0/2 changed state to down,interface_error_spike,scenario-9
+SLOG-000144,2026-06-25T03:15:47.600521,dc-mumbai,WARN,LOCAL7,%IF-4-INPUT_ERROR: 125 input errors on GigabitEthernet0/1,interface_error_spike,scenario-9
+SLOG-000142,2026-06-25T03:17:41.418559,dc-mumbai,WARN,LOCAL7,%IF-4-CRC_ERROR: CRC errors on Tunnel1: 259 in last 5 minutes,interface_error_spike,scenario-9
+SLOG-000505,2026-06-25T03:19:01,branch-nagpur,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.13.1,normal,none
+SLOG-000150,2026-06-25T03:22:33.932518,dc-mumbai,WARN,LOCAL7,%IF-4-INPUT_ERROR: 174 input errors on Tunnel0,interface_error_spike,scenario-9
+SLOG-000159,2026-06-25T03:23:10.810880,dc-mumbai,WARN,LOCAL7,%IF-4-CRC_ERROR: CRC errors on Tunnel1: 400 in last 5 minutes,interface_error_spike,scenario-9
+SLOG-000145,2026-06-25T03:25:40.033008,dc-mumbai,WARN,LOCAL7,%IF-4-INPUT_ERROR: 61 input errors on TenGigabitEthernet0/0,interface_error_spike,scenario-9
+SLOG-000147,2026-06-25T03:25:40.837994,dc-mumbai,WARN,LOCAL7,%IF-4-CRC_ERROR: CRC errors on GigabitEthernet0/2: 172 in last 5 minutes,interface_error_spike,scenario-9
+SLOG-000158,2026-06-25T03:26:03.032125,dc-mumbai,WARN,LOCAL7,%IF-4-CRC_ERROR: CRC errors on TenGigabitEthernet0/0: 443 in last 5 minutes,interface_error_spike,scenario-9
+SLOG-000153,2026-06-25T03:29:50.479595,dc-mumbai,ERROR,LOCAL7,%LINEPROTO-3-UPDOWN: Interface TenGigabitEthernet0/0 changed state to down,interface_error_spike,scenario-9
+SLOG-000164,2026-06-25T03:29:59.713465,dc-mumbai,WARN,LOCAL7,%IF-4-INPUT_ERROR: 163 input errors on Loopback0,interface_error_spike,scenario-9
+SLOG-000162,2026-06-25T03:31:55.980895,dc-mumbai,WARN,LOCAL7,%IF-4-INPUT_ERROR: 64 input errors on Tunnel0,interface_error_spike,scenario-9
+SLOG-000161,2026-06-25T03:33:18.057879,dc-mumbai,WARN,LOCAL7,%IF-4-INPUT_ERROR: 482 input errors on GigabitEthernet0/2,interface_error_spike,scenario-9
+SLOG-000152,2026-06-25T03:33:46.072104,dc-mumbai,WARN,LOCAL7,%IF-4-INPUT_ERROR: 180 input errors on GigabitEthernet0/2,interface_error_spike,scenario-9
+SLOG-000141,2026-06-25T03:34:57.236448,dc-mumbai,WARN,LOCAL7,%IF-4-INPUT_ERROR: 239 input errors on GigabitEthernet0/1,interface_error_spike,scenario-9
+SLOG-000156,2026-06-25T03:36:47.056256,dc-mumbai,WARN,LOCAL7,%IF-4-INPUT_ERROR: 329 input errors on GigabitEthernet0/1,interface_error_spike,scenario-9
+SLOG-000154,2026-06-25T03:38:19.337776,dc-mumbai,WARN,LOCAL7,%IF-4-CRC_ERROR: CRC errors on Tunnel1: 101 in last 5 minutes,interface_error_spike,scenario-9
+SLOG-000504,2026-06-25T03:47:29,branch-guwahati,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.8.1 on TenGigabitEthernet0/0 from LOADING to FULL",normal,none
+SLOG-000506,2026-06-25T04:04:38,branch-bhopal,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.14.1 on Loopback0 from LOADING to FULL",normal,none
+SLOG-000507,2026-06-25T04:30:30,branch-kolkata,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000511,2026-06-25T05:06:30,branch-guwahati,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.8.1 on GigabitEthernet0/0 from LOADING to FULL",normal,none
+SLOG-000508,2026-06-25T05:47:45,branch-chandigarh,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.9.1 on GigabitEthernet0/1 from LOADING to FULL",normal,none
+SLOG-000509,2026-06-25T05:53:32,branch-bhopal,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.14.1 on Loopback0 from LOADING to FULL",normal,none
+SLOG-000510,2026-06-25T05:57:19,branch-lucknow,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.11.1 Up,normal,none
+SLOG-000168,2026-06-25T06:01:52.949483,branch-nagpur,WARN,LOCAL7,"%IPSEC-4-SA_EXPIRED: IKE SA expired, renegotiating",tunnel_rekey_anomaly,scenario-10
+SLOG-000178,2026-06-25T06:03:22.931807,branch-nagpur,WARN,LOCAL7,%IPSEC-4-REKEY_DELAY: IPSec rekey taking 91s on tunnel Tunnel2,tunnel_rekey_anomaly,scenario-10
+SLOG-000184,2026-06-25T06:13:37.505986,branch-nagpur,WARN,LOCAL7,%IPSEC-4-REKEY_DELAY: IPSec rekey taking 310s on tunnel Tunnel1,tunnel_rekey_anomaly,scenario-10
+SLOG-000165,2026-06-25T06:14:53.349726,branch-nagpur,WARN,LOCAL7,"%IPSEC-4-SA_EXPIRED: IKE SA expired, renegotiating",tunnel_rekey_anomaly,scenario-10
+SLOG-000514,2026-06-25T06:21:33,branch-pune,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000515,2026-06-25T06:23:06,branch-kolkata,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.6.1,normal,none
+SLOG-000173,2026-06-25T06:26:26.046102,branch-nagpur,WARN,LOCAL7,"%IPSEC-4-SA_EXPIRED: IKE SA expired, renegotiating",tunnel_rekey_anomaly,scenario-10
+SLOG-000167,2026-06-25T06:26:47.518732,branch-nagpur,WARN,LOCAL7,"%IPSEC-4-SA_EXPIRED: IKE SA expired, renegotiating",tunnel_rekey_anomaly,scenario-10
+SLOG-000513,2026-06-25T06:30:19,branch-bhubaneswar,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.7.1 Up,normal,none
+SLOG-000171,2026-06-25T06:32:32.294386,branch-nagpur,WARN,LOCAL7,%IPSEC-4-REKEY_DELAY: IPSec rekey taking 253s on tunnel Tunnel1,tunnel_rekey_anomaly,scenario-10
+SLOG-000172,2026-06-25T06:36:17.709123,branch-nagpur,WARN,LOCAL7,%IPSEC-4-REKEY_DELAY: IPSec rekey taking 417s on tunnel Tunnel0,tunnel_rekey_anomaly,scenario-10
+SLOG-000182,2026-06-25T06:41:07.854955,branch-nagpur,WARN,LOCAL7,"%IPSEC-4-SA_EXPIRED: IKE SA expired, renegotiating",tunnel_rekey_anomaly,scenario-10
+SLOG-000512,2026-06-25T06:43:48,branch-nagpur,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000180,2026-06-25T06:45:56.561111,branch-nagpur,WARN,LOCAL7,"%IPSEC-4-SA_EXPIRED: IKE SA expired, renegotiating",tunnel_rekey_anomaly,scenario-10
+SLOG-000166,2026-06-25T06:45:58.703617,branch-nagpur,WARN,LOCAL7,%IPSEC-4-REKEY_DELAY: IPSec rekey taking 360s on tunnel Tunnel3,tunnel_rekey_anomaly,scenario-10
+SLOG-000176,2026-06-25T06:45:59.709900,branch-nagpur,WARN,LOCAL7,%IPSEC-4-REKEY_DELAY: IPSec rekey taking 357s on tunnel Tunnel2,tunnel_rekey_anomaly,scenario-10
+SLOG-000170,2026-06-25T06:47:22.794727,branch-nagpur,WARN,LOCAL7,"%IPSEC-4-SA_EXPIRED: IKE SA expired, renegotiating",tunnel_rekey_anomaly,scenario-10
+SLOG-000183,2026-06-25T06:52:17.975365,branch-nagpur,WARN,LOCAL7,"%IPSEC-4-SA_EXPIRED: IKE SA expired, renegotiating",tunnel_rekey_anomaly,scenario-10
+SLOG-000179,2026-06-25T07:00:40.856956,branch-nagpur,WARN,LOCAL7,"%IPSEC-4-SA_EXPIRED: IKE SA expired, renegotiating",tunnel_rekey_anomaly,scenario-10
+SLOG-000187,2026-06-25T07:01:03.761933,branch-nagpur,WARN,LOCAL7,%IPSEC-4-REKEY_DELAY: IPSec rekey taking 343s on tunnel Tunnel2,tunnel_rekey_anomaly,scenario-10
+SLOG-000516,2026-06-25T07:03:20,branch-jaipur,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface Tunnel0, changed state to up",normal,none
+SLOG-000169,2026-06-25T07:11:25.829520,branch-nagpur,WARN,LOCAL7,"%IPSEC-4-SA_EXPIRED: IKE SA expired, renegotiating",tunnel_rekey_anomaly,scenario-10
+SLOG-000189,2026-06-25T07:13:18.155583,branch-nagpur,WARN,LOCAL7,"%IPSEC-4-SA_EXPIRED: IKE SA expired, renegotiating",tunnel_rekey_anomaly,scenario-10
+SLOG-000175,2026-06-25T07:13:31.153116,branch-nagpur,WARN,LOCAL7,%IPSEC-4-REKEY_DELAY: IPSec rekey taking 287s on tunnel Tunnel2,tunnel_rekey_anomaly,scenario-10
+SLOG-000177,2026-06-25T07:15:00.764654,branch-nagpur,WARN,LOCAL7,"%IPSEC-4-SA_EXPIRED: IKE SA expired, renegotiating",tunnel_rekey_anomaly,scenario-10
+SLOG-000174,2026-06-25T07:15:02.258444,branch-nagpur,WARN,LOCAL7,"%IPSEC-4-SA_EXPIRED: IKE SA expired, renegotiating",tunnel_rekey_anomaly,scenario-10
+SLOG-000186,2026-06-25T07:15:22.358112,branch-nagpur,WARN,LOCAL7,"%IPSEC-4-SA_EXPIRED: IKE SA expired, renegotiating",tunnel_rekey_anomaly,scenario-10
+SLOG-000518,2026-06-25T07:18:04,branch-ahmedabad,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000185,2026-06-25T07:26:00.321595,branch-nagpur,WARN,LOCAL7,"%IPSEC-4-SA_EXPIRED: IKE SA expired, renegotiating",tunnel_rekey_anomaly,scenario-10
+SLOG-000188,2026-06-25T07:26:51.378526,branch-nagpur,WARN,LOCAL7,%IPSEC-4-REKEY_DELAY: IPSec rekey taking 196s on tunnel Tunnel1,tunnel_rekey_anomaly,scenario-10
+SLOG-000181,2026-06-25T07:27:54.202971,branch-nagpur,WARN,LOCAL7,%IPSEC-4-REKEY_DELAY: IPSec rekey taking 247s on tunnel Tunnel3,tunnel_rekey_anomaly,scenario-10
+SLOG-000517,2026-06-25T07:31:20,branch-kochi,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.12.1 Up,normal,none
+SLOG-000519,2026-06-25T07:54:38,branch-kochi,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface GigabitEthernet0/2, changed state to up",normal,none
+SLOG-000521,2026-06-25T08:04:05,branch-hyderabad,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000520,2026-06-25T08:12:49,branch-lucknow,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface Tunnel1, changed state to up",normal,none
+SLOG-000524,2026-06-25T08:34:38,branch-guwahati,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.8.1 on Tunnel0 from LOADING to FULL",normal,none
+SLOG-000523,2026-06-25T08:38:04,branch-ahmedabad,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000522,2026-06-25T08:40:33,branch-bengaluru,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.1.1,normal,none
+SLOG-000526,2026-06-25T08:55:12,branch-bhopal,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.14.1,normal,none
+SLOG-000525,2026-06-25T08:59:25,branch-bhubaneswar,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.7.1 on TenGigabitEthernet0/0 from LOADING to FULL",normal,none
+SLOG-000528,2026-06-25T09:12:56,hub-delhi,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface Tunnel1, changed state to up",normal,none
+SLOG-000203,2026-06-25T09:31:28.827661,branch-ahmedabad,ERROR,LOCAL7,%BGP-3-ADJCHANGE: neighbor 10.1.5.1 Down BGP Notification sent,bgp_route_flap,scenario-11
+SLOG-000196,2026-06-25T09:31:41.647953,branch-ahmedabad,ERROR,LOCAL7,"%BGP-3-NOTIFICATION: BGP neighbor 10.1.5.1 Down, hold timer expired",bgp_route_flap,scenario-11
+SLOG-000192,2026-06-25T09:31:51.830354,branch-ahmedabad,ERROR,LOCAL7,%BGP-3-ADJCHANGE: neighbor 10.1.5.1 Down BGP Notification sent,bgp_route_flap,scenario-11
+SLOG-000208,2026-06-25T09:34:33.949511,branch-ahmedabad,ERROR,LOCAL7,%BGP-3-ADJCHANGE: neighbor 10.1.5.1 Down BGP Notification sent,bgp_route_flap,scenario-11
+SLOG-000200,2026-06-25T09:38:22.733493,branch-ahmedabad,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.5.1 Up,bgp_route_flap,scenario-11
+SLOG-000201,2026-06-25T09:40:23.856399,branch-ahmedabad,ERROR,LOCAL7,"%BGP-3-NOTIFICATION: BGP neighbor 10.1.5.1 Down, hold timer expired",bgp_route_flap,scenario-11
+SLOG-000197,2026-06-25T09:41:21.128209,branch-ahmedabad,WARN,LOCAL7,"%BGP-4-DAMP: Route 10.19.3.0/30 dampened, penalty 2008",bgp_route_flap,scenario-11
+SLOG-000204,2026-06-25T09:42:19.611624,branch-ahmedabad,WARN,LOCAL7,%BGP-4-MAXPFX: Maximum prefix limit approaching on 10.1.5.1,bgp_route_flap,scenario-11
+SLOG-000198,2026-06-25T09:44:53.896736,branch-ahmedabad,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.5.1 Up,bgp_route_flap,scenario-11
+SLOG-000194,2026-06-25T09:44:55.778852,branch-ahmedabad,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.5.1 Up,bgp_route_flap,scenario-11
+SLOG-000195,2026-06-25T09:46:16.234913,branch-ahmedabad,WARN,LOCAL7,"%BGP-4-DAMP: Route 10.5.5.0/30 dampened, penalty 2663",bgp_route_flap,scenario-11
+SLOG-000527,2026-06-25T09:46:42,branch-nagpur,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.13.1 Up,normal,none
+SLOG-000207,2026-06-25T09:48:16.938177,branch-ahmedabad,ERROR,LOCAL7,"%BGP-3-NOTIFICATION: BGP neighbor 10.1.5.1 Down, hold timer expired",bgp_route_flap,scenario-11
+SLOG-000205,2026-06-25T09:48:45.143971,branch-ahmedabad,ERROR,LOCAL7,%BGP-3-ADJCHANGE: neighbor 10.1.5.1 Down BGP Notification sent,bgp_route_flap,scenario-11
+SLOG-000190,2026-06-25T09:56:27.281379,branch-ahmedabad,WARN,LOCAL7,%BGP-4-MAXPFX: Maximum prefix limit approaching on 10.1.5.1,bgp_route_flap,scenario-11
+SLOG-000199,2026-06-25T09:57:03.507645,branch-ahmedabad,ERROR,LOCAL7,"%BGP-3-NOTIFICATION: BGP neighbor 10.1.5.1 Down, hold timer expired",bgp_route_flap,scenario-11
+SLOG-000202,2026-06-25T09:58:14.989147,branch-ahmedabad,ERROR,LOCAL7,%BGP-3-ADJCHANGE: neighbor 10.1.5.1 Down BGP Notification sent,bgp_route_flap,scenario-11
+SLOG-000206,2026-06-25T09:58:24.830750,branch-ahmedabad,ERROR,LOCAL7,%BGP-3-ADJCHANGE: neighbor 10.1.5.1 Down BGP Notification sent,bgp_route_flap,scenario-11
+SLOG-000193,2026-06-25T09:58:50.575533,branch-ahmedabad,ERROR,LOCAL7,%BGP-3-ADJCHANGE: neighbor 10.1.5.1 Down BGP Notification sent,bgp_route_flap,scenario-11
+SLOG-000191,2026-06-25T09:59:34.160123,branch-ahmedabad,ERROR,LOCAL7,%BGP-3-ADJCHANGE: neighbor 10.1.5.1 Down BGP Notification sent,bgp_route_flap,scenario-11
+SLOG-000533,2026-06-25T10:07:00,branch-ahmedabad,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.5.1,normal,none
+SLOG-000532,2026-06-25T10:18:49,hub-delhi,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.0.0.1 on GigabitEthernet0/0 from LOADING to FULL",normal,none
+SLOG-000531,2026-06-25T10:26:10,branch-hyderabad,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.3.1,normal,none
+SLOG-000530,2026-06-25T10:37:02,hub-delhi,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000529,2026-06-25T10:54:15,branch-chennai,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface Tunnel1, changed state to up",normal,none
+SLOG-000537,2026-06-25T11:04:40,branch-hyderabad,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.3.1,normal,none
+SLOG-000536,2026-06-25T11:12:19,branch-bengaluru,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.1.1 on GigabitEthernet0/0 from LOADING to FULL",normal,none
+SLOG-000535,2026-06-25T11:14:18,branch-guwahati,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.8.1,normal,none
+SLOG-000534,2026-06-25T11:31:19,hub-delhi,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000540,2026-06-25T12:05:36,branch-chennai,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface TenGigabitEthernet0/0, changed state to up",normal,none
+SLOG-000542,2026-06-25T12:11:59,hub-delhi,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.0.0.1,normal,none
+SLOG-000231,2026-06-25T12:15:56.378765,branch-bengaluru,ERROR,LOCAL7,"%QOS-3-PRIORITY_DROP: Priority queue saturated, dropping EF traffic",progressive_congestion,scenario-12
+SLOG-000544,2026-06-25T12:17:39,branch-kolkata,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.6.1 Up,normal,none
+SLOG-000543,2026-06-25T12:18:43,branch-ahmedabad,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000545,2026-06-25T12:21:55,branch-bhopal,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface Tunnel0, changed state to up",normal,none
+SLOG-000214,2026-06-25T12:24:29.642047,branch-bengaluru,ERROR,LOCAL7,"%QOS-3-PRIORITY_DROP: Priority queue saturated, dropping EF traffic",progressive_congestion,scenario-12
+SLOG-000538,2026-06-25T12:26:18,dc-mumbai,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000539,2026-06-25T12:31:15,branch-kolkata,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.6.1,normal,none
+SLOG-000227,2026-06-25T12:45:07.567584,branch-bengaluru,CRIT,LOCAL7,"%INTERFACE-2-QUEUE_FULL: Interface Tunnel0 queue FULL, dropping packets",progressive_congestion,scenario-12
+SLOG-000541,2026-06-25T12:55:28,branch-bhopal,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface Loopback0, changed state to up",normal,none
+SLOG-000547,2026-06-25T13:01:27,branch-pune,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.4.1,normal,none
+SLOG-000211,2026-06-25T13:11:43.500353,branch-bengaluru,ERROR,LOCAL7,"%BW-3-SATURATION: Bandwidth utilization 89% on GigabitEthernet0/2, SLA at risk",progressive_congestion,scenario-12
+SLOG-000550,2026-06-25T13:19:57,branch-chandigarh,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.9.1 Up,normal,none
+SLOG-000549,2026-06-25T13:24:35,branch-pune,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.4.1 Up,normal,none
+SLOG-000212,2026-06-25T13:29:00.671959,branch-bengaluru,ERROR,LOCAL7,"%BW-3-SATURATION: Bandwidth utilization 94% on TenGigabitEthernet0/0, SLA at risk",progressive_congestion,scenario-12
+SLOG-000221,2026-06-25T13:33:22.297821,branch-bengaluru,ERROR,LOCAL7,"%BW-3-SATURATION: Bandwidth utilization 97% on Loopback0, SLA at risk",progressive_congestion,scenario-12
+SLOG-000222,2026-06-25T13:36:33.145874,branch-bengaluru,ERROR,LOCAL7,"%BW-3-SATURATION: Bandwidth utilization 95% on TenGigabitEthernet0/0, SLA at risk",progressive_congestion,scenario-12
+SLOG-000548,2026-06-25T13:39:05,branch-kochi,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000219,2026-06-25T13:40:20.099888,branch-bengaluru,ERROR,LOCAL7,"%QOS-3-PRIORITY_DROP: Priority queue saturated, dropping EF traffic",progressive_congestion,scenario-12
+SLOG-000546,2026-06-25T13:53:35,branch-kochi,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.12.1 on Tunnel0 from LOADING to FULL",normal,none
+SLOG-000552,2026-06-25T14:12:40,hub-delhi,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000209,2026-06-25T14:14:39.726173,branch-bengaluru,ERROR,LOCAL7,"%QOS-3-PRIORITY_DROP: Priority queue saturated, dropping EF traffic",progressive_congestion,scenario-12
+SLOG-000229,2026-06-25T14:15:21.650129,branch-bengaluru,CRIT,LOCAL7,"%INTERFACE-2-QUEUE_FULL: Interface GigabitEthernet0/0 queue FULL, dropping packets",progressive_congestion,scenario-12
+SLOG-000225,2026-06-25T14:16:32.502868,branch-bengaluru,ERROR,LOCAL7,"%QOS-3-PRIORITY_DROP: Priority queue saturated, dropping EF traffic",progressive_congestion,scenario-12
+SLOG-000551,2026-06-25T14:25:15,branch-chandigarh,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface Tunnel0, changed state to up",normal,none
+SLOG-000215,2026-06-25T14:33:23.453221,branch-bengaluru,ERROR,LOCAL7,"%QOS-3-PRIORITY_DROP: Priority queue saturated, dropping EF traffic",progressive_congestion,scenario-12
+SLOG-000223,2026-06-25T14:34:13.044975,branch-bengaluru,ERROR,LOCAL7,"%BW-3-SATURATION: Bandwidth utilization 74% on GigabitEthernet0/1, SLA at risk",progressive_congestion,scenario-12
+SLOG-000553,2026-06-25T14:37:39,branch-nagpur,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.13.1,normal,none
+SLOG-000226,2026-06-25T14:37:48.683707,branch-bengaluru,ERROR,LOCAL7,"%QOS-3-PRIORITY_DROP: Priority queue saturated, dropping EF traffic",progressive_congestion,scenario-12
+SLOG-000555,2026-06-25T14:40:42,hub-delhi,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000217,2026-06-25T14:44:37.107116,branch-bengaluru,ERROR,LOCAL7,"%BW-3-SATURATION: Bandwidth utilization 83% on GigabitEthernet0/2, SLA at risk",progressive_congestion,scenario-12
+SLOG-000554,2026-06-25T14:47:27,branch-nagpur,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.13.1 on Tunnel1 from LOADING to FULL",normal,none
+SLOG-000216,2026-06-25T14:47:49.838115,branch-bengaluru,ERROR,LOCAL7,"%BW-3-SATURATION: Bandwidth utilization 76% on Loopback0, SLA at risk",progressive_congestion,scenario-12
+SLOG-000224,2026-06-25T14:59:11.311694,branch-bengaluru,ERROR,LOCAL7,"%BW-3-SATURATION: Bandwidth utilization 72% on Tunnel0, SLA at risk",progressive_congestion,scenario-12
+SLOG-000228,2026-06-25T15:05:56.408682,branch-bengaluru,ERROR,LOCAL7,"%BW-3-SATURATION: Bandwidth utilization 83% on GigabitEthernet0/0, SLA at risk",progressive_congestion,scenario-12
+SLOG-000218,2026-06-25T15:16:55.222905,branch-bengaluru,CRIT,LOCAL7,"%INTERFACE-2-QUEUE_FULL: Interface Tunnel0 queue FULL, dropping packets",progressive_congestion,scenario-12
+SLOG-000230,2026-06-25T15:19:36.381671,branch-bengaluru,ERROR,LOCAL7,"%QOS-3-PRIORITY_DROP: Priority queue saturated, dropping EF traffic",progressive_congestion,scenario-12
+SLOG-000213,2026-06-25T15:34:57.828081,branch-bengaluru,CRIT,LOCAL7,"%INTERFACE-2-QUEUE_FULL: Interface Tunnel1 queue FULL, dropping packets",progressive_congestion,scenario-12
+SLOG-000556,2026-06-25T15:35:43,branch-ahmedabad,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000220,2026-06-25T15:42:40.704027,branch-bengaluru,CRIT,LOCAL7,"%INTERFACE-2-QUEUE_FULL: Interface TenGigabitEthernet0/0 queue FULL, dropping packets",progressive_congestion,scenario-12
+SLOG-000557,2026-06-25T15:45:37,branch-lucknow,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface GigabitEthernet0/2, changed state to up",normal,none
+SLOG-000210,2026-06-25T15:59:25.743139,branch-bengaluru,CRIT,LOCAL7,"%INTERFACE-2-QUEUE_FULL: Interface Loopback0 queue FULL, dropping packets",progressive_congestion,scenario-12
+SLOG-000560,2026-06-25T16:10:11,branch-lucknow,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.11.1,normal,none
+SLOG-000561,2026-06-25T16:13:50,branch-guwahati,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.8.1 on TenGigabitEthernet0/0 from LOADING to FULL",normal,none
+SLOG-000558,2026-06-25T16:17:27,branch-chandigarh,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.9.1,normal,none
+SLOG-000562,2026-06-25T16:18:15,branch-jaipur,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000236,2026-06-25T16:31:10.613038,branch-chandigarh,CRIT,LOCAL7,%SLA-2-BREACH: Packet loss 71% exceeds SLA threshold of 1%,packet_loss_spike,scenario-13
+SLOG-000239,2026-06-25T16:33:59.319748,branch-chandigarh,ERROR,LOCAL7,%INTERFACE-3-EXCESSIVE_LOSS: Packet loss 89% on GigabitEthernet0/1,packet_loss_spike,scenario-13
+SLOG-000238,2026-06-25T16:35:00.241081,branch-chandigarh,CRIT,LOCAL7,%SLA-2-BREACH: Packet loss 89% exceeds SLA threshold of 1%,packet_loss_spike,scenario-13
+SLOG-000244,2026-06-25T16:35:41.743969,branch-chandigarh,ERROR,LOCAL7,%INTERFACE-3-EXCESSIVE_LOSS: Packet loss 78% on Tunnel1,packet_loss_spike,scenario-13
+SLOG-000243,2026-06-25T16:36:44.901472,branch-chandigarh,ERROR,LOCAL7,%INTERFACE-3-EXCESSIVE_LOSS: Packet loss 79% on TenGigabitEthernet0/0,packet_loss_spike,scenario-13
+SLOG-000232,2026-06-25T16:37:13.914420,branch-chandigarh,WARN,LOCAL7,"%BFD-4-ECHO_FAIL: BFD echo failure on 10.1.9.1, loss detected",packet_loss_spike,scenario-13
+SLOG-000234,2026-06-25T16:40:15.587373,branch-chandigarh,CRIT,LOCAL7,%SLA-2-BREACH: Packet loss 94% exceeds SLA threshold of 1%,packet_loss_spike,scenario-13
+SLOG-000235,2026-06-25T16:40:24.923591,branch-chandigarh,ERROR,LOCAL7,%INTERFACE-3-EXCESSIVE_LOSS: Packet loss 98% on GigabitEthernet0/1,packet_loss_spike,scenario-13
+SLOG-000563,2026-06-25T16:40:37,branch-chandigarh,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.9.1 on TenGigabitEthernet0/0 from LOADING to FULL",normal,none
+SLOG-000233,2026-06-25T16:48:02.970735,branch-chandigarh,CRIT,LOCAL7,%SLA-2-BREACH: Packet loss 84% exceeds SLA threshold of 1%,packet_loss_spike,scenario-13
+SLOG-000564,2026-06-25T16:48:17,branch-pune,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.4.1 on Loopback0 from LOADING to FULL",normal,none
+SLOG-000242,2026-06-25T16:48:38.653599,branch-chandigarh,ERROR,LOCAL7,%INTERFACE-3-EXCESSIVE_LOSS: Packet loss 73% on TenGigabitEthernet0/0,packet_loss_spike,scenario-13
+SLOG-000559,2026-06-25T16:50:17,hub-delhi,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.0.0.1,normal,none
+SLOG-000241,2026-06-25T16:53:58.980321,branch-chandigarh,ERROR,LOCAL7,%INTERFACE-3-EXCESSIVE_LOSS: Packet loss 93% on GigabitEthernet0/0,packet_loss_spike,scenario-13
+SLOG-000565,2026-06-25T16:54:46,branch-bhubaneswar,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.7.1 on Loopback0 from LOADING to FULL",normal,none
+SLOG-000569,2026-06-25T17:01:51,branch-lucknow,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.11.1,normal,none
+SLOG-000240,2026-06-25T17:02:57.132455,branch-chandigarh,WARN,LOCAL7,"%BFD-4-ECHO_FAIL: BFD echo failure on 10.1.9.1, loss detected",packet_loss_spike,scenario-13
+SLOG-000567,2026-06-25T17:17:58,branch-pune,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.4.1,normal,none
+SLOG-000237,2026-06-25T17:29:18.576857,branch-chandigarh,ERROR,LOCAL7,%INTERFACE-3-EXCESSIVE_LOSS: Packet loss 74% on GigabitEthernet0/0,packet_loss_spike,scenario-13
+SLOG-000566,2026-06-25T17:33:49,branch-jaipur,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface Tunnel0, changed state to up",normal,none
+SLOG-000568,2026-06-25T17:45:09,branch-jaipur,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000572,2026-06-25T18:16:35,branch-kochi,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.12.1 on Loopback0 from LOADING to FULL",normal,none
+SLOG-000570,2026-06-25T18:39:18,branch-chennai,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000573,2026-06-25T18:39:18,branch-chandigarh,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000571,2026-06-25T18:55:31,branch-kolkata,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.6.1 on TenGigabitEthernet0/0 from LOADING to FULL",normal,none
+SLOG-000250,2026-06-25T19:25:06.160810,hub-delhi,ERROR,LOCAL7,"%BGP-3-NOTIFICATION: BGP neighbor 10.0.0.1 Down, hold timer expired",route_flap_cascade,scenario-14
+SLOG-000576,2026-06-25T19:29:48,branch-jaipur,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000575,2026-06-25T19:29:57,branch-chennai,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000578,2026-06-25T19:32:07,branch-bengaluru,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface TenGigabitEthernet0/0, changed state to up",normal,none
+SLOG-000577,2026-06-25T19:34:24,branch-kolkata,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.6.1 Up,normal,none
+SLOG-000249,2026-06-25T19:49:46.501281,dc-mumbai,ERROR,LOCAL7,"%ROUTING-3-CONVERGENCE: OSPF/BGP convergence stress, 156 routes in flux",route_flap_cascade,scenario-14
+SLOG-000247,2026-06-25T19:53:54.909225,dc-mumbai,CRIT,LOCAL7,"%BGP-2-CASCADE: Mass BGP withdrawal, 231 prefixes from AS 65001",route_flap_cascade,scenario-14
+SLOG-000574,2026-06-25T19:56:28,branch-bengaluru,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.1.1 on Tunnel1 from LOADING to FULL",normal,none
+SLOG-000246,2026-06-25T20:00:32.067755,dc-mumbai,ERROR,LOCAL7,"%BGP-3-NOTIFICATION: BGP neighbor 10.0.0.2 Down, hold timer expired",route_flap_cascade,scenario-14
+SLOG-000579,2026-06-25T20:02:21,branch-guwahati,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.8.1,normal,none
+SLOG-000581,2026-06-25T20:06:01,branch-bhubaneswar,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface Loopback0, changed state to up",normal,none
+SLOG-000251,2026-06-25T20:14:57.602087,dc-mumbai,ERROR,LOCAL7,"%ROUTING-3-CONVERGENCE: OSPF/BGP convergence stress, 65 routes in flux",route_flap_cascade,scenario-14
+SLOG-000252,2026-06-25T20:27:51.162165,dc-mumbai,ERROR,LOCAL7,"%BGP-3-NOTIFICATION: BGP neighbor 10.0.0.2 Down, hold timer expired",route_flap_cascade,scenario-14
+SLOG-000580,2026-06-25T20:45:52,branch-nagpur,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.13.1,normal,none
+SLOG-000245,2026-06-25T20:49:30.281851,dc-mumbai,ERROR,LOCAL7,"%ROUTING-3-CONVERGENCE: OSPF/BGP convergence stress, 446 routes in flux",route_flap_cascade,scenario-14
+SLOG-000248,2026-06-25T20:52:45.368594,dc-mumbai,CRIT,LOCAL7,"%BGP-2-CASCADE: Mass BGP withdrawal, 415 prefixes from AS 65001",route_flap_cascade,scenario-14
+SLOG-000586,2026-06-25T21:07:20,branch-chandigarh,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000587,2026-06-25T21:17:11,hub-delhi,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000253,2026-06-25T21:18:56.705436,hub-delhi,ERROR,LOCAL7,"%ROUTING-3-CONVERGENCE: OSPF/BGP convergence stress, 104 routes in flux",route_flap_cascade,scenario-14
+SLOG-000584,2026-06-25T21:34:32,dc-mumbai,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface Loopback0, changed state to up",normal,none
+SLOG-000583,2026-06-25T21:44:01,branch-nagpur,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000582,2026-06-25T21:49:29,branch-bengaluru,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.1.1 Up,normal,none
+SLOG-000585,2026-06-25T21:53:10,branch-chandigarh,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.9.1 Up,normal,none
+SLOG-000588,2026-06-25T22:20:50,branch-chandigarh,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.9.1,normal,none
+SLOG-000589,2026-06-25T22:44:10,branch-chandigarh,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.9.1 Up,normal,none
+SLOG-000269,2026-06-25T23:00:53.411068,branch-hyderabad,WARN,LOCAL7,%QOS-4-POLICY_MISMATCH: QoS policy mismatch detected on Tunnel0,qos_policy_drift,scenario-15
+SLOG-000256,2026-06-25T23:03:54.455799,branch-hyderabad,WARN,LOCAL7,%QOS-4-DSCP_REMARK: DSCP remarking inconsistency on GigabitEthernet0/0,qos_policy_drift,scenario-15
+SLOG-000257,2026-06-25T23:04:12.439385,branch-hyderabad,WARN,LOCAL7,%QOS-4-DSCP_REMARK: DSCP remarking inconsistency on Tunnel0,qos_policy_drift,scenario-15
+SLOG-000591,2026-06-25T23:07:48,branch-kochi,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000254,2026-06-25T23:11:45.590996,branch-hyderabad,WARN,LOCAL7,%QOS-4-POLICY_MISMATCH: QoS policy mismatch detected on Loopback0,qos_policy_drift,scenario-15
+SLOG-000260,2026-06-25T23:14:44.475777,branch-hyderabad,WARN,LOCAL7,%QOS-4-POLICY_MISMATCH: QoS policy mismatch detected on GigabitEthernet0/0,qos_policy_drift,scenario-15
+SLOG-000264,2026-06-25T23:18:29.232538,branch-hyderabad,WARN,LOCAL7,%QOS-4-POLICY_MISMATCH: QoS policy mismatch detected on GigabitEthernet0/0,qos_policy_drift,scenario-15
+SLOG-000270,2026-06-25T23:21:03.199834,branch-hyderabad,WARN,LOCAL7,%QOS-4-DSCP_REMARK: DSCP remarking inconsistency on GigabitEthernet0/2,qos_policy_drift,scenario-15
+SLOG-000592,2026-06-25T23:23:05,branch-kolkata,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.6.1 on GigabitEthernet0/1 from LOADING to FULL",normal,none
+SLOG-000262,2026-06-25T23:24:43.789162,branch-hyderabad,WARN,LOCAL7,%QOS-4-DSCP_REMARK: DSCP remarking inconsistency on GigabitEthernet0/2,qos_policy_drift,scenario-15
+SLOG-000261,2026-06-25T23:28:04.287053,branch-hyderabad,WARN,LOCAL7,%QOS-4-POLICY_MISMATCH: QoS policy mismatch detected on Tunnel1,qos_policy_drift,scenario-15
+SLOG-000259,2026-06-25T23:28:22.070044,branch-hyderabad,WARN,LOCAL7,%QOS-4-POLICY_MISMATCH: QoS policy mismatch detected on GigabitEthernet0/1,qos_policy_drift,scenario-15
+SLOG-000271,2026-06-25T23:28:46.010393,branch-hyderabad,WARN,LOCAL7,%QOS-4-DSCP_REMARK: DSCP remarking inconsistency on GigabitEthernet0/1,qos_policy_drift,scenario-15
+SLOG-000265,2026-06-25T23:30:31.578278,branch-hyderabad,WARN,LOCAL7,%QOS-4-POLICY_MISMATCH: QoS policy mismatch detected on TenGigabitEthernet0/0,qos_policy_drift,scenario-15
+SLOG-000267,2026-06-25T23:34:41.982103,branch-hyderabad,WARN,LOCAL7,%QOS-4-POLICY_MISMATCH: QoS policy mismatch detected on Tunnel1,qos_policy_drift,scenario-15
+SLOG-000263,2026-06-25T23:35:45.938704,branch-hyderabad,WARN,LOCAL7,%QOS-4-DSCP_REMARK: DSCP remarking inconsistency on GigabitEthernet0/0,qos_policy_drift,scenario-15
+SLOG-000266,2026-06-25T23:39:33.554211,branch-hyderabad,WARN,LOCAL7,%QOS-4-DSCP_REMARK: DSCP remarking inconsistency on Loopback0,qos_policy_drift,scenario-15
+SLOG-000255,2026-06-25T23:39:39.854091,branch-hyderabad,WARN,LOCAL7,%QOS-4-DSCP_REMARK: DSCP remarking inconsistency on TenGigabitEthernet0/0,qos_policy_drift,scenario-15
+SLOG-000258,2026-06-25T23:40:37.972230,branch-hyderabad,WARN,LOCAL7,%QOS-4-DSCP_REMARK: DSCP remarking inconsistency on TenGigabitEthernet0/0,qos_policy_drift,scenario-15
+SLOG-000590,2026-06-25T23:41:48,branch-guwahati,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.8.1 Up,normal,none
+SLOG-000268,2026-06-25T23:43:49.875941,branch-hyderabad,WARN,LOCAL7,%QOS-4-POLICY_MISMATCH: QoS policy mismatch detected on Tunnel0,qos_policy_drift,scenario-15
+SLOG-000596,2026-06-26T00:12:05,branch-nagpur,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.13.1 Up,normal,none
+SLOG-000593,2026-06-26T00:32:39,branch-bengaluru,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.1.1 Up,normal,none
+SLOG-000594,2026-06-26T00:37:29,branch-bhubaneswar,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000599,2026-06-26T00:44:27,branch-bhubaneswar,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000597,2026-06-26T00:44:42,branch-bhubaneswar,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000598,2026-06-26T00:47:44,branch-kolkata,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.6.1 Up,normal,none
+SLOG-000595,2026-06-26T00:57:36,branch-chandigarh,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000602,2026-06-26T01:21:42,branch-guwahati,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.8.1,normal,none
+SLOG-000601,2026-06-26T01:37:38,branch-bengaluru,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000600,2026-06-26T01:53:29,branch-bengaluru,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.1.1,normal,none
+SLOG-000603,2026-06-26T01:54:31,branch-hyderabad,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000605,2026-06-26T02:04:13,branch-bengaluru,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.1.1 Up,normal,none
+SLOG-000279,2026-06-26T02:31:27.534433,branch-kochi,ERROR,LOCAL7,%VPN-3-TUNNEL_DOWN: GRE over IPSec tunnel Tunnel2 DOWN,mpls_tunnel_degradation,scenario-16
+SLOG-000277,2026-06-26T02:46:14.853233,branch-kochi,ERROR,LOCAL7,%IPSEC-3-REKEY_FAIL: IPSec SA rekey failed for tunnel Tunnel0,mpls_tunnel_degradation,scenario-16
+SLOG-000274,2026-06-26T02:53:47.461857,branch-kochi,WARN,LOCAL7,"%MPLS-4-TUNNEL_DEGRADE: LDP session 10.1.12.1 degraded, loss 82%",mpls_tunnel_degradation,scenario-16
+SLOG-000278,2026-06-26T02:56:04.842999,branch-kochi,ERROR,LOCAL7,%IPSEC-3-REKEY_FAIL: IPSec SA rekey failed for tunnel Tunnel3,mpls_tunnel_degradation,scenario-16
+SLOG-000604,2026-06-26T02:58:27,branch-kochi,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.12.1,normal,none
+SLOG-000607,2026-06-26T03:03:55,branch-jaipur,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000275,2026-06-26T03:04:46.524734,branch-kochi,ERROR,LOCAL7,%VPN-3-TUNNEL_DOWN: GRE over IPSec tunnel Tunnel1 DOWN,mpls_tunnel_degradation,scenario-16
+SLOG-000273,2026-06-26T03:15:15.549078,branch-kochi,WARN,LOCAL7,%MPLS-4-PATH_SWITCH: Traffic rerouted from primary to backup LSP,mpls_tunnel_degradation,scenario-16
+SLOG-000280,2026-06-26T03:15:42.893278,branch-kochi,WARN,LOCAL7,"%MPLS-4-TUNNEL_DEGRADE: LDP session 10.1.12.1 degraded, loss 95%",mpls_tunnel_degradation,scenario-16
+SLOG-000606,2026-06-26T03:27:23,branch-chennai,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.2.1 Up,normal,none
+SLOG-000272,2026-06-26T03:28:33.081833,branch-kochi,WARN,LOCAL7,"%MPLS-4-TUNNEL_DEGRADE: LDP session 10.1.12.1 degraded, loss 94%",mpls_tunnel_degradation,scenario-16
+SLOG-000609,2026-06-26T03:44:16,branch-kolkata,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.6.1 Up,normal,none
+SLOG-000608,2026-06-26T03:55:39,branch-jaipur,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.10.1,normal,none
+SLOG-000276,2026-06-26T03:58:17.221518,branch-kochi,WARN,LOCAL7,%MPLS-4-PATH_SWITCH: Traffic rerouted from primary to backup LSP,mpls_tunnel_degradation,scenario-16
+SLOG-000612,2026-06-26T04:19:20,branch-chennai,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.2.1 on GigabitEthernet0/1 from LOADING to FULL",normal,none
+SLOG-000611,2026-06-26T04:55:01,branch-jaipur,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000610,2026-06-26T04:58:28,branch-guwahati,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.8.1,normal,none
+SLOG-000616,2026-06-26T05:05:39,branch-kolkata,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.6.1 on GigabitEthernet0/1 from LOADING to FULL",normal,none
+SLOG-000617,2026-06-26T05:14:05,branch-bhopal,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.14.1,normal,none
+SLOG-000614,2026-06-26T05:25:34,branch-pune,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.4.1 Up,normal,none
+SLOG-000615,2026-06-26T05:26:43,branch-kochi,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface GigabitEthernet0/1, changed state to up",normal,none
+SLOG-000613,2026-06-26T05:56:01,branch-kolkata,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.6.1 Up,normal,none
+SLOG-000294,2026-06-26T06:00:13.558615,branch-pune,CRIT,LOCAL7,"%OSPF-2-ADJ_CHG: Process 1, Nbr 10.1.4.1 on Tunnel0 from FULL to DOWN",ospf_adjacency_lost,scenario-17
+SLOG-000290,2026-06-26T06:01:02.217557,branch-pune,WARN,LOCAL7,%OSPF-4-HELLO_FAIL: Hello packets not received from 10.1.4.1,ospf_adjacency_lost,scenario-17
+SLOG-000619,2026-06-26T06:03:38,branch-pune,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.4.1,normal,none
+SLOG-000282,2026-06-26T06:04:35.917287,branch-pune,WARN,LOCAL7,%OSPF-4-HELLO_FAIL: Hello packets not received from 10.1.4.1,ospf_adjacency_lost,scenario-17
+SLOG-000293,2026-06-26T06:04:49.019069,branch-pune,CRIT,LOCAL7,"%OSPF-2-ADJ_CHG: Process 1, Nbr 10.1.4.1 on Tunnel1 from FULL to DOWN",ospf_adjacency_lost,scenario-17
+SLOG-000283,2026-06-26T06:06:05.091795,branch-pune,CRIT,LOCAL7,"%OSPF-2-ADJ_CHG: Process 1, Nbr 10.1.4.1 on Loopback0 from FULL to DOWN",ospf_adjacency_lost,scenario-17
+SLOG-000291,2026-06-26T06:07:16.999586,branch-pune,ERROR,LOCAL7,"%OSPF-3-DEAD_INTERVAL: Neighbor 10.1.4.1 dead, interface GigabitEthernet0/0",ospf_adjacency_lost,scenario-17
+SLOG-000289,2026-06-26T06:11:03.306241,branch-pune,WARN,LOCAL7,%OSPF-4-HELLO_FAIL: Hello packets not received from 10.1.4.1,ospf_adjacency_lost,scenario-17
+SLOG-000292,2026-06-26T06:11:33.201523,branch-pune,ERROR,LOCAL7,"%OSPF-3-DEAD_INTERVAL: Neighbor 10.1.4.1 dead, interface Tunnel0",ospf_adjacency_lost,scenario-17
+SLOG-000287,2026-06-26T06:15:24.234095,branch-pune,WARN,LOCAL7,%OSPF-4-HELLO_FAIL: Hello packets not received from 10.1.4.1,ospf_adjacency_lost,scenario-17
+SLOG-000281,2026-06-26T06:15:29.464026,branch-pune,ERROR,LOCAL7,"%OSPF-3-DEAD_INTERVAL: Neighbor 10.1.4.1 dead, interface Tunnel1",ospf_adjacency_lost,scenario-17
+SLOG-000286,2026-06-26T06:17:08.099939,branch-pune,WARN,LOCAL7,%OSPF-4-HELLO_FAIL: Hello packets not received from 10.1.4.1,ospf_adjacency_lost,scenario-17
+SLOG-000285,2026-06-26T06:19:38.102890,branch-pune,ERROR,LOCAL7,"%OSPF-3-DEAD_INTERVAL: Neighbor 10.1.4.1 dead, interface TenGigabitEthernet0/0",ospf_adjacency_lost,scenario-17
+SLOG-000288,2026-06-26T06:22:46.162511,branch-pune,CRIT,LOCAL7,"%OSPF-2-ADJ_CHG: Process 1, Nbr 10.1.4.1 on TenGigabitEthernet0/0 from FULL to DOWN",ospf_adjacency_lost,scenario-17
+SLOG-000284,2026-06-26T06:26:35.729773,branch-pune,ERROR,LOCAL7,"%OSPF-3-DEAD_INTERVAL: Neighbor 10.1.4.1 dead, interface GigabitEthernet0/1",ospf_adjacency_lost,scenario-17
+SLOG-000622,2026-06-26T06:26:59,branch-lucknow,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.11.1 on TenGigabitEthernet0/0 from LOADING to FULL",normal,none
+SLOG-000620,2026-06-26T06:33:04,branch-chandigarh,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.9.1 on GigabitEthernet0/0 from LOADING to FULL",normal,none
+SLOG-000618,2026-06-26T06:36:30,branch-bhopal,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.14.1 on Tunnel1 from LOADING to FULL",normal,none
+SLOG-000621,2026-06-26T06:37:25,branch-kolkata,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000623,2026-06-26T07:00:35,branch-hyderabad,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface GigabitEthernet0/0, changed state to up",normal,none
+SLOG-000624,2026-06-26T07:01:52,branch-hyderabad,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.3.1 Up,normal,none
+SLOG-000625,2026-06-26T07:18:14,branch-pune,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000630,2026-06-26T08:01:19,branch-kolkata,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface Tunnel0, changed state to up",normal,none
+SLOG-000632,2026-06-26T08:28:00,branch-bhopal,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.14.1 on GigabitEthernet0/1 from LOADING to FULL",normal,none
+SLOG-000626,2026-06-26T08:29:03,branch-nagpur,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.13.1 Up,normal,none
+SLOG-000629,2026-06-26T08:34:37,branch-nagpur,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface Loopback0, changed state to up",normal,none
+SLOG-000631,2026-06-26T08:37:12,branch-nagpur,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000627,2026-06-26T08:45:07,hub-delhi,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.0.0.1 Up,normal,none
+SLOG-000633,2026-06-26T08:50:00,branch-guwahati,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.8.1,normal,none
+SLOG-000628,2026-06-26T08:50:35,branch-kochi,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.12.1 Up,normal,none
+SLOG-000635,2026-06-26T09:10:27,branch-ahmedabad,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000634,2026-06-26T09:37:40,branch-ahmedabad,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface Tunnel1, changed state to up",normal,none
+SLOG-000310,2026-06-26T09:39:06.206352,branch-bhopal,WARN,LOCAL7,"%IP-4-RTCHANGE: Route table instability detected, 100 routes flapping",congestion_buildup,scenario-18
+SLOG-000636,2026-06-26T09:39:43,branch-hyderabad,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.3.1 Up,normal,none
+SLOG-000302,2026-06-26T09:44:51.346994,branch-nagpur,WARN,LOCAL7,%MPLS-4-LDP_CONGESTION: LDP label space pressure on TenGigabitEthernet0/0,congestion_buildup,scenario-18
+SLOG-000298,2026-06-26T09:47:29.235387,branch-nagpur,ERROR,LOCAL7,"%QOS-4-POLICY_BREACH: VoIP traffic dropped on Loopback0, queue utilization 94%",congestion_buildup,scenario-18
+SLOG-000309,2026-06-26T10:02:50.818421,branch-bhopal,WARN,LOCAL7,%INTERFACE-3-QUEUE_LIMIT: Interface GigabitEthernet0/2 output queue depth 76% of max,congestion_buildup,scenario-18
+SLOG-000644,2026-06-26T10:03:20,branch-ahmedabad,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.5.1 on GigabitEthernet0/0 from LOADING to FULL",normal,none
+SLOG-000304,2026-06-26T10:05:45.073767,branch-bhopal,WARN,LOCAL7,%MPLS-4-LDP_CONGESTION: LDP label space pressure on Loopback0,congestion_buildup,scenario-18
+SLOG-000313,2026-06-26T10:06:03.632044,branch-bhopal,WARN,LOCAL7,%INTERFACE-3-QUEUE_LIMIT: Interface Tunnel1 output queue depth 73% of max,congestion_buildup,scenario-18
+SLOG-000308,2026-06-26T10:07:39.532592,branch-nagpur,WARN,LOCAL7,"%IP-4-RTCHANGE: Route table instability detected, 222 routes flapping",congestion_buildup,scenario-18
+SLOG-000307,2026-06-26T10:17:18.789750,branch-nagpur,ERROR,LOCAL7,"%QOS-4-POLICY_BREACH: VoIP traffic dropped on Tunnel0, queue utilization 85%",congestion_buildup,scenario-18
+SLOG-000640,2026-06-26T10:28:46,branch-jaipur,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.10.1 Up,normal,none
+SLOG-000638,2026-06-26T10:29:59,branch-lucknow,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.11.1 on Tunnel0 from LOADING to FULL",normal,none
+SLOG-000295,2026-06-26T10:30:42.148642,branch-bhopal,WARN,LOCAL7,%INTERFACE-3-QUEUE_LIMIT: Interface TenGigabitEthernet0/0 output queue depth 97% of max,congestion_buildup,scenario-18
+SLOG-000641,2026-06-26T10:38:47,dc-mumbai,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000643,2026-06-26T10:41:15,branch-chandigarh,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface TenGigabitEthernet0/0, changed state to up",normal,none
+SLOG-000312,2026-06-26T10:47:28.497262,branch-nagpur,WARN,LOCAL7,%MPLS-4-LDP_CONGESTION: LDP label space pressure on GigabitEthernet0/1,congestion_buildup,scenario-18
+SLOG-000305,2026-06-26T10:49:18.507249,branch-nagpur,WARN,LOCAL7,"%IP-4-RTCHANGE: Route table instability detected, 484 routes flapping",congestion_buildup,scenario-18
+SLOG-000639,2026-06-26T10:54:12,branch-jaipur,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.10.1 on Tunnel1 from LOADING to FULL",normal,none
+SLOG-000637,2026-06-26T10:56:40,branch-kolkata,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface Tunnel0, changed state to up",normal,none
+SLOG-000642,2026-06-26T10:57:19,branch-chennai,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface GigabitEthernet0/0, changed state to up",normal,none
+SLOG-000650,2026-06-26T11:06:44,branch-chandigarh,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.9.1 on GigabitEthernet0/1 from LOADING to FULL",normal,none
+SLOG-000648,2026-06-26T11:24:06,branch-pune,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.4.1,normal,none
+SLOG-000647,2026-06-26T11:34:19,branch-lucknow,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.11.1 Up,normal,none
+SLOG-000301,2026-06-26T11:39:10.136007,branch-bhopal,WARN,LOCAL7,%MPLS-4-LDP_CONGESTION: LDP label space pressure on GigabitEthernet0/1,congestion_buildup,scenario-18
+SLOG-000300,2026-06-26T11:40:02.346047,branch-bhopal,ERROR,LOCAL7,"%QOS-4-POLICY_BREACH: VoIP traffic dropped on Tunnel1, queue utilization 70%",congestion_buildup,scenario-18
+SLOG-000299,2026-06-26T11:46:27.117921,branch-nagpur,WARN,LOCAL7,%INTERFACE-3-QUEUE_LIMIT: Interface GigabitEthernet0/2 output queue depth 92% of max,congestion_buildup,scenario-18
+SLOG-000649,2026-06-26T11:47:54,branch-kolkata,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.6.1 Up,normal,none
+SLOG-000311,2026-06-26T11:48:48.717176,branch-nagpur,WARN,LOCAL7,"%IP-4-RTCHANGE: Route table instability detected, 286 routes flapping",congestion_buildup,scenario-18
+SLOG-000646,2026-06-26T11:48:57,branch-bhopal,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.14.1,normal,none
+SLOG-000296,2026-06-26T11:51:16.611132,branch-bhopal,WARN,LOCAL7,%MPLS-4-LDP_CONGESTION: LDP label space pressure on Tunnel0,congestion_buildup,scenario-18
+SLOG-000645,2026-06-26T11:58:33,dc-mumbai,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.0.0.2,normal,none
+SLOG-000297,2026-06-26T12:08:15.888280,branch-nagpur,WARN,LOCAL7,%MPLS-4-LDP_CONGESTION: LDP label space pressure on GigabitEthernet0/2,congestion_buildup,scenario-18
+SLOG-000314,2026-06-26T12:13:34.444831,branch-nagpur,WARN,LOCAL7,%INTERFACE-3-QUEUE_LIMIT: Interface GigabitEthernet0/1 output queue depth 83% of max,congestion_buildup,scenario-18
+SLOG-000306,2026-06-26T12:14:13.043443,branch-nagpur,WARN,LOCAL7,%MPLS-4-LDP_CONGESTION: LDP label space pressure on GigabitEthernet0/2,congestion_buildup,scenario-18
+SLOG-000652,2026-06-26T12:15:47,branch-pune,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.4.1 on Loopback0 from LOADING to FULL",normal,none
+SLOG-000651,2026-06-26T12:17:11,branch-pune,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000655,2026-06-26T12:19:36,branch-pune,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.4.1 on TenGigabitEthernet0/0 from LOADING to FULL",normal,none
+SLOG-000654,2026-06-26T12:20:48,hub-delhi,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.0.0.1 on Loopback0 from LOADING to FULL",normal,none
+SLOG-000656,2026-06-26T12:21:04,branch-ahmedabad,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000657,2026-06-26T12:25:30,branch-jaipur,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.10.1 on GigabitEthernet0/2 from LOADING to FULL",normal,none
+SLOG-000303,2026-06-26T12:26:11.161714,branch-nagpur,WARN,LOCAL7,%MPLS-4-LDP_CONGESTION: LDP label space pressure on GigabitEthernet0/2,congestion_buildup,scenario-18
+SLOG-000653,2026-06-26T12:57:41,branch-guwahati,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.8.1,normal,none
+SLOG-000315,2026-06-26T13:05:55.032651,branch-jaipur,CRIT,LOCAL7,%LINEPROTO-2-UPDOWN: Interface GigabitEthernet0/2 changed state to down,link_flap,scenario-19
+SLOG-000328,2026-06-26T13:06:05.795938,branch-jaipur,CRIT,LOCAL7,%LINEPROTO-2-UPDOWN: Interface GigabitEthernet0/1 changed state to down,link_flap,scenario-19
+SLOG-000331,2026-06-26T13:14:10.018056,branch-jaipur,CRIT,LOCAL7,%LINEPROTO-2-UPDOWN: Interface GigabitEthernet0/0 changed state to down,link_flap,scenario-19
+SLOG-000317,2026-06-26T13:15:07.802560,branch-jaipur,INFO,LOCAL7,%LINEPROTO-6-UPDOWN: Interface Tunnel0 changed state to up,link_flap,scenario-19
+SLOG-000316,2026-06-26T13:20:09.876482,branch-jaipur,CRIT,LOCAL7,%LINEPROTO-2-UPDOWN: Interface Tunnel0 changed state to down,link_flap,scenario-19
+SLOG-000323,2026-06-26T13:21:26.565829,branch-jaipur,CRIT,LOCAL7,"%LINK-2-CHANGED: Interface GigabitEthernet0/1, changed state to administratively down",link_flap,scenario-19
+SLOG-000318,2026-06-26T13:24:23.773892,branch-jaipur,INFO,LOCAL7,%LINEPROTO-6-UPDOWN: Interface GigabitEthernet0/1 changed state to up,link_flap,scenario-19
+SLOG-000322,2026-06-26T13:26:02.611600,branch-jaipur,INFO,LOCAL7,%LINEPROTO-6-UPDOWN: Interface TenGigabitEthernet0/0 changed state to up,link_flap,scenario-19
+SLOG-000321,2026-06-26T13:26:19.601285,branch-jaipur,CRIT,LOCAL7,"%LINK-2-CHANGED: Interface GigabitEthernet0/2, changed state to administratively down",link_flap,scenario-19
+SLOG-000659,2026-06-26T13:27:57,dc-mumbai,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000325,2026-06-26T13:29:07.332207,branch-jaipur,CRIT,LOCAL7,"%LINK-2-CHANGED: Interface GigabitEthernet0/0, changed state to administratively down",link_flap,scenario-19
+SLOG-000329,2026-06-26T13:32:25.698835,branch-jaipur,INFO,LOCAL7,%LINEPROTO-6-UPDOWN: Interface TenGigabitEthernet0/0 changed state to up,link_flap,scenario-19
+SLOG-000661,2026-06-26T13:36:42,branch-bhopal,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.14.1 on Tunnel0 from LOADING to FULL",normal,none
+SLOG-000324,2026-06-26T13:42:34.734708,branch-jaipur,CRIT,LOCAL7,%LINEPROTO-2-UPDOWN: Interface GigabitEthernet0/0 changed state to down,link_flap,scenario-19
+SLOG-000660,2026-06-26T13:46:53,branch-bhubaneswar,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000327,2026-06-26T13:47:21.109984,branch-jaipur,CRIT,LOCAL7,%LINEPROTO-2-UPDOWN: Interface GigabitEthernet0/1 changed state to down,link_flap,scenario-19
+SLOG-000330,2026-06-26T13:47:42.574200,branch-jaipur,CRIT,LOCAL7,"%LINK-2-CHANGED: Interface Tunnel1, changed state to administratively down",link_flap,scenario-19
+SLOG-000319,2026-06-26T13:51:05.395798,branch-jaipur,CRIT,LOCAL7,"%LINK-2-CHANGED: Interface TenGigabitEthernet0/0, changed state to administratively down",link_flap,scenario-19
+SLOG-000658,2026-06-26T13:52:01,branch-guwahati,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.8.1 on Tunnel1 from LOADING to FULL",normal,none
+SLOG-000326,2026-06-26T13:56:01.144861,branch-jaipur,INFO,LOCAL7,%LINEPROTO-6-UPDOWN: Interface TenGigabitEthernet0/0 changed state to up,link_flap,scenario-19
+SLOG-000320,2026-06-26T13:57:40.151304,branch-jaipur,CRIT,LOCAL7,%LINEPROTO-2-UPDOWN: Interface GigabitEthernet0/0 changed state to down,link_flap,scenario-19
+SLOG-000662,2026-06-26T14:07:01,branch-chennai,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.2.1 Up,normal,none
+SLOG-000668,2026-06-26T14:12:31,branch-jaipur,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.10.1 Up,normal,none
+SLOG-000664,2026-06-26T14:27:46,branch-kochi,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.12.1,normal,none
+SLOG-000667,2026-06-26T14:35:56,branch-pune,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.4.1 on GigabitEthernet0/0 from LOADING to FULL",normal,none
+SLOG-000666,2026-06-26T14:40:27,branch-lucknow,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.11.1 Up,normal,none
+SLOG-000663,2026-06-26T14:58:45,branch-guwahati,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000665,2026-06-26T14:58:48,branch-hyderabad,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface Tunnel1, changed state to up",normal,none
+SLOG-000676,2026-06-26T15:08:30,branch-hyderabad,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.3.1 Up,normal,none
+SLOG-000673,2026-06-26T15:16:32,branch-chandigarh,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.9.1,normal,none
+SLOG-000675,2026-06-26T15:16:34,branch-hyderabad,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.3.1,normal,none
+SLOG-000674,2026-06-26T15:17:05,branch-lucknow,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.11.1,normal,none
+SLOG-000672,2026-06-26T15:38:59,branch-kochi,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface GigabitEthernet0/0, changed state to up",normal,none
+SLOG-000669,2026-06-26T15:40:59,branch-chandigarh,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.9.1,normal,none
+SLOG-000670,2026-06-26T15:48:38,branch-guwahati,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.8.1 on GigabitEthernet0/0 from LOADING to FULL",normal,none
+SLOG-000671,2026-06-26T15:49:51,branch-lucknow,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.11.1,normal,none
+SLOG-000683,2026-06-26T16:01:22,branch-ahmedabad,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000678,2026-06-26T16:03:57,branch-chandigarh,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000684,2026-06-26T16:06:55,branch-chennai,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000682,2026-06-26T16:07:22,branch-bhopal,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.14.1,normal,none
+SLOG-000680,2026-06-26T16:24:06,branch-guwahati,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface Tunnel1, changed state to up",normal,none
+SLOG-000681,2026-06-26T16:30:50,dc-mumbai,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.0.0.2 on Tunnel1 from LOADING to FULL",normal,none
+SLOG-000677,2026-06-26T16:35:26,dc-mumbai,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.0.0.2,normal,none
+SLOG-000337,2026-06-26T16:37:09.354664,branch-guwahati,CRIT,LOCAL7,%SLA-2-BREACH: Packet loss 80% exceeds SLA threshold of 1%,packet_loss_spike,scenario-20
+SLOG-000336,2026-06-26T16:39:16.577032,branch-guwahati,CRIT,LOCAL7,%SLA-2-BREACH: Packet loss 89% exceeds SLA threshold of 1%,packet_loss_spike,scenario-20
+SLOG-000679,2026-06-26T16:48:55,branch-lucknow,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.11.1,normal,none
+SLOG-000332,2026-06-26T16:59:01.126520,branch-guwahati,CRIT,LOCAL7,%SLA-2-BREACH: Packet loss 96% exceeds SLA threshold of 1%,packet_loss_spike,scenario-20
+SLOG-000339,2026-06-26T17:07:38.285007,branch-guwahati,WARN,LOCAL7,"%BFD-4-ECHO_FAIL: BFD echo failure on 10.1.8.1, loss detected",packet_loss_spike,scenario-20
+SLOG-000687,2026-06-26T17:10:45,branch-hyderabad,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface GigabitEthernet0/1, changed state to up",normal,none
+SLOG-000688,2026-06-26T17:17:05,dc-mumbai,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.0.0.2 Up,normal,none
+SLOG-000335,2026-06-26T17:23:45.160320,branch-guwahati,ERROR,LOCAL7,%INTERFACE-3-EXCESSIVE_LOSS: Packet loss 80% on Tunnel1,packet_loss_spike,scenario-20
+SLOG-000686,2026-06-26T17:24:51,branch-bhubaneswar,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.7.1 Up,normal,none
+SLOG-000685,2026-06-26T17:29:07,branch-lucknow,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.11.1 on GigabitEthernet0/1 from LOADING to FULL",normal,none
+SLOG-000338,2026-06-26T17:36:35.286052,branch-guwahati,CRIT,LOCAL7,%SLA-2-BREACH: Packet loss 75% exceeds SLA threshold of 1%,packet_loss_spike,scenario-20
+SLOG-000340,2026-06-26T18:08:14.493913,branch-guwahati,ERROR,LOCAL7,%INTERFACE-3-EXCESSIVE_LOSS: Packet loss 75% on Loopback0,packet_loss_spike,scenario-20
+SLOG-000693,2026-06-26T18:16:28,branch-hyderabad,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface Tunnel0, changed state to up",normal,none
+SLOG-000341,2026-06-26T18:17:01.627238,branch-guwahati,ERROR,LOCAL7,%INTERFACE-3-EXCESSIVE_LOSS: Packet loss 88% on GigabitEthernet0/0,packet_loss_spike,scenario-20
+SLOG-000333,2026-06-26T18:18:43.607277,branch-guwahati,WARN,LOCAL7,"%BFD-4-ECHO_FAIL: BFD echo failure on 10.1.8.1, loss detected",packet_loss_spike,scenario-20
+SLOG-000334,2026-06-26T18:28:59.794701,branch-guwahati,WARN,LOCAL7,"%BFD-4-ECHO_FAIL: BFD echo failure on 10.1.8.1, loss detected",packet_loss_spike,scenario-20
+SLOG-000692,2026-06-26T18:43:31,branch-bhubaneswar,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000690,2026-06-26T18:44:27,branch-bhopal,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.14.1,normal,none
+SLOG-000691,2026-06-26T18:47:00,branch-chandigarh,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface GigabitEthernet0/1, changed state to up",normal,none
+SLOG-000689,2026-06-26T18:57:43,dc-mumbai,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.0.0.2,normal,none
+SLOG-000343,2026-06-26T19:02:47.619125,branch-chennai,WARN,LOCAL7,%BGP-4-MAXPFX: Maximum prefix limit approaching on 10.1.2.1,bgp_route_flap,scenario-21
+SLOG-000346,2026-06-26T19:03:25.999191,branch-chennai,WARN,LOCAL7,%BGP-4-MAXPFX: Maximum prefix limit approaching on 10.1.2.1,bgp_route_flap,scenario-21
+SLOG-000345,2026-06-26T19:04:41.531917,branch-chennai,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.2.1 Up,bgp_route_flap,scenario-21
+SLOG-000700,2026-06-26T19:06:02,branch-ahmedabad,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.5.1 Up,normal,none
+SLOG-000347,2026-06-26T19:07:37.250798,branch-chennai,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.2.1 Up,bgp_route_flap,scenario-21
+SLOG-000349,2026-06-26T19:11:03.476221,branch-chennai,ERROR,LOCAL7,"%BGP-3-NOTIFICATION: BGP neighbor 10.1.2.1 Down, hold timer expired",bgp_route_flap,scenario-21
+SLOG-000344,2026-06-26T19:15:54.610987,branch-chennai,WARN,LOCAL7,%BGP-4-MAXPFX: Maximum prefix limit approaching on 10.1.2.1,bgp_route_flap,scenario-21
+SLOG-000342,2026-06-26T19:23:34.807638,branch-chennai,ERROR,LOCAL7,"%BGP-3-NOTIFICATION: BGP neighbor 10.1.2.1 Down, hold timer expired",bgp_route_flap,scenario-21
+SLOG-000348,2026-06-26T19:25:18.440144,branch-chennai,ERROR,LOCAL7,%BGP-3-ADJCHANGE: neighbor 10.1.2.1 Down BGP Notification sent,bgp_route_flap,scenario-21
+SLOG-000697,2026-06-26T19:32:23,branch-kochi,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000701,2026-06-26T19:35:03,branch-chandigarh,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.9.1 Up,normal,none
+SLOG-000698,2026-06-26T19:35:36,branch-jaipur,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.10.1 Up,normal,none
+SLOG-000694,2026-06-26T19:47:08,branch-kochi,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000696,2026-06-26T19:53:11,branch-kochi,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.12.1,normal,none
+SLOG-000695,2026-06-26T19:55:45,branch-bhubaneswar,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface Tunnel1, changed state to up",normal,none
+SLOG-000699,2026-06-26T19:57:00,branch-pune,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.4.1 Up,normal,none
+SLOG-000706,2026-06-26T20:03:07,branch-nagpur,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.13.1 Up,normal,none
+SLOG-000702,2026-06-26T20:10:36,branch-bhubaneswar,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.7.1 on Loopback0 from LOADING to FULL",normal,none
+SLOG-000703,2026-06-26T20:23:23,branch-jaipur,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.10.1,normal,none
+SLOG-000704,2026-06-26T20:47:39,branch-chennai,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.2.1,normal,none
+SLOG-000705,2026-06-26T20:51:20,branch-chennai,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.2.1 Up,normal,none
+SLOG-000707,2026-06-26T21:00:39,branch-lucknow,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.11.1 on GigabitEthernet0/2 from LOADING to FULL",normal,none
+SLOG-000709,2026-06-26T21:08:05,branch-jaipur,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.10.1 Up,normal,none
+SLOG-000708,2026-06-26T21:16:10,branch-kochi,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface Tunnel1, changed state to up",normal,none
+SLOG-000711,2026-06-26T21:43:33,branch-pune,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.4.1 Up,normal,none
+SLOG-000710,2026-06-26T21:55:20,branch-kolkata,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface GigabitEthernet0/1, changed state to up",normal,none
+SLOG-000351,2026-06-26T22:01:46.861992,hub-delhi,WARN,LOCAL7,%MPLS-4-LDP_CONGESTION: LDP label space pressure on GigabitEthernet0/1,congestion_buildup,scenario-22
+SLOG-000355,2026-06-26T22:10:31.788763,hub-delhi,WARN,LOCAL7,"%IP-4-RTCHANGE: Route table instability detected, 212 routes flapping",congestion_buildup,scenario-22
+SLOG-000361,2026-06-26T22:13:09.687817,hub-delhi,ERROR,LOCAL7,"%QOS-4-POLICY_BREACH: VoIP traffic dropped on GigabitEthernet0/0, queue utilization 81%",congestion_buildup,scenario-22
+SLOG-000359,2026-06-26T22:22:42.039957,hub-delhi,WARN,LOCAL7,%MPLS-4-LDP_CONGESTION: LDP label space pressure on Loopback0,congestion_buildup,scenario-22
+SLOG-000716,2026-06-26T22:24:25,branch-pune,INFO,LOCAL7,"%OSPF-5-ADJCHG: Process 1, Nbr 10.1.4.1 on Tunnel1 from LOADING to FULL",normal,none
+SLOG-000357,2026-06-26T22:31:17.376589,hub-delhi,WARN,LOCAL7,%INTERFACE-3-QUEUE_LIMIT: Interface GigabitEthernet0/2 output queue depth 99% of max,congestion_buildup,scenario-22
+SLOG-000350,2026-06-26T22:36:00.266471,hub-delhi,ERROR,LOCAL7,"%QOS-4-POLICY_BREACH: VoIP traffic dropped on GigabitEthernet0/0, queue utilization 89%",congestion_buildup,scenario-22
+SLOG-000714,2026-06-26T22:36:50,branch-bhopal,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.1.14.1 Up,normal,none
+SLOG-000360,2026-06-26T22:40:08.196354,hub-delhi,WARN,LOCAL7,"%IP-4-RTCHANGE: Route table instability detected, 377 routes flapping",congestion_buildup,scenario-22
+SLOG-000354,2026-06-26T22:43:06.722172,hub-delhi,WARN,LOCAL7,%MPLS-4-LDP_CONGESTION: LDP label space pressure on Tunnel0,congestion_buildup,scenario-22
+SLOG-000713,2026-06-26T22:44:14,hub-delhi,INFO,LOCAL7,%BGP-5-ADJCHANGE: neighbor 10.0.0.1 Up,normal,none
+SLOG-000712,2026-06-26T22:45:50,branch-bhopal,INFO,LOCAL7,"%LINK-3-UPDOWN: Interface Loopback0, changed state to up",normal,none
+SLOG-000715,2026-06-26T22:54:28,branch-jaipur,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.10.1,normal,none
+SLOG-000353,2026-06-26T22:55:43.520472,hub-delhi,ERROR,LOCAL7,"%QOS-4-POLICY_BREACH: VoIP traffic dropped on Tunnel1, queue utilization 92%",congestion_buildup,scenario-22
+SLOG-000718,2026-06-26T23:03:19,branch-kolkata,INFO,LOCAL7,%SYS-5-CONFIG_I: Configured from console by admin,normal,none
+SLOG-000358,2026-06-26T23:05:25.824170,hub-delhi,ERROR,LOCAL7,"%QOS-4-POLICY_BREACH: VoIP traffic dropped on GigabitEthernet0/1, queue utilization 77%",congestion_buildup,scenario-22
+SLOG-000356,2026-06-26T23:15:35.058659,hub-delhi,WARN,LOCAL7,"%IP-4-RTCHANGE: Route table instability detected, 13 routes flapping",congestion_buildup,scenario-22
+SLOG-000352,2026-06-26T23:16:28.150772,hub-delhi,WARN,LOCAL7,%INTERFACE-3-QUEUE_LIMIT: Interface Tunnel1 output queue depth 70% of max,congestion_buildup,scenario-22
+SLOG-000717,2026-06-26T23:34:15,branch-guwahati,DEBUG,LOCAL7,%SNMP-6-AUTHFAIL: Authentication failure for SNMP from 10.1.8.1,normal,none

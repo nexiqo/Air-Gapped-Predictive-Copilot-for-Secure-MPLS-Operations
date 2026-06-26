@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import pickle
 from pathlib import Path
-
 import pandas as pd
 
 try:
@@ -13,7 +12,6 @@ except ImportError as exc:
     raise SystemExit(
         "scikit-learn is required to train the baseline model. Install requirements.txt first."
     ) from exc
-
 
 ROOT = Path(__file__).resolve().parents[1]
 INPUT_PATH = ROOT / "data" / "telemetry" / "features.csv"
@@ -30,8 +28,13 @@ FEATURE_COLUMNS = [
     "tunnel_rekeys_15m",
     "error_rate_pct",
     "queue_depth_pct",
+    "latency_delta",
+    "jitter_delta",
+    "loss_delta",
+    "util_rolling_mean",
+    "latency_rolling_mean",
+    "loss_rolling_mean",
 ]
-
 
 def main() -> None:
     MODEL_DIR.mkdir(parents=True, exist_ok=True)
@@ -45,21 +48,21 @@ def main() -> None:
     )
 
     model = RandomForestClassifier(
-        n_estimators=200,
-        max_depth=8,
+        n_estimators=100,
+        max_depth=10,
         random_state=42,
         class_weight="balanced",
     )
     model.fit(X_train, y_train)
 
     predictions = model.predict(X_test)
+    print("Model Evaluation Report:")
     print(classification_report(y_test, predictions, digits=3))
 
     artifact = {"model": model, "features": FEATURE_COLUMNS}
     with MODEL_PATH.open("wb") as handle:
         pickle.dump(artifact, handle)
     print(f"Saved model artifact to {MODEL_PATH}")
-
 
 if __name__ == "__main__":
     main()

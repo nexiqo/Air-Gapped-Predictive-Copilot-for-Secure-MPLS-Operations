@@ -1,0 +1,175 @@
+{
+  "generated_at": "2026-06-27T00:00:00",
+  "simulation_window_hours": 72,
+  "network_health": "DEGRADED",
+  "global_risk_level": "HIGH",
+  "most_critical_issue": "Progressive congestion on hub-delhi \u2014 Branch-Bengaluru link. SLA breach risk.",
+  "most_at_risk_site": "branch-bengaluru",
+  "next_likely_failure": "branch-guwahati packet loss spike \u2014 ETA 7 minutes",
+  "overall_summary": "The network is operating in a degraded state. 3 sites are in active fault conditions. 22 fault scenarios have been injected across the simulation window. The ML engine has generated predictions with average lead time of 8.7 minutes before impact. CRITICAL issues active: hub-delhi route flap cascade and Bengaluru progressive congestion. NOC intervention required immediately on 3 sites.",
+  "alerts": {
+    "total": 22,
+    "critical": 5,
+    "high": 11,
+    "medium": 6,
+    "low": 0,
+    "active": 4,
+    "resolved": 18
+  },
+  "prediction_engine": {
+    "model_types": [
+      "LSTM Autoencoder",
+      "Prophet Forecaster",
+      "XGBoost Classifier"
+    ],
+    "average_lead_time_minutes": 8.7,
+    "overall_accuracy_pct": 89,
+    "total_predictions_made": 22,
+    "correct_predictions": 22,
+    "false_positives": 2
+  },
+  "sites": {
+    "total": 16,
+    "healthy": 16,
+    "warning": 0,
+    "degraded": 0,
+    "critical": 0
+  },
+  "sla": {
+    "compliant_sites": 14,
+    "at_risk_sites": 0,
+    "breached_incidents": 9
+  },
+  "top_risk_branches": [
+    {
+      "id": "branch-nagpur",
+      "name": "Nagpur",
+      "risk_score": 5.8,
+      "risk_level": "LOW"
+    },
+    {
+      "id": "branch-bhubaneswar",
+      "name": "Bhubaneswar",
+      "risk_score": 3.5,
+      "risk_level": "LOW"
+    },
+    {
+      "id": "branch-chandigarh",
+      "name": "Chandigarh",
+      "risk_score": 2.9,
+      "risk_level": "LOW"
+    },
+    {
+      "id": "branch-hyderabad",
+      "name": "Hyderabad",
+      "risk_score": 2.7,
+      "risk_level": "LOW"
+    },
+    {
+      "id": "branch-bhopal",
+      "name": "Bhopal",
+      "risk_score": 2.6,
+      "risk_level": "LOW"
+    }
+  ],
+  "recent_predictions": [
+    {
+      "prediction_id": "PRED-0018",
+      "timestamp": "2026-06-26T09:18:01.828132",
+      "predicted_fault_type": "congestion_buildup",
+      "predicted_at_site": "branch-bhopal",
+      "affected_scope": "branch-bhopal, branch-nagpur",
+      "confidence": 0.96,
+      "anomaly_score": 0.94,
+      "xgb_fault_probability": 0.954,
+      "prophet_breach_eta_minutes": 4.9,
+      "severity_forecast": "HIGH",
+      "reasoning": "LSTM reconstruction error exceeded 3\u03c3 threshold. Bandwidth utilization trending +2.3%/min over last 8 samples.",
+      "related_runbooks": "RB-002, RB-005",
+      "recommended_action_1": "Apply rate-limiting on bulk traffic classes immediately",
+      "actual_fault_start": "2026-06-26T09:30:00",
+      "actual_lead_time_achieved": 4.9,
+      "prediction_correct": "YES",
+      "incident_reference": "INC-0018"
+    },
+    {
+      "prediction_id": "PRED-0019",
+      "timestamp": "2026-06-26T12:52:57.862428",
+      "predicted_fault_type": "link_flap",
+      "predicted_at_site": "branch-jaipur",
+      "affected_scope": "branch-jaipur, branch-jaipur",
+      "confidence": 0.937,
+      "anomaly_score": 0.866,
+      "xgb_fault_probability": 0.91,
+      "prophet_breach_eta_minutes": 4.3,
+      "severity_forecast": "MEDIUM",
+      "reasoning": "Anomaly score elevated. Multi-signal precursor detected.",
+      "related_runbooks": "RB-005",
+      "recommended_action_1": "Investigate and apply relevant runbook",
+      "actual_fault_start": "2026-06-26T13:00:00",
+      "actual_lead_time_achieved": 4.3,
+      "prediction_correct": "YES",
+      "incident_reference": "INC-0019"
+    },
+    {
+      "prediction_id": "PRED-0020",
+      "timestamp": "2026-06-26T16:20:18.632073",
+      "predicted_fault_type": "packet_loss_spike",
+      "predicted_at_site": "branch-guwahati",
+      "affected_scope": "branch-guwahati, branch-hyderabad, branch-chandigarh",
+      "confidence": 0.879,
+      "anomaly_score": 0.848,
+      "xgb_fault_probability": 0.908,
+      "prophet_breach_eta_minutes": 12.5,
+      "severity_forecast": "HIGH",
+      "reasoning": "SNMP ifInErrors rising at 12 errors/30s \u2014 elevated vs normal baseline of 0.1/30s.",
+      "related_runbooks": "RB-005, RB-002",
+      "recommended_action_1": "Run extended ping to isolate faulty hop, check physical layer",
+      "actual_fault_start": "2026-06-26T16:30:00",
+      "actual_lead_time_achieved": 12.5,
+      "prediction_correct": "YES",
+      "incident_reference": "INC-0020"
+    },
+    {
+      "prediction_id": "PRED-0021",
+      "timestamp": "2026-06-26T18:48:38.170446",
+      "predicted_fault_type": "bgp_route_flap",
+      "predicted_at_site": "branch-chennai",
+      "affected_scope": "branch-chennai",
+      "confidence": 0.869,
+      "anomaly_score": 0.807,
+      "xgb_fault_probability": 0.846,
+      "prophet_breach_eta_minutes": 11.2,
+      "severity_forecast": "CRITICAL",
+      "reasoning": "BGP prefix count variance elevated (\u00b13 prefixes/30s vs normal \u00b10.2).",
+      "related_runbooks": "RB-001, RB-004",
+      "recommended_action_1": "Increase BGP hold-time to 90s and enable route dampening",
+      "actual_fault_start": "2026-06-26T19:00:00",
+      "actual_lead_time_achieved": 11.2,
+      "prediction_correct": "YES",
+      "incident_reference": "INC-0021"
+    },
+    {
+      "prediction_id": "PRED-0022",
+      "timestamp": "2026-06-26T21:52:02.879774",
+      "predicted_fault_type": "congestion_buildup",
+      "predicted_at_site": "hub-delhi",
+      "affected_scope": "hub-delhi",
+      "confidence": 0.833,
+      "anomaly_score": 0.769,
+      "xgb_fault_probability": 0.826,
+      "prophet_breach_eta_minutes": 10.9,
+      "severity_forecast": "HIGH",
+      "reasoning": "Queue depth showing exponential increase pattern matching historical congestion precursor in INC-002.",
+      "related_runbooks": "RB-002, RB-005",
+      "recommended_action_1": "Apply rate-limiting on bulk traffic classes immediately",
+      "actual_fault_start": "2026-06-26T22:00:00",
+      "actual_lead_time_achieved": 10.9,
+      "prediction_correct": "YES",
+      "incident_reference": "INC-0022"
+    }
+  ],
+  "air_gap_status": "COMPLIANT \u2014 No outbound network connections detected",
+  "llm_status": "Ollama LLaMA3 8B \u2014 Running locally on localhost:11434",
+  "rag_status": "ChromaDB \u2014 48 documents indexed \u2014 All offline"
+}

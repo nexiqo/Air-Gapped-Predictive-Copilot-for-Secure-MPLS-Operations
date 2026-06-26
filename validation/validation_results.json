@@ -1,0 +1,38 @@
+[
+  {
+    "scenario": "progressive_congestion",
+    "link": "mumbai-bangalore",
+    "expected_issue": "congestion_buildup",
+    "status": "PASSED",
+    "lead_time_minutes": 60,
+    "confidence": 0.9996049814397031,
+    "passed": true
+  },
+  {
+    "scenario": "bgp_route_flap",
+    "link": "mumbai-delhi",
+    "expected_issue": "routing_instability",
+    "status": "PASSED",
+    "lead_time_minutes": 60,
+    "confidence": 0.9988257439266374,
+    "passed": true
+  },
+  {
+    "scenario": "mpls_tunnel_degradation",
+    "link": "mumbai-kochi",
+    "expected_issue": "tunnel_health_drop",
+    "status": "PASSED",
+    "lead_time_minutes": 60,
+    "confidence": 0.999831460926545,
+    "passed": true
+  },
+  {
+    "scenario": "controller_policy_drift",
+    "link": "mumbai-ahmedabad",
+    "expected_issue": "policy_drift",
+    "status": "PASSED",
+    "lead_time_minutes": 50,
+    "confidence": 0.9854059733191369,
+    "passed": true
+  }
+]
