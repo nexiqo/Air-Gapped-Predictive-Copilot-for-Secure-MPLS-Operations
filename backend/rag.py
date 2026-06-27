@@ -15,6 +15,11 @@ from backend.data_loader import (
     DATA_DIR
 )
 
+# Path to the live Loop Engine state document written by loop_engine.py
+ROOT = Path(__file__).resolve().parents[1]
+STATE_MD_PATH = ROOT / "STATE.md"
+LOOP_STATE_JSON = ROOT / "data" / "loop_state.json"
+
 # Suppress Hugging Face download warning logs in console if offline
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
@@ -245,6 +250,124 @@ class RAGService:
                 ids=all_ids
             )
 
+        # Seed the Loop Engine live state document on startup
+        self.refresh_live_docs()
+
+    def refresh_live_docs(self) -> None:
+        """
+        Read the Loop Engine's live STATE.md and loop_state.json and upsert them
+        as real searchable RAG documents. Called on startup and on every query so
+        the Copilot always has the freshest loop knowledge.
+        """
+        import json as _json, time as _time
+
+        # ── 1. Build a rich text document from the live Loop Engine singleton ──
+        try:
+            from backend.loop_engine import loop_engine
+            active = list(loop_engine.active_loops.values())
+            history = list(loop_engine.history)
+        except Exception:
+            active, history = [], []
+
+        lines = [
+            "LIVE LOOP ENGINE STATE DOCUMENT — updated every query",
+            f"Timestamp: {_time.strftime('%Y-%m-%d %H:%M:%S')}",
+            "",
+            "ACTIVE MAKER-CHECKER VERIFICATION LOOPS:"
+        ]
+
+        if active:
+            for loop in active:
+                checklist = " | ".join(
+                    f"{s['label']} [{s['status'].upper()}]"
+                    for s in loop.get("checklist", [])
+                )
+                lines.append(
+                    f"Loop {loop['incident_id']} on node {loop['node_id']} "
+                    f"({loop['incident_type']}): phase={loop['phase']}, "
+                    f"latency={loop.get('last_metrics', {}).get('latency_ms', '?')}ms, "
+                    f"packet_loss={loop.get('last_metrics', {}).get('packet_loss_pct', '?')}%, "
+                    f"triggered_at={loop.get('trigger_time', '?')}, "
+                    f"checklist=[{checklist}]"
+                )
+        else:
+            lines.append("No active loops. All monitored incidents are stable.")
+
+        lines.append("")
+        lines.append("COMPLETED LOOP HISTORY (last 10 entries):")
+        if history:
+            for h in history[-10:]:
+                badge = "AUTO-RESOLVED" if h.get("status") == "resolved" else "ESCALATED-TO-NOC"
+                lines.append(
+                    f"[{badge}] Node {h.get('node_id','?')} — "
+                    f"{h.get('incident_type','?')} — "
+                    f"completed at {h.get('completion_time', '?')}"
+                )
+        else:
+            lines.append("No completed loops yet.")
+
+        # ── 2. Also read STATE.md if it exists (written by loop_engine.py) ──
+        try:
+            if STATE_MD_PATH.exists():
+                state_md_text = STATE_MD_PATH.read_text(encoding="utf-8")[:2000]
+                lines.append("")
+                lines.append("STATE.md SNAPSHOT:")
+                lines.append(state_md_text)
+        except Exception:
+            pass
+
+        loop_doc = "\n".join(lines)
+
+        # ── 3. Upsert into the active index ──
+        loop_doc_id = "LOOP-ENGINE-LIVE-STATE"
+        loop_meta = {
+            "type": "loop_engine",
+            "id": loop_doc_id,
+            "title": "Live Loop Engine Maker-Checker State"
+        }
+
+        if self.use_fallback:
+            # For fallback: find and replace or append
+            existing = next(
+                (i for i, d in enumerate(self.fallback_db.documents)
+                 if d["id"] == loop_doc_id), None
+            )
+            if existing is not None:
+                self.fallback_db.documents[existing]["document"] = loop_doc
+                self.fallback_db.doc_tokens_list[existing] = TOKEN_RE.findall(loop_doc.lower())
+            else:
+                self.fallback_db.documents.append({
+                    "id": loop_doc_id,
+                    "document": loop_doc,
+                    "metadata": loop_meta
+                })
+                self.fallback_db.doc_tokens_list.append(TOKEN_RE.findall(loop_doc.lower()))
+
+            # Rebuild IDF with updated vocab
+            all_tokens_lists = self.fallback_db.doc_tokens_list
+            total_docs = len(all_tokens_lists)
+            doc_frequencies: Counter = Counter()
+            new_vocab: set[str] = set()
+            for tokens in all_tokens_lists:
+                unique = set(tokens)
+                new_vocab.update(unique)
+                for t in unique:
+                    doc_frequencies[t] += 1
+            self.fallback_db.vocab = new_vocab
+            self.fallback_db.idf = {
+                term: math.log(1.0 + (total_docs / (1.0 + doc_frequencies[term])))
+                for term in new_vocab
+            }
+        else:
+            try:
+                self.collection.upsert(
+                    documents=[loop_doc],
+                    metadatas=[loop_meta],
+                    ids=[loop_doc_id]
+                )
+            except Exception as e:
+                print(f"[RAG] Loop Engine doc upsert failed: {e}")
+
     def doc_count(self) -> int:
         """Return total number of indexed documents."""
         try:
@@ -255,6 +378,10 @@ class RAGService:
             return 0
 
     def query(self, query_text: str, limit: int = 4) -> list[dict[str, Any]]:
+        # Refresh the live Loop Engine document on every query so the
+        # Copilot always has the most current loop state as a RAG source.
+        self.refresh_live_docs()
+
         if self.use_fallback:
             return self.fallback_db.search(query_text, limit=limit)
         
