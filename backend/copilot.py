@@ -50,6 +50,43 @@ class CopilotService:
             "mode": "LLaMA 3 (Offline)" if available else "Deterministic Fallback"
         }
 
+    def _get_loop_engine_context(self) -> str:
+        """Fetch the live Loop Engine state and format it as Copilot-readable context."""
+        try:
+            from backend.loop_engine import loop_engine
+            active = list(loop_engine.active_loops.values())
+            history = list(loop_engine.history)
+
+            lines = ["LOOP ENGINE — AUTONOMOUS MAKER-CHECKER STATUS:"]
+
+            if active:
+                lines.append(f"  Active verification loops ({len(active)}):")
+                for loop in active:
+                    checklist_summary = ", ".join(
+                        f"{s['label']} [{s['status'].upper()}]" for s in loop.get("checklist", [])
+                    )
+                    lines.append(
+                        f"  • Incident {loop['incident_id']} on {loop['node_id'].upper()}: "
+                        f"Type={loop['incident_type']} | Phase={loop['phase']} | "
+                        f"Latency={loop.get('last_metrics', {}).get('latency_ms', '?')}ms | "
+                        f"Loss={loop.get('last_metrics', {}).get('packet_loss_pct', '?')}% | "
+                        f"Checklist: [{checklist_summary}]"
+                    )
+            else:
+                lines.append("  No active verification loops. All monitored incidents are stable.")
+
+            if history:
+                resolved = [h for h in history if h.get("status") == "resolved"]
+                escalated = [h for h in history if h.get("status") == "escalated"]
+                lines.append(f"  Loop history: {len(resolved)} auto-resolved, {len(escalated)} escalated to NOC operator.")
+                for h in history[-3:]:
+                    badge = "AUTO-RESOLVED" if h["status"] == "resolved" else "ESCALATED"
+                    lines.append(f"  • [{badge}] {h['node_id'].upper()} — {h['incident_type']} at {h.get('completion_time', '?')}")
+
+            return "\n".join(lines)
+        except Exception as e:
+            return f"LOOP ENGINE: Unavailable ({e})"
+
     def _build_live_context(self, active_incidents: list[dict] | None, live_branches: list[dict] | None) -> str:
         lines = []
         
@@ -65,6 +102,10 @@ class CopilotService:
         lines.append(f"- Route Optimization: {'ENABLED' if GLOBAL_POLICIES.get('load_balancers') else 'DISABLED'}")
         if GLOBAL_POLICIES.get("maintenance_nodes"):
             lines.append(f"- Sites in Maintenance Mode: {', '.join(GLOBAL_POLICIES['maintenance_nodes'])}")
+        lines.append("")
+
+        # 2. Inject Loop Engine live state
+        lines.append(self._get_loop_engine_context())
         lines.append("")
 
         if active_incidents:
@@ -147,7 +188,10 @@ class CopilotService:
             "latency", "packet", "loss", "utilization", "status", "error", "flap", "failure", "alert", 
             "ping", "diagnose", "issue", "prediction", "warning", "critical", "bengaluru", "mumbai", 
             "delhi", "chennai", "hyderabad", "pune", "ahmedabad", "kolkata", "bhubaneswar", "guwahati", 
-            "chandigarh", "jaipur", "lucknow", "kochi", "nagpur", "bhopal"
+            "chandigarh", "jaipur", "lucknow", "kochi", "nagpur", "bhopal",
+            # Loop Engine keywords
+            "loop", "verify", "verification", "maker", "checker", "escalat", "mitigat", "triage",
+            "autonomous", "auto-fix", "autofix", "self-heal", "loop engine", "start loop"
         ]
         q_lower = question.lower()
         is_noc_query = any(kw in q_lower for kw in noc_keywords)
@@ -308,8 +352,128 @@ Return ONLY valid JSON, no other text."""
             "latency", "packet", "loss", "utilization", "status", "error", "flap", "failure", "alert", 
             "ping", "diagnose", "issue", "prediction", "warning", "critical", "bengaluru", "mumbai", 
             "delhi", "chennai", "hyderabad", "pune", "ahmedabad", "kolkata", "bhubaneswar", "guwahati", 
-            "chandigarh", "jaipur", "lucknow", "kochi", "nagpur", "bhopal"
+            "chandigarh", "jaipur", "lucknow", "kochi", "nagpur", "bhopal",
+            "loop", "verify", "verification", "maker", "checker", "escalat", "mitigat", "triage",
+            "autonomous", "auto-fix", "autofix", "self-heal", "loop engine", "start loop"
         ]
+
+        # ── Loop Engine Intent: "what is the loop engine doing?" ──────────────
+        loop_query_keywords = ["loop", "loop engine", "maker", "checker", "verify", "verification",
+                               "escalat", "autonomous", "self-heal", "triage", "mitigat"]
+        start_loop_keywords = ["start loop", "start a loop", "register loop", "begin loop", "create loop"]
+
+        if any(kw in q_lower for kw in start_loop_keywords):
+            # Try to figure out which node the user wants to loop on
+            all_node_ids = ["branch-bengaluru", "branch-mumbai", "branch-chennai", "branch-hyderabad",
+                            "branch-pune", "branch-ahmedabad", "branch-kolkata", "branch-bhubaneswar",
+                            "branch-guwahati", "branch-chandigarh", "branch-jaipur", "branch-lucknow",
+                            "branch-kochi", "branch-nagpur", "branch-bhopal"]
+            matched_node = next((n for n in all_node_ids if n.replace("branch-", "") in q_lower), None)
+
+            if matched_node and active_incidents:
+                inc = next((i for i in active_incidents if i.get("nodeId") == matched_node and i.get("status") == "active"), None)
+                if inc:
+                    try:
+                        from backend.loop_engine import loop_engine
+                        loop_engine.register_loop(
+                            inc["id"], matched_node, inc["type"],
+                            {"latency_ms": inc.get("metrics", {}).get("latency_ms", 75.0),
+                             "packet_loss_pct": inc.get("metrics", {}).get("packet_loss_pct", 2.0)}
+                        )
+                        node_name = matched_node.replace("branch-", "").title()
+                        return {
+                            "predicted_issue": f"LOOP REGISTERED: {inc['type'].upper()}",
+                            "confidence": 1.0,
+                            "current_state": f"Loop Engine has registered a Maker-Checker verification loop for incident {inc['id']} on {node_name}.",
+                            "why_risky": "Loop Engine will autonomously apply mitigations and verify recovery.",
+                            "affected_scope": matched_node.upper(),
+                            "time_to_impact": "Loop resolves in ~25 seconds",
+                            "time_to_impact_minutes": 0.5,
+                            "recommended_actions": [
+                                f"Loop Engine Phase 1: Triage — anomaly logged for {node_name}",
+                                f"Loop Engine Phase 2: Mitigation (Maker) — policies will be auto-applied",
+                                f"Loop Engine Phase 3: Verification (Checker) — telemetry polling every 5s",
+                                "Check the Loop Engine tab to track live phase progress"
+                            ],
+                            "evidence": [{"source": inc['id'], "title": f"Active Incident on {node_name}"}],
+                            "narrative": f"Loop Engine has started a Maker-Checker cycle for {inc['type']} on {node_name}. "
+                                         f"It will automatically apply mitigation policies and verify that latency drops below 25ms and packet loss below 0.2%. "
+                                         f"If unresolved in 25 seconds, it will escalate to you. Track it live on the Loop Engine dashboard.",
+                            "generated_by": "Loop Engine Intent Handler"
+                        }
+                    except Exception as e:
+                        pass
+
+            return {
+                "predicted_issue": "LOOP ENGINE — NO ACTIVE INCIDENT TO LOOP",
+                "confidence": 0.9,
+                "current_state": "No active incident found for the specified node to register a loop.",
+                "why_risky": "A loop can only be registered when an active incident exists on a node.",
+                "affected_scope": matched_node.upper() if matched_node else "Unknown",
+                "time_to_impact": "N/A",
+                "time_to_impact_minutes": 0.0,
+                "recommended_actions": ["Check if the node has an active incident in the Alerts tab",
+                                         "Try: 'What is the status of Bengaluru?' first"],
+                "evidence": [],
+                "narrative": "There is no active incident on that node right now so no loop can be registered. Once an incident is detected, say 'start a loop on Bengaluru' again.",
+                "generated_by": "Loop Engine Intent Handler"
+            }
+
+        if any(kw in q_lower for kw in loop_query_keywords):
+            loop_ctx = self._get_loop_engine_context()
+            try:
+                from backend.loop_engine import loop_engine
+                active = list(loop_engine.active_loops.values())
+                history = list(loop_engine.history)
+            except Exception:
+                active, history = [], []
+
+            resolved_count = len([h for h in history if h.get("status") == "resolved"])
+            escalated_count = len([h for h in history if h.get("status") == "escalated"])
+
+            if active:
+                loop = active[0]
+                phase_desc = {
+                    "TRIAGE": "detecting and logging the anomaly",
+                    "MITIGATION": "applying autonomous firewall and QoS mitigation policies (Maker phase)",
+                    "VERIFICATION": "polling live telemetry every 5 seconds to verify recovery (Checker phase)",
+                    "ESCALATED": "escalating to the NOC operator — automatic fix failed",
+                    "COMPLETED": "completed successfully"
+                }.get(loop["phase"], loop["phase"])
+                narrative = (
+                    f"The Loop Engine is currently active. It is monitoring incident {loop['incident_id']} "
+                    f"({loop['incident_type']}) on {loop['node_id'].upper()}. "
+                    f"Current phase: {loop['phase']} — {phase_desc}. "
+                    f"Live metrics: Latency={loop.get('last_metrics', {}).get('latency_ms', '?')}ms, "
+                    f"Packet Loss={loop.get('last_metrics', {}).get('packet_loss_pct', '?')}%. "
+                    f"Historical record: {resolved_count} auto-resolved, {escalated_count} escalated."
+                )
+            else:
+                narrative = (
+                    f"The Loop Engine is running but has no active loops right now — all incidents are stable. "
+                    f"Historical record: {resolved_count} incidents auto-resolved, {escalated_count} escalated to NOC. "
+                    f"When a new incident is detected, the engine will automatically start a Maker-Checker cycle. "
+                    f"You can also manually trigger one by saying 'start a loop on [branch name]'."
+                )
+
+            return {
+                "predicted_issue": "LOOP ENGINE STATUS REPORT",
+                "confidence": 1.0,
+                "current_state": f"{len(active)} active loop(s) running",
+                "why_risky": loop_ctx,
+                "affected_scope": ", ".join([l['node_id'].upper() for l in active]) or "None",
+                "time_to_impact": "Continuous monitoring",
+                "time_to_impact_minutes": 0.0,
+                "recommended_actions": [
+                    "Check Loop Engine tab for live phase progress and checklist",
+                    "Say 'start a loop on [branch]' to manually register a new loop",
+                    f"{resolved_count} incidents have been auto-resolved by the engine",
+                    f"{escalated_count} incidents escalated (manual intervention required)"
+                ],
+                "evidence": [{"source": "LOOP-ENGINE", "title": "Autonomous Maker-Checker Engine"}],
+                "narrative": narrative,
+                "generated_by": "Loop Engine Status Reporter"
+            }
         is_noc = any(kw in q_lower for kw in noc_keywords)
 
         if not is_noc:
