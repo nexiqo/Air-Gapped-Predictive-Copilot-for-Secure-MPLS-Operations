@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
 import ReactFlow, {
   Background,
   Controls,
@@ -7,15 +7,35 @@ import ReactFlow, {
   useEdgesState,
   addEdge,
   MarkerType,
+  useReactFlow,
+  ReactFlowProvider,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import './TopologyCanvas.css';
 
-function TopologyCanvas({ topology: propTopology, onNodeSelect, onEdgeSelect, selectedNode, selectedEdge, filters }) {
+function TopologyCanvasInner({ topology: propTopology, onNodeSelect, onEdgeSelect, selectedNode, selectedEdge, filters }) {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [topologyData, setTopologyData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { fitView, zoomIn, zoomOut } = useReactFlow();
+
+  // Keyboard shortcuts: F=fit view, Escape=deselect, +/-=zoom
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (e.key === 'f' || e.key === 'F') { e.preventDefault(); fitView({ duration: 400, padding: 0.15 }); }
+      if (e.key === 'Escape') { onNodeSelect && onNodeSelect(null); onEdgeSelect && onEdgeSelect(null); }
+      if (e.key === '=' || e.key === '+') { e.preventDefault(); zoomIn({ duration: 200 }); }
+      if (e.key === '-') { e.preventDefault(); zoomOut({ duration: 200 }); }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [fitView, zoomIn, zoomOut, onNodeSelect, onEdgeSelect]);
+
+  const onInit = useCallback((rf) => {
+    setTimeout(() => rf.fitView({ duration: 600, padding: 0.15 }), 100);
+  }, []);
 
   // Trigger transformation when prop topology or filters change (for live updates!)
   useEffect(() => {
@@ -412,7 +432,23 @@ function TopologyCanvas({ topology: propTopology, onNodeSelect, onEdgeSelect, se
           }}
         />
       </ReactFlow>
+      {/* Keyboard shortcut hint bar */}
+      <div className="tc-shortcut-bar">
+        <span><kbd>F</kbd> Fit View</span>
+        <span><kbd>+</kbd><kbd>-</kbd> Zoom</span>
+        <span><kbd>Esc</kbd> Deselect</span>
+        <span><kbd>Scroll</kbd> Pan/Zoom</span>
+        <span style={{marginLeft:'auto', color:'#3fb950'}}>● {nodes.length} nodes · {edges.length} links</span>
+      </div>
     </div>
+  );
+}
+
+function TopologyCanvas(props) {
+  return (
+    <ReactFlowProvider>
+      <TopologyCanvasInner {...props} />
+    </ReactFlowProvider>
   );
 }
 

@@ -250,3 +250,30 @@
   color: var(--text-muted);
   line-height: 1.5;
 }
+
+/* Keyboard shortcut hint bar */
+.tc-shortcut-bar {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 6px 14px;
+  background: var(--bg-overlay);
+  border-top: 1px solid var(--border);
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  z-index: 10;
+  flex-wrap: wrap;
+}
+.tc-shortcut-bar kbd {
+  display: inline-block;
+  padding: 1px 5px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  font-family: var(--mono, monospace);
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  margin: 0 2px;
+}

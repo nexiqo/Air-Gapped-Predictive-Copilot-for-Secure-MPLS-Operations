@@ -1,11 +1,20 @@
 from __future__ import annotations
 
+import json
+import os
+import time
 from datetime import datetime
+from pathlib import Path
 from typing import Any
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
+
+_START_TIME = time.time()
+_REQUEST_COUNT = 0
+ROOT = Path(__file__).resolve().parents[1]
 
 from backend.data_loader import (
     load_topology,
@@ -475,3 +484,59 @@ def get_loop_state() -> dict[str, Any]:
         "history": loop_engine.history,
         "state_file_path": str(STATE_FILE)
     }
+
+
+@app.get("/health")
+def health_check() -> dict[str, Any]:
+    """Uptime, memory, and basic diagnostics endpoint."""
+    uptime_seconds = round(time.time() - _START_TIME, 1)
+    hours, rem = divmod(int(uptime_seconds), 3600)
+    minutes, seconds = divmod(rem, 60)
+    try:
+        import psutil
+        proc = psutil.Process(os.getpid())
+        mem_mb = round(proc.memory_info().rss / 1024 / 1024, 1)
+    except Exception:
+        mem_mb = None
+    try:
+        from backend.loop_engine import loop_engine
+        active_loops = len(loop_engine.active_loops)
+        resolved_loops = len([h for h in loop_engine.history if h.get("status") == "resolved"])
+    except Exception:
+        active_loops, resolved_loops = 0, 0
+    return {
+        "status": "ok",
+        "uptime": f"{hours:02d}h {minutes:02d}m {seconds:02d}s",
+        "uptime_seconds": uptime_seconds,
+        "memory_mb": mem_mb,
+        "loop_engine_active_loops": active_loops,
+        "loop_engine_resolved_loops": resolved_loops,
+        "version": "1.0.0",
+        "mode": "Air-Gapped Offline",
+        "timestamp": datetime.utcnow().isoformat() + "Z"
+    }
+
+
+@app.get("/ml/metrics")
+def get_ml_metrics() -> dict[str, Any]:
+    """Return ML model validation metrics from the last training run."""
+    metrics_path = ROOT / "artifacts" / "ml_metrics.json"
+    if not metrics_path.exists():
+        return {
+            "status": "not_trained",
+            "message": "Run `python -m backend.ml_trainer` to train and generate metrics.",
+            "accuracy": None,
+            "precision": None,
+            "recall": None,
+            "f1_score": None,
+        }
+    with metrics_path.open("r", encoding="utf-8") as f:
+        data = json.load(f)
+    data["status"] = "trained"
+    return data
+
+
+# ── Serve built React frontend as static files (for public sharing) ────────────
+_frontend_dist = ROOT / "frontend" / "dist"
+if _frontend_dist.exists():
+    app.mount("/", StaticFiles(directory=str(_frontend_dist), html=True), name="frontend")

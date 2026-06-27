@@ -2,11 +2,27 @@ from __future__ import annotations
 
 import csv
 import json
+import time
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
+
+# ── Simple TTL cache for hot-path functions ───────────────────────────────────
+_CACHE: dict[str, tuple[Any, float]] = {}
+
+def _ttl_cache(key: str, loader_fn, ttl_seconds: float = 5.0):
+    """Return cached value if fresh, otherwise call loader_fn and cache result."""
+    now = time.monotonic()
+    if key in _CACHE:
+        value, expires_at = _CACHE[key]
+        if now < expires_at:
+            return value
+    value = loader_fn()
+    _CACHE[key] = (value, now + ttl_seconds)
+    return value
 
 def load_topology() -> dict[str, Any]:
     path = DATA_DIR / "topology.json"
