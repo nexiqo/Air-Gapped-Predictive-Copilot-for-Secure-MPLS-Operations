@@ -336,10 +336,9 @@
   .prediction-details, .metrics-grid { gap: 10px; }
 }
 
-/* ── Machine Learning Explainability Grid ── */
 .ml-diagnostics-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 16px;
   margin-bottom: 20px;
 }

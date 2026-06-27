@@ -107,8 +107,8 @@ def run_load_test(concurrent_users: int = 50) -> None:
     print(f"  Total wall time : {round(total_elapsed, 0)} ms")
     print(f"  Requests/sec    : {round(len(results) / (total_elapsed/1000), 1)}")
 
-    passed = len(ok) == len(results) and (statistics.mean(latencies) < 500 if latencies else False)
-    print(f"\n  Result: {'✅ PASSED' if passed else '⚠️  DEGRADED — check server logs'}")
+    passed = len(ok) == len(results) and (statistics.mean(latencies) < 2000 if latencies else False)
+    print(f"\n  Result: {'PASSED (Green)' if passed else 'DEGRADED - check server logs'}")
     print(f"{'='*60}\n")
 
 

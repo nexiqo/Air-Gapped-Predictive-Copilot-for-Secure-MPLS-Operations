@@ -1,0 +1,263 @@
+{
+  "active_loops": {
+    "INC-0002": {
+      "incident_id": "INC-0002",
+      "node_id": "hub-delhi",
+      "incident_type": "bgp_route_flap",
+      "phase": "VERIFICATION",
+      "trigger_time": "20:20:30",
+      "last_metrics": {
+        "latency_ms": 150.0,
+        "packet_loss_pct": 2.0
+      },
+      "checklist": [
+        {
+          "id": "triage",
+          "label": "Telemetry anomaly detected & logged",
+          "status": "verified",
+          "timestamp": "20:20:30"
+        },
+        {
+          "id": "mitigate",
+          "label": "Deploy mitigation policies (Maker)",
+          "status": "verified",
+          "timestamp": "20:20:36"
+        },
+        {
+          "id": "verify",
+          "label": "Verify link parameter recovery (Checker)",
+          "status": "active",
+          "timestamp": "20:20:42"
+        }
+      ]
+    },
+    "INC-0006": {
+      "incident_id": "INC-0006",
+      "node_id": "hub-delhi",
+      "incident_type": "ospf_adjacency_lost",
+      "phase": "VERIFICATION",
+      "trigger_time": "20:20:30",
+      "last_metrics": {
+        "latency_ms": 150.0,
+        "packet_loss_pct": 2.0
+      },
+      "checklist": [
+        {
+          "id": "triage",
+          "label": "Telemetry anomaly detected & logged",
+          "status": "verified",
+          "timestamp": "20:20:30"
+        },
+        {
+          "id": "mitigate",
+          "label": "Deploy mitigation policies (Maker)",
+          "status": "verified",
+          "timestamp": "20:20:36"
+        },
+        {
+          "id": "verify",
+          "label": "Verify link parameter recovery (Checker)",
+          "status": "active",
+          "timestamp": "20:20:42"
+        }
+      ]
+    },
+    "INC-0014": {
+      "incident_id": "INC-0014",
+      "node_id": "hub-delhi",
+      "incident_type": "route_flap_cascade",
+      "phase": "VERIFICATION",
+      "trigger_time": "20:20:30",
+      "last_metrics": {
+        "latency_ms": 150.0,
+        "packet_loss_pct": 2.0
+      },
+      "checklist": [
+        {
+          "id": "triage",
+          "label": "Telemetry anomaly detected & logged",
+          "status": "verified",
+          "timestamp": "20:20:30"
+        },
+        {
+          "id": "mitigate",
+          "label": "Deploy mitigation policies (Maker)",
+          "status": "verified",
+          "timestamp": "20:20:36"
+        },
+        {
+          "id": "verify",
+          "label": "Verify link parameter recovery (Checker)",
+          "status": "active",
+          "timestamp": "20:20:42"
+        }
+      ]
+    },
+    "INC-0009": {
+      "incident_id": "INC-0009",
+      "node_id": "dc-mumbai",
+      "incident_type": "interface_error_spike",
+      "phase": "VERIFICATION",
+      "trigger_time": "20:20:30",
+      "last_metrics": {
+        "latency_ms": 150.0,
+        "packet_loss_pct": 2.0
+      },
+      "checklist": [
+        {
+          "id": "triage",
+          "label": "Telemetry anomaly detected & logged",
+          "status": "verified",
+          "timestamp": "20:20:30"
+        },
+        {
+          "id": "mitigate",
+          "label": "Deploy mitigation policies (Maker)",
+          "status": "verified",
+          "timestamp": "20:20:36"
+        },
+        {
+          "id": "verify",
+          "label": "Verify link parameter recovery (Checker)",
+          "status": "active",
+          "timestamp": "20:20:42"
+        }
+      ]
+    },
+    "INC-0022": {
+      "incident_id": "INC-0022",
+      "node_id": "hub-delhi",
+      "incident_type": "congestion_buildup",
+      "phase": "VERIFICATION",
+      "trigger_time": "20:20:31",
+      "last_metrics": {
+        "latency_ms": 150.0,
+        "packet_loss_pct": 2.0
+      },
+      "checklist": [
+        {
+          "id": "triage",
+          "label": "Telemetry anomaly detected & logged",
+          "status": "verified",
+          "timestamp": "20:20:31"
+        },
+        {
+          "id": "mitigate",
+          "label": "Deploy mitigation policies (Maker)",
+          "status": "verified",
+          "timestamp": "20:20:36"
+        },
+        {
+          "id": "verify",
+          "label": "Verify link parameter recovery (Checker)",
+          "status": "active",
+          "timestamp": "20:20:42"
+        }
+      ]
+    }
+  },
+  "history": [
+    {
+      "node_id": "branch-bengaluru",
+      "incident_type": "progressive_congestion",
+      "status": "resolved",
+      "completion_time": "20:20:47"
+    },
+    {
+      "node_id": "branch-chennai",
+      "incident_type": "bgp_route_flap",
+      "status": "resolved",
+      "completion_time": "20:20:47"
+    },
+    {
+      "node_id": "branch-chennai",
+      "incident_type": "congestion_buildup",
+      "status": "resolved",
+      "completion_time": "20:20:47"
+    },
+    {
+      "node_id": "branch-guwahati",
+      "incident_type": "mpls_tunnel_degradation",
+      "status": "resolved",
+      "completion_time": "20:20:47"
+    },
+    {
+      "node_id": "branch-bhubaneswar",
+      "incident_type": "link_congestion",
+      "status": "resolved",
+      "completion_time": "20:20:47"
+    },
+    {
+      "node_id": "branch-lucknow",
+      "incident_type": "congestion_buildup",
+      "status": "resolved",
+      "completion_time": "20:20:47"
+    },
+    {
+      "node_id": "branch-ahmedabad",
+      "incident_type": "bgp_route_flap",
+      "status": "resolved",
+      "completion_time": "20:20:47"
+    },
+    {
+      "node_id": "branch-kochi",
+      "incident_type": "mpls_tunnel_degradation",
+      "status": "resolved",
+      "completion_time": "20:20:47"
+    },
+    {
+      "node_id": "branch-pune",
+      "incident_type": "ospf_adjacency_lost",
+      "status": "resolved",
+      "completion_time": "20:20:47"
+    },
+    {
+      "node_id": "branch-bhopal",
+      "incident_type": "congestion_buildup",
+      "status": "resolved",
+      "completion_time": "20:20:47"
+    },
+    {
+      "node_id": "branch-guwahati",
+      "incident_type": "packet_loss_spike",
+      "status": "resolved",
+      "completion_time": "20:20:47"
+    },
+    {
+      "node_id": "branch-bhubaneswar",
+      "incident_type": "packet_loss_spike",
+      "status": "resolved",
+      "completion_time": "20:20:47"
+    },
+    {
+      "node_id": "branch-jaipur",
+      "incident_type": "bgp_route_flap",
+      "status": "resolved",
+      "completion_time": "20:20:47"
+    },
+    {
+      "node_id": "branch-nagpur",
+      "incident_type": "tunnel_rekey_anomaly",
+      "status": "resolved",
+      "completion_time": "20:20:47"
+    },
+    {
+      "node_id": "branch-chandigarh",
+      "incident_type": "packet_loss_spike",
+      "status": "resolved",
+      "completion_time": "20:20:47"
+    },
+    {
+      "node_id": "branch-hyderabad",
+      "incident_type": "qos_policy_drift",
+      "status": "resolved",
+      "completion_time": "20:20:47"
+    },
+    {
+      "node_id": "branch-jaipur",
+      "incident_type": "link_flap",
+      "status": "resolved",
+      "completion_time": "20:20:47"
+    }
+  ]
+}

@@ -32,8 +32,48 @@ from backend.predictive_engine import PredictiveEngine
 
 app = FastAPI(title="Air-Gapped Predictive NOC Copilot", version="1.0.0")
 
+# Simulation state for loop engine
+active_incidents: list[dict[str, Any]] = []
+liveBranches: list[dict[str, Any]] = []
+
+def handleResolveIncident(incident_id: str, method: str = "remediation"):
+    global active_incidents
+    for inc in active_incidents:
+        if inc.get("id") == incident_id:
+            inc["status"] = "resolved"
+
 @app.on_event("startup")
 def startup_event():
+    global active_incidents, liveBranches
+    from backend.data_loader import load_incidents, load_branches
+    
+    # Initialize active incidents
+    try:
+        raw_incidents = load_incidents()
+        active_incidents.clear()
+        for inc in raw_incidents:
+            # Match schema that loop engine expects
+            active_incidents.append({
+                "id": inc.get("incident_id") or inc.get("id") or f"INC-{inc.get('site_id')}",
+                "nodeId": inc.get("site_id", ""),
+                "type": inc.get("fault_type") or inc.get("message") or "network_degradation",
+                "severity": inc.get("severity", "WARNING").upper(),
+                "status": "active" if inc.get("status", "").upper() != "RESOLVED" else "resolved",
+                "metrics": {
+                    "latency_ms": float(inc.get("latency_ms", 120.0) if inc.get("latency_ms") else 120.0),
+                    "packet_loss_pct": float(inc.get("packet_loss_pct", 2.0) if inc.get("packet_loss_pct") else 2.0)
+                }
+            })
+    except Exception as e:
+        print(f"[Startup] Failed to load initial active incidents: {e}")
+        
+    # Initialize live branches
+    try:
+        liveBranches.clear()
+        liveBranches.extend(load_branches())
+    except Exception as e:
+        print(f"[Startup] Failed to load initial branches: {e}")
+        
     from backend.loop_engine import loop_engine
     loop_engine.start()
 
@@ -401,6 +441,11 @@ def copilot_status() -> dict[str, Any]:
 @app.post("/copilot/query")
 def copilot_query(payload: CopilotQueryRequest) -> dict[str, Any]:
     """Accept { question, conversation_history, active_incidents, live_branches } -> RAG pipeline -> LLM -> return structured copilot response"""
+    global active_incidents, liveBranches
+    if payload.active_incidents is not None:
+        active_incidents = payload.active_incidents
+    if payload.live_branches is not None:
+        liveBranches = payload.live_branches
     return copilot.query(
         question=payload.question,
         conversation_history=payload.conversation_history,
@@ -411,6 +456,12 @@ def copilot_query(payload: CopilotQueryRequest) -> dict[str, Any]:
 @app.post("/copilot/stream")
 def copilot_stream(payload: CopilotStreamRequest):
     """Stream tokens from Ollama LLM for real-time display. Falls back to deterministic text if Ollama unavailable."""
+    global active_incidents, liveBranches
+    if payload.active_incidents is not None:
+        active_incidents = payload.active_incidents
+    if payload.live_branches is not None:
+        liveBranches = payload.live_branches
+
     def generate():
         for token in copilot.stream_query(
             question=payload.question,
