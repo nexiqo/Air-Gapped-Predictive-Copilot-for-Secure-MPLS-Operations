@@ -4,12 +4,19 @@ import './Predictions.css';
 function PredictionsPage({ topology: propTopology }) {
   const [localTopology, setLocalTopology] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [explainabilityData, setExplainabilityData] = useState(null);
 
   useEffect(() => {
     if (!propTopology) {
       fetchTopology();
     }
   }, [propTopology]);
+
+  useEffect(() => {
+    fetchExplainability();
+    const interval = setInterval(fetchExplainability, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   const fetchTopology = async () => {
     setLoading(true);
@@ -23,6 +30,18 @@ function PredictionsPage({ topology: propTopology }) {
       console.error('Failed to fetch topology:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchExplainability = async () => {
+    try {
+      const response = await fetch('http://127.0.0.1:8000/predictions/explainability');
+      if (response.ok) {
+        const data = await response.json();
+        setExplainabilityData(data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch ML explainability:', error);
     }
   };
 
@@ -99,6 +118,66 @@ function PredictionsPage({ topology: propTopology }) {
           </span>
         </div>
       </div>
+
+      {/* Real-time Explainable AI (XAI) and Supervised ML Diagnostics */}
+      {explainabilityData && (
+        <div className="ml-diagnostics-grid">
+          <div className="ml-diagnostic-card">
+            <h3>Explainable AI (XAI) Model Weights</h3>
+            <p className="card-sub">SHAP contribution weights for active failure forecasts (Offline SHAP)</p>
+            <div className="weights-list">
+              {Object.entries(explainabilityData.feature_importance).map(([feature, weight]) => {
+                const pct = Math.min(100, Math.max(5, Math.abs(weight) * 100));
+                const isPositive = weight >= 0;
+                return (
+                  <div key={feature} className="weight-item">
+                    <div className="weight-label">
+                      <span>{feature.replace(/_/g, ' ').toUpperCase()}</span>
+                      <span className={isPositive ? 'weight-pos' : 'weight-neg'}>
+                        {isPositive ? '+' : ''}{weight.toFixed(2)}
+                      </span>
+                    </div>
+                    <div className="weight-track">
+                      <div 
+                        className={`weight-bar ${isPositive ? 'pos' : 'neg'}`}
+                        style={{ width: `${pct}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="ml-diagnostic-card">
+            <h3>Supervised Failure State Classifier</h3>
+            <p className="card-sub">Probability distribution of network incidents (Offline Softmax Inference)</p>
+            <div className="classes-list">
+              {Object.entries(explainabilityData.class_probabilities).map(([state, prob]) => {
+                const pct = prob * 100;
+                let colorClass = 'nominal';
+                if (state !== 'NOMINAL_OPERATION') {
+                  colorClass = pct > 45 ? 'critical' : 'warning';
+                }
+                return (
+                  <div key={state} className="class-item">
+                    <div className="class-label">
+                      <span>{state.replace(/_/g, ' ')}</span>
+                      <span>{pct.toFixed(1)}%</span>
+                    </div>
+                    <div className="class-track">
+                      <div 
+                        className={`class-bar ${colorClass}`}
+                        style={{ width: `${pct}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
 
       {isCurrentlyLoading ? (
         <div className="loading-state">

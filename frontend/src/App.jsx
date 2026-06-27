@@ -8,6 +8,7 @@ import Alerts from './pages/Alerts';
 import Predictions from './pages/Predictions';
 import Reports from './pages/Reports';
 import SettingsPage from './pages/SettingsPage';
+import LoopEnginePanel from './pages/LoopEnginePanel';
 import CopilotWidget from './components/CopilotWidget';
 import './App.css';
 
@@ -70,6 +71,30 @@ function App() {
   // Game-like interactive incident states
   const [activeIncidents, setActiveIncidents] = useState([]);
   const [currentToast, setCurrentToast] = useState(null);
+  
+  const [activePolicies, setActivePolicies] = useState({
+    block_streaming: false,
+    scavenger_qos: false,
+    load_balancers: true,
+    maintenance_nodes: []
+  });
+
+  useEffect(() => {
+    const fetchPolicies = async () => {
+      try {
+        const response = await fetch('http://127.0.0.1:8000/settings/policy');
+        if (response.ok) {
+          const data = await response.json();
+          setActivePolicies(data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch global policies:', error);
+      }
+    };
+    fetchPolicies();
+    const interval = setInterval(fetchPolicies, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Fetch initial data on mount
   useEffect(() => {
@@ -141,10 +166,47 @@ function App() {
     if (!liveSummary || !liveTopology || liveBranches.length === 0) return;
 
     const interval = setInterval(() => {
-      // 1. Fluctuate branch stats (check for active incidents)
+      // 1. Fluctuate branch stats (respect active incidents, maintenance windows, and shaper policies)
       const nextBranches = liveBranches.map(br => {
+        // A. Respect scheduled maintenance window
+        if (activePolicies.maintenance_nodes?.includes(br.id)) {
+          const currentMetrics = {
+            latency_ms: 12.5,
+            bandwidth_util_pct: 32.4,
+            packet_loss_pct: 0.0,
+            jitter_ms: 0.8
+          };
+          
+          // Auto resolve any active incident for it
+          const activeInc = activeIncidents.find(inc => inc.nodeId === br.id && inc.status === 'active');
+          if (activeInc) {
+            setTimeout(() => {
+              handleResolveIncident(activeInc.id, 'remediation');
+            }, 0);
+          }
+          
+          return {
+            ...br,
+            status: 'NORMAL',
+            latency_ms: 12.5,
+            packet_loss_pct: 0.0,
+            utilization_pct: 32.4,
+            current_metrics: currentMetrics
+          };
+        }
+
         const activeInc = activeIncidents.find(inc => inc.nodeId === br.id && inc.status === 'active');
         
+        // B. If streaming block shaper policy is active, auto-resolve congestion incidents
+        if (activeInc && activePolicies.block_streaming && 
+            (activeInc.type.toLowerCase().includes('congestion') || 
+             activeInc.type.toLowerCase().includes('exhaustion') || 
+             activeInc.type.toLowerCase().includes('utilization'))) {
+          setTimeout(() => {
+            handleResolveIncident(activeInc.id, 'firewall_policy');
+          }, 0);
+        }
+
         if (activeInc) {
           const currentMetrics = { ...br.current_metrics, ...activeInc.metrics };
           // Keep it degraded but add a small fluctuation
@@ -294,7 +356,7 @@ function App() {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [liveSummary, liveTopology, liveBranches, liveAlerts, activeIncidents]);
+  }, [liveSummary, liveTopology, liveBranches, liveAlerts, activeIncidents, activePolicies]);
 
   // Periodic random incident generator (trigger problem check every 45s)
   useEffect(() => {
@@ -386,6 +448,26 @@ function App() {
 
     const incident = activeIncidents.find(inc => inc.id === incidentId);
     if (incident) {
+      // Stabilize the branch metrics immediately in the liveBranches state
+      setLiveBranches(prev => prev.map(br => {
+        if (br.id === incident.nodeId) {
+          return {
+            ...br,
+            status: 'NORMAL',
+            latency_ms: 12.5,
+            packet_loss_pct: 0.0,
+            utilization_pct: 35.0,
+            current_metrics: {
+              latency_ms: 12.5,
+              packet_loss_pct: 0.0,
+              bandwidth_util_pct: 35.0,
+              jitter_ms: 1.5
+            }
+          };
+        }
+        return br;
+      }));
+
       setLiveAlerts(prev => [
         {
           id: `RESOLVE-ALERT-${Date.now()}`,
@@ -520,12 +602,19 @@ function App() {
               <SettingsPage />
             } 
           />
+          <Route 
+            path="/loop-engine" 
+            element={
+              <LoopEnginePanel activeIncidents={activeIncidents} />
+            } 
+          />
         </Routes>
       </AppShell>
       
       {/* Universal Floating Copilot popup chatbot */}
       <CopilotWidget 
         activeIncidents={activeIncidents}
+        liveBranches={liveBranches}
         onResolveIncident={handleResolveIncident}
       />
     </BrowserRouter>

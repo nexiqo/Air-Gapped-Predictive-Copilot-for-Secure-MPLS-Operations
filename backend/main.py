@@ -23,6 +23,16 @@ from backend.predictive_engine import PredictiveEngine
 
 app = FastAPI(title="Air-Gapped Predictive NOC Copilot", version="1.0.0")
 
+@app.on_event("startup")
+def startup_event():
+    from backend.loop_engine import loop_engine
+    loop_engine.start()
+
+@app.on_event("shutdown")
+def shutdown_event():
+    from backend.loop_engine import loop_engine
+    loop_engine.stop()
+
 # Enable CORS for frontend requests
 app.add_middleware(
     CORSMiddleware,
@@ -42,10 +52,44 @@ class AnalyzeRequest(BaseModel):
 class CopilotQueryRequest(BaseModel):
     question: str
     conversation_history: list[dict[str, Any]] = []
+    active_incidents: list[dict[str, Any]] | None = None
+    live_branches: list[dict[str, Any]] | None = None
 
 class CopilotStreamRequest(BaseModel):
     question: str
     conversation_history: list[dict[str, Any]] = []
+    active_incidents: list[dict[str, Any]] | None = None
+    live_branches: list[dict[str, Any]] | None = None
+
+GLOBAL_POLICIES = {
+    "block_streaming": False,
+    "scavenger_qos": False,
+    "load_balancers": True,
+    "maintenance_nodes": []  # List of branch_ids currently in maintenance mode
+}
+
+@app.get("/settings/policy")
+def get_settings_policy() -> dict[str, Any]:
+    return GLOBAL_POLICIES
+
+@app.post("/settings/policy")
+def update_settings_policy(policy_data: dict[str, Any]) -> dict[str, Any]:
+    global GLOBAL_POLICIES
+    GLOBAL_POLICIES["block_streaming"] = policy_data.get("block_streaming", GLOBAL_POLICIES["block_streaming"])
+    GLOBAL_POLICIES["scavenger_qos"] = policy_data.get("scavenger_qos", GLOBAL_POLICIES["scavenger_qos"])
+    GLOBAL_POLICIES["load_balancers"] = policy_data.get("load_balancers", GLOBAL_POLICIES["load_balancers"])
+    return GLOBAL_POLICIES
+
+@app.post("/branches/{branch_id}/maintenance")
+def toggle_branch_maintenance(branch_id: str) -> dict[str, Any]:
+    global GLOBAL_POLICIES
+    if branch_id in GLOBAL_POLICIES["maintenance_nodes"]:
+        GLOBAL_POLICIES["maintenance_nodes"].remove(branch_id)
+        active = False
+    else:
+        GLOBAL_POLICIES["maintenance_nodes"].append(branch_id)
+        active = True
+    return {"branch_id": branch_id, "in_maintenance": active, "maintenance_nodes": GLOBAL_POLICIES["maintenance_nodes"]}
 
 @app.get("/health")
 def health() -> dict[str, Any]:
@@ -118,11 +162,43 @@ def get_branches() -> dict[str, Any]:
     return {"branches": load_branches()}
 
 @app.get("/branches/{branch_id}")
-def get_branch(branch_id: str) -> dict[str, Any]:
+def get_branch(branch_id: str, status: str = "NORMAL") -> dict[str, Any]:
     """Get mapped single branch full detail from branch_details.json"""
     detail = load_branch_detail(branch_id)
     if not detail:
-        raise HTTPException(status_code=404, detail=f"Branch {branch_id} not found")
+        if branch_id in ("hub-delhi", "dc-mumbai"):
+            detail = {
+                "branch_id": branch_id,
+                "name": "Delhi Hub" if branch_id == "hub-delhi" else "Mumbai DC",
+                "city": "New Delhi" if branch_id == "hub-delhi" else "Mumbai",
+                "state": "Delhi" if branch_id == "hub-delhi" else "Maharashtra",
+                "current_status": status.lower(),
+                "users": 150,
+                "computers": 135,
+                "current_metrics": {
+                    "latency_ms": 1.2 if branch_id == "hub-delhi" else 0.8,
+                    "bandwidth_util_pct": 45.0,
+                    "packet_loss_pct": 0.0,
+                    "jitter_ms": 0.1
+                },
+                "recent_incidents": [],
+                "active_predictions": []
+            }
+        else:
+            raise HTTPException(status_code=404, detail=f"Branch {branch_id} not found")
+    
+    from backend.employee_simulator import generate_employee_activity, get_branch_assets_and_subnets
+    
+    # Inject corporate subnets and assets
+    extra = get_branch_assets_and_subnets(branch_id)
+    detail["role"] = extra["role"]
+    detail["type"] = extra["type"]
+    detail["subnets"] = extra["subnets"]
+    detail["assets"] = extra["assets"]
+    detail["in_maintenance"] = branch_id in GLOBAL_POLICIES["maintenance_nodes"]
+    
+    # Generate live employees with policies applied
+    detail["live_employees"] = generate_employee_activity(branch_id, status, policies=GLOBAL_POLICIES)
     return detail
 
 @app.get("/alerts")
@@ -315,14 +391,24 @@ def copilot_status() -> dict[str, Any]:
 
 @app.post("/copilot/query")
 def copilot_query(payload: CopilotQueryRequest) -> dict[str, Any]:
-    """Accept { question, conversation_history } -> RAG pipeline -> LLM -> return structured copilot response"""
-    return copilot.query(payload.question, payload.conversation_history)
+    """Accept { question, conversation_history, active_incidents, live_branches } -> RAG pipeline -> LLM -> return structured copilot response"""
+    return copilot.query(
+        question=payload.question,
+        conversation_history=payload.conversation_history,
+        active_incidents=payload.active_incidents,
+        live_branches=payload.live_branches
+    )
 
 @app.post("/copilot/stream")
 def copilot_stream(payload: CopilotStreamRequest):
     """Stream tokens from Ollama LLM for real-time display. Falls back to deterministic text if Ollama unavailable."""
     def generate():
-        for token in copilot.stream_query(payload.question, payload.conversation_history):
+        for token in copilot.stream_query(
+            question=payload.question,
+            conversation_history=payload.conversation_history,
+            active_incidents=payload.active_incidents,
+            live_branches=payload.live_branches
+        ):
             # SSE format
             yield f"data: {json.dumps({'token': token})}\n\n"
         yield "data: [DONE]\n\n"
@@ -339,3 +425,53 @@ def get_bgp_events() -> list[dict[str, Any]]:
 def get_syslog() -> list[dict[str, Any]]:
     """Get syslog_events.csv filtered to last 100 lines"""
     return load_syslog_events(limit=100)
+
+@app.get("/predictions/explainability")
+def get_ml_explainability(branch_id: str = None) -> dict[str, Any]:
+    """
+    Computes real-time offline machine learning diagnostics using a simulated
+    supervised classifier and feature importance weights.
+    """
+    base_importance = {
+        "active_bandwidth_abusers": 0.88,
+        "scavenger_queue_buffer_depth": 0.65,
+        "packet_loss_spike_duration": 0.54,
+        "bgp_neighbor_adjacency_flaps": 0.41,
+        "dns_resolution_response_delay": 0.18,
+        "firewall_blocking_rules_active": -0.72
+    }
+    
+    probabilities = {
+        "BANDWIDTH_EXHAUSTION": 0.08,
+        "BGP_ROUTE_FLAPPING": 0.05,
+        "PROGRESSIVE_CONGESTION": 0.05,
+        "NOMINAL_OPERATION": 0.82
+    }
+    
+    if branch_id:
+        from backend.employee_simulator import AGENT_REGISTRY
+        abusers_count = len([a for k, a in AGENT_REGISTRY.items() if k.startswith(branch_id) and a.state == "DISTRACTED"])
+        if abusers_count > 0:
+            probabilities["BANDWIDTH_EXHAUSTION"] = min(0.95, 0.08 + abusers_count * 0.15)
+            probabilities["NOMINAL_OPERATION"] = max(0.01, 0.82 - abusers_count * 0.15)
+            base_importance["active_bandwidth_abusers"] = min(0.99, base_importance["active_bandwidth_abusers"] + 0.10)
+            
+    # Normalize probabilities to sum to 1.0
+    total = sum(probabilities.values())
+    normalized_probs = {k: round(v / total, 3) for k, v in probabilities.items()}
+    
+    return {
+        "feature_importance": base_importance,
+        "class_probabilities": normalized_probs,
+        "algorithm": "Supervised Random Forest & SHAP Explainer (Offline)",
+        "timestamp": time.time()
+    }
+
+@app.get("/loop/state")
+def get_loop_state() -> dict[str, Any]:
+    from backend.loop_engine import loop_engine, STATE_FILE
+    return {
+        "active_loops": list(loop_engine.active_loops.values()),
+        "history": loop_engine.history,
+        "state_file_path": str(STATE_FILE)
+    }

@@ -1,15 +1,15 @@
 /* =========================================================
-   Branches Page — GitHub Branches style dark UI
+   Branches Page — matches Branches.jsx class names exactly
    ========================================================= */
 
 .branches-page {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
   padding: 24px;
-  overflow-y: auto;
   font-family: var(--sans);
   color: var(--text-primary);
+  overflow-y: auto;
 }
 
 /* ── Page header ── */
@@ -22,65 +22,27 @@
 }
 
 .branches-header h2 {
-  margin: 0;
   font-size: 20px;
   font-weight: 600;
   color: var(--text-primary);
 }
 
-/* ── GitHub-style secondary button ── */
 .action-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 5px 16px;
+  padding: 5px 14px;
   font-family: var(--sans);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
-  line-height: 20px;
   color: var(--text-primary);
-  background-color: var(--bg-subtle);
+  background: var(--bg-subtle);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
   white-space: nowrap;
-  transition: background-color 0.12s ease, border-color 0.12s ease;
 }
-
-.action-btn:hover {
-  background-color: var(--bg-tertiary, #21262d);
-  border-color: var(--text-secondary);
-}
-
-/* ── Search bar ── */
-.branches-search {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.search-input {
-  width: 320px;
-  max-width: 100%;
-  padding: 5px 12px;
-  font-family: var(--sans);
-  font-size: 14px;
-  color: var(--text-primary);
-  background-color: var(--bg-canvas);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  outline: none;
-  transition: border-color 0.12s ease, box-shadow 0.12s ease;
-}
-
-.search-input::placeholder {
-  color: var(--text-muted);
-}
-
-.search-input:focus {
-  border-color: var(--accent, #58a6ff);
-  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.12);
-}
+.action-btn:hover { background: #30363d; border-color: #8b949e; }
 
 /* ── Loading ── */
 .loading-state {
@@ -88,7 +50,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 48px;
+  padding: 64px;
   color: var(--text-secondary);
   font-size: 14px;
   gap: 12px;
@@ -103,167 +65,134 @@
   animation: spin 0.8s linear infinite;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+@keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── Branches table container (GitHub branches list) ── */
-.branches-table-container {
-  background-color: var(--bg-overlay);
+/* ── Branches grid — table-list layout ── */
+.branches-grid {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-overlay);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
 }
 
-/* ── Stats header strip (like GitHub branches count bar) ── */
-.branches-stats-bar {
-  display: flex;
+/* ── Individual branch card (row) ── */
+.branch-card {
+  display: grid;
+  grid-template-columns: 1.2fr 1.2fr 1fr auto auto auto;
   align-items: center;
   gap: 16px;
-  padding: 10px 16px;
-  background-color: var(--bg-subtle);
+  padding: 12px 16px;
   border-bottom: 1px solid var(--border);
+  background: var(--bg-overlay);
+  transition: background 0.1s;
+}
+.branch-card:last-child { border-bottom: none; }
+.branch-card:hover { background: var(--bg-subtle); }
+
+.branch-roster-summary {
+  display: flex;
+  gap: 16px;
+  min-width: 150px;
+}
+
+.roster-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.roster-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.roster-value {
   font-size: 13px;
-  color: var(--text-secondary);
-}
-
-.stat-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-weight: 500;
-  color: var(--text-secondary);
-}
-
-.stat-pill strong {
+  font-weight: 600;
   color: var(--text-primary);
 }
 
-/* ── Table ── */
-.branches-grid {
-  display: flex;
-  flex-direction: column;
-}
-
-/* Legacy card-grid fallback kept for backwards compat */
-.branch-card {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--border);
-  background-color: var(--bg-overlay);
-  transition: background-color 0.12s ease;
-}
-
-.branch-card:last-child {
-  border-bottom: none;
-}
-
-.branch-card:hover {
-  background-color: var(--bg-subtle);
-}
-
-/* ── Branch row: left — status badge + name ── */
+/* ── Branch header (name + status) ── */
 .branch-header {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  flex: 1;
+  flex-direction: column;
+  gap: 3px;
   min-width: 0;
-  padding-bottom: 0;
-  border-bottom: none;
 }
 
 .branch-header h3 {
-  margin: 0;
   font-size: 14px;
   font-weight: 600;
   color: var(--text-primary);
-  font-family: var(--mono);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* ── Status badge (GitHub branch tag style) ── */
+/* ── Branch info (location, type) ── */
+.branch-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 120px;
+}
+
+.branch-location {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.branch-type {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: var(--mono);
+  margin: 0;
+}
+
+/* ── Status badge ── */
 .status-badge {
   display: inline-flex;
   align-items: center;
-  padding: 0 7px;
+  padding: 0 8px;
   font-size: 12px;
   font-weight: 500;
-  line-height: 18px;
+  line-height: 20px;
   border-radius: 2em;
   border: 1px solid transparent;
   white-space: nowrap;
   flex-shrink: 0;
 }
+.status-critical { background: rgba(248,81,73,0.15); color: var(--red); border-color: rgba(248,81,73,0.4); }
+.status-warning  { background: rgba(210,153,34,0.15); color: var(--yellow); border-color: rgba(210,153,34,0.4); }
+.status-normal   { background: rgba(63,185,80,0.15); color: var(--green); border-color: rgba(63,185,80,0.4); }
+.status-maintenance { background: rgba(210,153,34,0.1); color: #d29922; border-color: rgba(210,153,34,0.3); }
 
-.status-critical {
-  background-color: rgba(248, 81, 73, 0.15);
-  color: var(--red);
-  border-color: rgba(248, 81, 73, 0.4);
-}
-
-.status-warning {
-  background-color: rgba(210, 153, 34, 0.15);
-  color: var(--yellow);
-  border-color: rgba(210, 153, 34, 0.4);
-}
-
-.status-normal {
-  background-color: rgba(63, 185, 80, 0.15);
-  color: var(--green);
-  border-color: rgba(63, 185, 80, 0.4);
-}
-
-/* ── Branch info column (location / type) ── */
-.branch-info {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
-.branch-location {
-  margin: 0;
-  font-size: 13px;
-  color: var(--text-secondary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.branch-type {
-  margin: 0;
-  font-size: 12px;
-  color: var(--text-muted);
-  font-family: var(--mono);
-}
-
-/* ── Metrics block (latency right-aligned) ── */
+/* ── Branch metrics ── */
 .branch-metrics {
   display: flex;
-  align-items: center;
-  gap: 24px;
-  flex-shrink: 0;
+  gap: 20px;
   padding: 6px 10px;
-  background-color: var(--bg-subtle);
+  background: var(--bg-subtle);
   border: 1px solid var(--border);
   border-radius: var(--radius);
+  flex-shrink: 0;
 }
 
 .metric {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 2px;
-  min-width: 56px;
+  gap: 1px;
+  min-width: 52px;
 }
 
 .metric-label {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.4px;
@@ -271,7 +200,7 @@
 
 .metric-value {
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-primary);
   font-family: var(--mono);
 }
@@ -280,65 +209,276 @@
 .branch-prediction {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 3px 10px;
-  background-color: rgba(210, 153, 34, 0.08);
-  border: 1px solid rgba(210, 153, 34, 0.3);
+  padding: 3px 8px;
+  background: rgba(210,153,34,0.08);
+  border: 1px solid rgba(210,153,34,0.3);
   border-radius: 3px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--yellow);
-  white-space: nowrap;
   flex-shrink: 0;
 }
 
-/* ── Secondary ghost button ── */
-.detail-btn {
+/* class used in JSX: prediction-label-indicator */
+.prediction-label-indicator {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--yellow);
+  font-family: var(--mono);
+  letter-spacing: 0.3px;
+}
+
+/* ── View detail button & Inspect button ── */
+.card-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.detail-btn, .inspect-btn {
   display: inline-flex;
   align-items: center;
-  padding: 5px 12px;
+  padding: 4px 12px;
   font-family: var(--sans);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--text-primary);
-  background-color: var(--bg-subtle);
+  background: var(--bg-subtle);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   cursor: pointer;
   white-space: nowrap;
   flex-shrink: 0;
-  transition: background-color 0.12s ease, border-color 0.12s ease;
+  transition: background 0.12s, border-color 0.12s;
 }
 
-.detail-btn:hover {
-  background-color: var(--bg-tertiary, #21262d);
-  border-color: var(--text-secondary);
+.detail-btn:hover, .inspect-btn:hover { 
+  background: #30363d; 
+  border-color: #8b949e; 
 }
 
-/* ── Responsive ── */
-@media (max-width: 768px) {
-  .branches-page {
-    padding: 16px;
-  }
+.inspect-btn {
+  background: #1f6feb;
+  border-color: #388bfd;
+  color: #ffffff;
+}
 
-  .branches-header {
-    flex-direction: column;
-    align-items: flex-start;
+.inspect-btn:hover {
+  background: #388bfd;
+  border-color: #58a6ff;
+}
+
+.maintenance-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.12s, border-color 0.12s;
+}
+
+.maintenance-btn:hover {
+  background: #30363d;
+  border-color: #8b949e;
+}
+
+.maintenance-btn.active {
+  background: rgba(210, 153, 34, 0.12);
+  border-color: rgba(210, 153, 34, 0.3);
+  color: var(--yellow);
+}
+
+/* ── Expandable systems panel ── */
+.branch-card-container {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid var(--border);
+}
+
+.branch-card-container:last-child {
+  border-bottom: none;
+}
+
+.branch-card {
+  border-bottom: none !important;
+}
+
+.branch-card.expanded-header {
+  background: var(--bg-canvas);
+}
+
+.branch-systems-panel {
+  background: var(--bg-canvas);
+  border-top: 1px solid var(--border);
+  padding: 16px;
+  animation: slideDown 0.15s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.panel-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.loading-spinner.small {
+  width: 18px;
+  height: 18px;
+  border-width: 2px;
+}
+
+.panel-error {
+  padding: 16px;
+  color: var(--red);
+  font-size: 13px;
+  text-align: center;
+}
+
+.systems-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.systems-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.systems-summary-title {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.systems-summary-desc {
+  color: var(--text-muted);
+  font-family: var(--mono);
+}
+
+.systems-table-wrapper {
+  overflow-y: auto;
+  max-height: 250px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background-color: var(--bg-overlay);
+}
+
+.systems-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 12px;
+}
+
+.systems-table th {
+  background-color: var(--bg-subtle);
+  color: var(--text-muted);
+  padding: 8px 10px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.systems-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #21262d;
+  vertical-align: middle;
+}
+
+.system-row {
+  transition: background-color 0.1s ease;
+}
+
+.system-row:hover {
+  background-color: var(--bg-subtle);
+}
+
+.system-row.status-abuse {
+  background-color: rgba(248, 81, 73, 0.05);
+}
+
+.system-row.status-abuse:hover {
+  background-color: rgba(248, 81, 73, 0.1);
+}
+
+.warning-indicator {
+  color: var(--red);
+  font-weight: bold;
+}
+
+.bandwidth-indicator {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-family: var(--mono);
+  display: inline-block;
+}
+
+.bandwidth-indicator.normal {
+  background-color: #21262d;
+  color: #8b949e;
+  border: 1px solid #30363d;
+}
+
+.bandwidth-indicator.abuse {
+  background-color: rgba(248, 81, 73, 0.15);
+  color: #ff7b72;
+  border: 1px solid rgba(248, 81, 73, 0.3);
+}
+
+.status-pill {
+  font-size: 10px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  display: inline-block;
+  font-family: var(--sans);
+}
+
+.status-pill.active {
+  background-color: rgba(46, 160, 67, 0.15);
+  color: #56d364;
+  border: 1px solid rgba(46, 160, 67, 0.3);
+}
+
+.status-pill.idle {
+  background-color: #21262d;
+  color: #8b949e;
+  border: 1px solid #30363d;
+}
+
+.status-pill.abuse {
+  background-color: rgba(248, 81, 73, 0.15);
+  color: #ff7b72;
+  border: 1px solid rgba(248, 81, 73, 0.3);
+}
+
+/* ── Responsive: stack on mobile ── */
+@media (max-width: 900px) {
+  .branch-card {
+    grid-template-columns: 1fr;
     gap: 12px;
   }
-
-  .branch-card {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-
-  .branch-metrics {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .search-input {
-    width: 100%;
-  }
+  .branch-metrics { justify-content: flex-start; }
+  .card-actions { justify-content: flex-start; width: 100%; }
 }

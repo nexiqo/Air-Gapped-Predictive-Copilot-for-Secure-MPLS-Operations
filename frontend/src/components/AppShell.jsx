@@ -3,13 +3,14 @@ import { useState, useEffect } from 'react';
 import './AppShell.css';
 
 const NAV_ITEMS = [
-  { path: '/',           label: 'Overview',    icon: '⊞' },
-  { path: '/topology',   label: 'Topology',    icon: '◈' },
-  { path: '/branches',   label: 'Branches',    icon: '◑' },
-  { path: '/alerts',     label: 'Alerts',      icon: '⚑' },
-  { path: '/predictions',label: 'Predictions', icon: '◎' },
-  { path: '/reports',    label: 'Reports',     icon: '☰' },
-  { path: '/settings',   label: 'Settings',    icon: '⚙' },
+  { path: '/',             label: 'Overview',     icon: '⊞' },
+  { path: '/topology',     label: 'Topology',     icon: '◈' },
+  { path: '/branches',     label: 'Branches',     icon: '◑' },
+  { path: '/alerts',       label: 'Alerts',       icon: '⚑' },
+  { path: '/predictions',  label: 'Predictions',  icon: '◎' },
+  { path: '/loop-engine',  label: 'Loop Engine',  icon: '⟳' },
+  { path: '/reports',      label: 'Reports',      icon: '☰' },
+  { path: '/settings',     label: 'Settings',     icon: '⚙' },
 ];
 
 function AppShell({ networkSummary, currentToast, onCloseToast, onResolveIncident, activeIncidents = [], children }) {

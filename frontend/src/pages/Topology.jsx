@@ -25,6 +25,17 @@ function TopologyPage({
     showLabels: true
   });
 
+  // Keep selected node/edge details in sync with the live telemetry simulation prop
+  const liveSelectedNode = selectedNode && propTopology && propTopology.nodes
+    ? (Array.isArray(propTopology.nodes)
+        ? propTopology.nodes.find(n => n.id === selectedNode.id)
+        : propTopology.nodes[selectedNode.id])
+    : selectedNode;
+
+  const liveSelectedEdge = selectedEdge && propTopology && propTopology.edges
+    ? propTopology.edges.find(e => e.id === selectedEdge.id)
+    : selectedEdge;
+
   useEffect(() => {
     if (!propSummary) {
       fetchNetworkSummary();
@@ -144,8 +155,8 @@ function TopologyPage({
             topology={propTopology}
             onNodeSelect={onNodeSelect}
             onEdgeSelect={onEdgeSelect}
-            selectedNode={selectedNode}
-            selectedEdge={selectedEdge}
+            selectedNode={liveSelectedNode}
+            selectedEdge={liveSelectedEdge}
             filters={filters}
           />
         </div>
@@ -153,8 +164,8 @@ function TopologyPage({
         {/* Right Detail Panel */}
         <div className="topology-details">
           <DetailPanel 
-            selectedNode={selectedNode}
-            selectedEdge={selectedEdge}
+            selectedNode={liveSelectedNode}
+            selectedEdge={liveSelectedEdge}
             activeIncidents={activeIncidents}
             onStepExecute={onStepExecute}
             onResolveIncident={onResolveIncident}

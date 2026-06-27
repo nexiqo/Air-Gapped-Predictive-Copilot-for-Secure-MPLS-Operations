@@ -146,6 +146,9 @@ def load_branches() -> list[dict[str, Any]]:
             
         has_prediction = len(info.get("active_predictions", [])) > 0
         
+        users_count = info.get("users", 120)
+        computers_count = int(users_count * 0.85)
+        
         branches.append({
             "id": branch_id,
             "name": info.get("name", branch_id.replace("branch-", "").title()),
@@ -160,7 +163,9 @@ def load_branches() -> list[dict[str, Any]]:
             "predicted_issue": info.get("active_predictions", [{}])[0].get("predicted_fault_type", "None") if info.get("active_predictions") else "None",
             "sla": info.get("sla_status", "COMPLIANT"),
             "current_metrics": info.get("current_metrics", {}),
-            "has_prediction": has_prediction
+            "has_prediction": has_prediction,
+            "users": users_count,
+            "computers": computers_count
         })
     return branches
 

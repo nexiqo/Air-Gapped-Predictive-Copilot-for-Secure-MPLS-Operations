@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import os
 import re
+import math
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
@@ -19,28 +21,97 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 TOKEN_RE = re.compile(r"[a-z0-9\-]+")
 
 class FallbackVectorSearch:
-    """A pure-Python TF-IDF / Token Overlap search system used as a fallback if ChromaDB/Torch fails."""
+    """A pure-Python TF-IDF Vector Space semantic search engine with Cosine Similarity."""
     def __init__(self):
         self.documents: list[dict[str, Any]] = []
+        self.vocab: set[str] = set()
+        self.doc_tokens_list: list[list[str]] = []
+        self.idf: dict[str, float] = {}
 
     def add_documents(self, documents: list[str], metadatas: list[dict[str, Any]], ids: list[str]):
+        # Reset vocab and documents
+        self.documents = []
+        self.doc_tokens_list = []
+        self.vocab = set()
+        
         for doc, meta, doc_id in zip(documents, metadatas, ids):
             self.documents.append({
                 "id": doc_id,
                 "document": doc,
                 "metadata": meta
             })
+            tokens = TOKEN_RE.findall(doc.lower())
+            self.doc_tokens_list.append(tokens)
+            for t in tokens:
+                self.vocab.add(t)
+                
+        # Calculate IDF for all words in vocabulary
+        total_docs = len(self.documents)
+        doc_frequencies = Counter()
+        for tokens in self.doc_tokens_list:
+            unique_tokens = set(tokens)
+            for t in unique_tokens:
+                doc_frequencies[t] += 1
+                
+        self.idf = {}
+        for term in self.vocab:
+            # Add-one smoothing to prevent division by zero
+            self.idf[term] = math.log(1.0 + (total_docs / (1.0 + doc_frequencies[term])))
 
     def search(self, query: str, limit: int = 4) -> list[dict[str, Any]]:
-        query_tokens = set(TOKEN_RE.findall(query.lower()))
-        scored = []
-        for doc in self.documents:
-            doc_tokens = TOKEN_RE.findall(doc["document"].lower())
-            # Calculate simple jaccard or token overlap score
-            score = sum(token in query_tokens for token in doc_tokens)
-            scored.append((score, doc))
+        if not self.documents:
+            return []
+            
+        query_tokens = TOKEN_RE.findall(query.lower())
+        if not query_tokens:
+            return self.documents[:limit]
+            
+        # Calculate Query TF-IDF vector
+        query_tf = Counter(query_tokens)
+        query_vector = {}
+        query_norm = 0.0
         
-        # Sort by score descending
+        for term, freq in query_tf.items():
+            if term in self.idf:
+                tf = freq / len(query_tokens)
+                tfidf = tf * self.idf[term]
+                query_vector[term] = tfidf
+                query_norm += tfidf * tfidf
+        query_norm = math.sqrt(query_norm)
+        
+        if query_norm == 0.0:
+            # Fall back to first document matches if query terms aren't in vocabulary
+            return self.documents[:limit]
+            
+        scored = []
+        for idx, doc in enumerate(self.documents):
+            doc_tokens = self.doc_tokens_list[idx]
+            if not doc_tokens:
+                scored.append((0.0, doc))
+                continue
+                
+            doc_tf = Counter(doc_tokens)
+            doc_vector = {}
+            doc_norm = 0.0
+            
+            for term, freq in doc_tf.items():
+                if term in self.idf:
+                    tf = freq / len(doc_tokens)
+                    tfidf = tf * self.idf[term]
+                    doc_vector[term] = tfidf
+                    doc_norm += tfidf * tfidf
+            doc_norm = math.sqrt(doc_norm)
+            
+            if doc_norm == 0.0:
+                scored.append((0.0, doc))
+                continue
+                
+            # Cosine similarity dot product
+            dot_product = sum(query_vector[t] * doc_vector.get(t, 0.0) for t in query_vector if t in doc_vector)
+            cosine_sim = dot_product / (query_norm * doc_norm)
+            scored.append((cosine_sim, doc))
+            
+        # Sort by similarity score descending
         scored.sort(key=lambda x: x[0], reverse=True)
         return [item[1] for item in scored[:limit]]
 
@@ -130,10 +201,40 @@ class RAGService:
             node_metas.append({"type": "topology", "id": node_id, "title": node.get("label")})
             node_ids.append(node_id)
 
+        # Ultimate NOC Troubleshooting Guides (Deep technical RAG guides)
+        guides = [
+            {
+                "id": "GUIDE-BGP",
+                "doc": "Ultimate Guide to BGP Route Flapping and Peer Adjacency Issues: BGP flaps occur due to packet loss on link interfaces, MTU mismatches, or high CPU utilization. Symptoms include OSPF adjacency drops, log warnings containing 'BGP-5-ADJCHANGE', and prefix drops. Resolution actions: Ping peer IPs to verify connection; check MTU settings; set route dampening parameters; configure prefix limit thresholds to prevent table overflow.",
+                "meta": {"type": "guide", "id": "GUIDE-BGP", "title": "BGP Troubleshooting SOP"}
+            },
+            {
+                "id": "GUIDE-CONGESTION",
+                "doc": "Ultimate Guide to WAN/MPLS Link Congestion: Congestion occurs when bandwidth utilization exceeds SLA thresholds (60% warning, 80% critical). Symptoms: ping delays, latency spikes, and buffer discards on outbound WAN queues. Resolution actions: check top-talker protocols (Netflow port mappings); implement high-priority queues for voice/video; configure traffic shaping policies; apply traffic-engineering tunnel reroutes.",
+                "meta": {"type": "guide", "id": "GUIDE-CONGESTION", "title": "MPLS Congestion SOP"}
+            },
+            {
+                "id": "GUIDE-OPTICAL",
+                "doc": "Ultimate Guide to Fiber Optical Signal Degradation: High attenuation on single-mode fiber links is caused by bend radius violations, dirty connectors, or laser aging. Telemetry signs: packet loss rises incrementally, latency remains steady, SNMP shows high interface input error rates. Mitigation: dispatch local technician to clean optical patch cords; swap transceiver modules; check Rx/Tx power levels on routers.",
+                "meta": {"type": "guide", "id": "GUIDE-OPTICAL", "title": "Optical Interface SOP"}
+            },
+            {
+                "id": "GUIDE-TUNNEL",
+                "doc": "Ultimate Guide to IPsec/GRE VPN Tunnel Failures: VPN tunnels drop due to IKE Phase 1/2 negotiation timeouts, expired pre-shared keys, or NAT-Traversal failures. Verification commands: 'show crypto ikev2 sa', 'show crypto ipsec sa'. Fix: clear crypto sessions; check certificate validity; restart crypto loop interfaces.",
+                "meta": {"type": "guide", "id": "GUIDE-TUNNEL", "title": "VPN Tunnel SOP"}
+            }
+        ]
+        
+        guide_docs, guide_metas, guide_ids = [], [], []
+        for g in guides:
+            guide_docs.append(g["doc"])
+            guide_metas.append(g["meta"])
+            guide_ids.append(g["id"])
+
         # Index them
-        all_docs = rb_docs + inc_docs + slog_docs + node_docs
-        all_metas = rb_metas + inc_metas + slog_metas + node_metas
-        all_ids = rb_ids + inc_ids + slog_ids + node_ids
+        all_docs = rb_docs + inc_docs + slog_docs + node_docs + guide_docs
+        all_metas = rb_metas + inc_metas + slog_metas + node_metas + guide_metas
+        all_ids = rb_ids + inc_ids + slog_ids + node_ids + guide_ids
 
         if self.use_fallback:
             self.fallback_db.add_documents(all_docs, all_metas, all_ids)

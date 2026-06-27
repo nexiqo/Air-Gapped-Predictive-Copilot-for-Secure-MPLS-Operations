@@ -14,19 +14,9 @@ OLLAMA_URL = "http://127.0.0.1:11434/api/generate"
 OLLAMA_CHAT_URL = "http://127.0.0.1:11434/api/chat"
 OLLAMA_MODEL = "llama3"
 
-SYSTEM_PROMPT = """You are an elite NOC (Network Operations Center) Copilot deployed in an offline, air-gapped MPLS network environment for ISRO (Indian Space Research Organisation). You have deep expertise in:
-- MPLS/BGP routing protocols and SD-WAN operations
-- Network fault analysis and predictive maintenance
-- Runbook-driven incident response and remediation
-- SLA compliance and network health assessment
-
-You analyze real-time telemetry from 16 branch sites across India. You always provide:
-1. Clear, structured responses with confidence scores
-2. Specific actionable remediation steps from runbooks
-3. Impact assessment and urgency classification
-4. Root cause hypothesis based on telemetry patterns
-
-You are concise, technical, and precise. Never say you cannot help - always provide your best analysis based on available data. Format responses in clean sections without markdown headers - use CAPS labels instead."""
+SYSTEM_PROMPT = """You are an elite NOC (Network Operations Center) Copilot deployed in an offline, air-gapped MPLS network environment for ISRO (Indian Space Research Organisation).
+If the user asks an operational or diagnostics question about a branch, incident, or network telemetry, respond with a structured NOC analysis using CAPS labels (ANALYSIS, CONFIDENCE, ROOT CAUSE, REMEDIATION STEPS, SUMMARY) without markdown headers.
+If the user asks a general networking, conceptual, coding, or conversational question, respond naturally as a helpful, expert NOC engineer and general assistant using clean markdown layout (paragraphs, lists, code blocks, etc.). Be technical, concise, and precise."""
 
 
 class CopilotService:
@@ -60,21 +50,90 @@ class CopilotService:
             "mode": "LLaMA 3 (Offline)" if available else "Deterministic Fallback"
         }
 
-    def query(self, question: str, conversation_history: list[dict] | None = None) -> dict[str, Any]:
+    def _build_live_context(self, active_incidents: list[dict] | None, live_branches: list[dict] | None) -> str:
+        lines = []
+        
+        # 1. Inject global policies status
+        try:
+            from backend.main import GLOBAL_POLICIES
+        except ImportError:
+            GLOBAL_POLICIES = {"block_streaming": False, "scavenger_qos": False, "load_balancers": True, "maintenance_nodes": []}
+            
+        lines.append("GLOBAL SECURITY POLICIES:")
+        lines.append(f"- Block Unauthorized Media Streaming: {'ENABLED (Active Filtering)' if GLOBAL_POLICIES.get('block_streaming') else 'DISABLED (Permissive)'}")
+        lines.append(f"- Scavenger Queue Rate-Limiting: {'ENABLED (QoS Active)' if GLOBAL_POLICIES.get('scavenger_qos') else 'DISABLED (Default)'}")
+        lines.append(f"- Route Optimization: {'ENABLED' if GLOBAL_POLICIES.get('load_balancers') else 'DISABLED'}")
+        if GLOBAL_POLICIES.get("maintenance_nodes"):
+            lines.append(f"- Sites in Maintenance Mode: {', '.join(GLOBAL_POLICIES['maintenance_nodes'])}")
+        lines.append("")
+
+        if active_incidents:
+            lines.append("CURRENT ACTIVE SIMULATED INCIDENTS:")
+            for inc in active_incidents:
+                if inc.get("status") == "active":
+                    steps_str = "; ".join([f"{idx+1}. {step.get('label')}" for idx, step in enumerate(inc.get("steps", []))])
+                    lines.append(
+                        f"- Incident {inc.get('id')}: {inc.get('type')} on branch/node {inc.get('nodeId')} "
+                        f"(Severity: {inc.get('severity')}). Description: {inc.get('message')}. "
+                        f"Remediation Steps: {steps_str}"
+                    )
+        else:
+            lines.append("NO ACTIVE INCIDENTS REPORTED CURRENTLY.")
+
+        if live_branches:
+            lines.append("\nLIVE NETWORK STATUS & METRICS:")
+            from backend.employee_simulator import generate_employee_activity, get_branch_assets_and_subnets
+            for br in live_branches:
+                br_id = br.get('id')
+                status = br.get('status', 'NORMAL')
+                
+                # Check maintenance mode override
+                in_maint = br_id in GLOBAL_POLICIES.get("maintenance_nodes", [])
+                status_label = "MAINTENANCE" if in_maint else status
+                
+                extra = get_branch_assets_and_subnets(br_id)
+                status_str = f"- {br.get('name')} ({br_id}): Unit={extra['role']} | Status={status_label}, Latency={br.get('latency_ms')}ms, Packet Loss={br.get('packet_loss_pct')}%, Bandwidth Util={br.get('utilization_pct')}%"
+                
+                # Add asset summaries
+                devices = ", ".join([f"{a['name']} ({a['model']})" for a in extra['assets']])
+                status_str += f" | Hardware: [{devices}]"
+                
+                # Extract abusers to enrich LLM prompt context
+                if status != 'NORMAL' and not in_maint:
+                    employees = generate_employee_activity(br_id, status, active_incidents, policies=GLOBAL_POLICIES)
+                    abusers = [e for e in employees if e.get("status") == "Abuse"]
+                    throttled = [e for e in employees if e.get("status") == "Throttled"]
+                    if abusers:
+                        abuse_details = ", ".join([
+                            f"{e.get('name')} ({e.get('role')}) on {e.get('device_id')} [{e.get('ip_address')}] running '{e.get('active_application')}' utilizing {e.get('bandwidth_mbps')} Mbps"
+                            for e in abusers
+                        ])
+                        status_str += f" | Root Cause: Bandwidth abusers detected: {abuse_details}"
+                    elif throttled:
+                        throttle_details = ", ".join([
+                            f"{e.get('name')} throttled to {e.get('bandwidth_mbps')} Mbps on '{e.get('active_application')}'"
+                            for e in throttled
+                        ])
+                        status_str += f" | Policies Enforced: {throttle_details}"
+                lines.append(status_str)
+        return "\n".join(lines)
+
+    def query(self, question: str, conversation_history: list[dict] | None = None, active_incidents: list[dict] | None = None, live_branches: list[dict] | None = None) -> dict[str, Any]:
         """Main query method - tries Ollama first, falls back to deterministic analysis."""
         docs = self.rag.query(question, limit=5)
         
         if self._check_ollama():
-            result = self._query_ollama_chat(question, docs, conversation_history or [])
+            result = self._query_ollama_chat(question, docs, conversation_history or [], active_incidents, live_branches)
             if result:
                 return result
 
-        return self._generate_deterministic_fallback(question, docs)
+        return self._generate_deterministic_fallback(question, docs, active_incidents, live_branches)
 
-    def stream_query(self, question: str, conversation_history: list[dict] | None = None) -> Generator[str, None, None]:
+    def stream_query(self, question: str, conversation_history: list[dict] | None = None, active_incidents: list[dict] | None = None, live_branches: list[dict] | None = None) -> Generator[str, None, None]:
         """Stream tokens from Ollama for real-time response display."""
         docs = self.rag.query(question, limit=5)
         context_str = self._build_context(docs)
+        live_str = self._build_live_context(active_incidents, live_branches)
 
         messages = [{"role": "system", "content": SYSTEM_PROMPT}]
         
@@ -82,13 +141,37 @@ class CopilotService:
         for msg in (conversation_history or [])[-6:]:
             messages.append({"role": msg["role"], "content": msg["content"]})
         
-        # Add context-enriched user message
-        augmented_question = f"""Context from NOC knowledge base:
+        # Adaptive Prompting: Detect if it is a NOC operational query or a general chat query
+        noc_keywords = [
+            "incident", "remediate", "resolve", "solve", "fix", "branch", "hub", "dc-", "site", 
+            "latency", "packet", "loss", "utilization", "status", "error", "flap", "failure", "alert", 
+            "ping", "diagnose", "issue", "prediction", "warning", "critical", "bengaluru", "mumbai", 
+            "delhi", "chennai", "hyderabad", "pune", "ahmedabad", "kolkata", "bhubaneswar", "guwahati", 
+            "chandigarh", "jaipur", "lucknow", "kochi", "nagpur", "bhopal"
+        ]
+        q_lower = question.lower()
+        is_noc_query = any(kw in q_lower for kw in noc_keywords)
+
+        if is_noc_query:
+            augmented_question = f"""Context from NOC knowledge base:
 {context_str}
+
+Live Network Operations Status:
+{live_str}
 
 User question: {question}
 
 Provide a structured analysis. Start with ANALYSIS, then CONFIDENCE (0-100%), then ROOT CAUSE, then AFFECTED SCOPE, then REMEDIATION STEPS (numbered), then end with a one-line SUMMARY."""
+        else:
+            augmented_question = f"""Context from NOC knowledge base:
+{context_str}
+
+Live Network Operations Status:
+{live_str}
+
+User question: {question}
+
+You are a general NOC operations assistant. Answer the user's question clearly, naturally, and helpfully using the provided knowledge base context and live network status if relevant. You do not need to follow any specific layout or uppercase headings - chat naturally and format your response with clean markdown."""
 
         messages.append({"role": "user", "content": augmented_question})
         
@@ -119,7 +202,7 @@ Provide a structured analysis. Start with ANALYSIS, then CONFIDENCE (0-100%), th
                             continue
         except Exception as e:
             # Fall back to deterministic
-            fallback = self._generate_deterministic_fallback(question, docs)
+            fallback = self._generate_deterministic_fallback(question, docs, active_incidents, live_branches)
             yield self._format_fallback_as_text(fallback)
 
     def _build_context(self, docs: list[dict]) -> str:
@@ -128,8 +211,9 @@ Provide a structured analysis. Start with ANALYSIS, then CONFIDENCE (0-100%), th
             for doc in docs
         ])
 
-    def _query_ollama_chat(self, question: str, docs: list[dict], history: list[dict]) -> dict[str, Any] | None:
+    def _query_ollama_chat(self, question: str, docs: list[dict], history: list[dict], active_incidents: list[dict] | None = None, live_branches: list[dict] | None = None) -> dict[str, Any] | None:
         context_str = self._build_context(docs)
+        live_str = self._build_live_context(active_incidents, live_branches)
 
         messages = [{"role": "system", "content": SYSTEM_PROMPT}]
         for msg in history[-6:]:
@@ -137,6 +221,9 @@ Provide a structured analysis. Start with ANALYSIS, then CONFIDENCE (0-100%), th
 
         user_content = f"""Knowledge Base Context:
 {context_str}
+
+Live Network Operations Status:
+{live_str}
 
 Question: {question}
 
@@ -194,6 +281,9 @@ Return ONLY valid JSON, no other text."""
         return None
 
     def _format_fallback_as_text(self, fb: dict) -> str:
+        if fb.get("predicted_issue") == "CONVERSATIONAL":
+            return fb.get("narrative", "")
+
         lines = [
             f"ANALYSIS: {fb.get('predicted_issue', 'Unknown')}",
             f"CONFIDENCE: {int(float(fb.get('confidence', 0.75)) * 100)}%",
@@ -210,7 +300,175 @@ Return ONLY valid JSON, no other text."""
         lines.append(f"SUMMARY: {fb.get('narrative', fb.get('why_risky', ''))}")
         return "\n".join(lines)
 
-    def _generate_deterministic_fallback(self, question: str, docs: list[dict]) -> dict[str, Any]:
+    def _generate_deterministic_fallback(self, question: str, docs: list[dict], active_incidents: list[dict] | None = None, live_branches: list[dict] | None = None) -> dict[str, Any]:
+        q_lower = question.lower()
+
+        noc_keywords = [
+            "incident", "remediate", "resolve", "solve", "fix", "branch", "hub", "dc-", "site", 
+            "latency", "packet", "loss", "utilization", "status", "error", "flap", "failure", "alert", 
+            "ping", "diagnose", "issue", "prediction", "warning", "critical", "bengaluru", "mumbai", 
+            "delhi", "chennai", "hyderabad", "pune", "ahmedabad", "kolkata", "bhubaneswar", "guwahati", 
+            "chandigarh", "jaipur", "lucknow", "kochi", "nagpur", "bhopal"
+        ]
+        is_noc = any(kw in q_lower for kw in noc_keywords)
+
+        if not is_noc:
+            if any(h in q_lower for h in ["hello", "hi", "hey", "greetings"]):
+                msg = "Hello! I am your ISRO NOC Copilot. I am running in secure offline mode. I can help you diagnose branch failures, look up runbooks, and analyze telemetry. How can I assist you today?"
+            elif any(w in q_lower for w in ["who are you", "what is this", "what do you do"]):
+                msg = "I am the Air-Gapped NOC Predictive Copilot, designed for secure ISRO MPLS operations. I monitor 16 nodes across India and forecast network anomalies using machine learning. You can ask me to troubleshoot specific branches (e.g. 'Bengaluru', 'Chennai') or active incidents."
+            elif "bgp" in q_lower:
+                msg = "BGP (Border Gateway Protocol) is the routing protocol used to exchange routing information. In our network, Delhi Hub (AS-65000) peer adjacencies are monitored. Route flapping or prefix drop incidents can be resolved using Runbook RB-001."
+            elif "mpls" in q_lower:
+                msg = "MPLS (Multiprotocol Label Switching) speeds up and shapes network traffic flows by using path labels. Runbook RB-005 covers label forwarding table errors."
+            elif any(s in q_lower for s in ["snmp", "syslog", "log"]):
+                msg = "SNMP metrics provide telemetry on CPU, memory, and bandwidth utilization. Syslogs collect device events. You can view syslog streams on the logs pages or ask me to check a site's status."
+            elif "help" in q_lower:
+                msg = "Here are some things you can try asking me:\n1. 'What is the status of Bengaluru?'\n2. 'Solve active incidents'\n3. 'Show runbook for progressive congestion'\n4. 'List all branches'"
+            else:
+                snippet = docs[0]['document'] if docs else 'N/A'
+                msg = f"I am your offline NOC Copilot assistant. I've analyzed your question and scanned the local RAG documents, but to run a full diagnostic scan, please specify a branch name (e.g., 'Bengaluru status') or an active incident keyword.\n\nHere is a snippet from our knowledge base that might help:\n- {snippet}"
+            
+            return {
+                "predicted_issue": "CONVERSATIONAL",
+                "confidence": 1.0,
+                "current_state": "Chatbot Mode",
+                "why_risky": "N/A",
+                "affected_scope": "N/A",
+                "time_to_impact": "N/A",
+                "time_to_impact_minutes": 0.0,
+                "recommended_actions": [],
+                "evidence": [],
+                "narrative": msg,
+                "generated_by": "Offline Conversational Agent"
+            }
+
+        active_inc = None
+        if active_incidents:
+            for inc in active_incidents:
+                if inc.get("status") == "active":
+                    node_id = inc.get("nodeId", "").lower()
+                    node_short = node_id.replace("branch-", "").replace("hub-", "")
+                    inc_type = inc.get("type", "").lower()
+                    
+                    if any(kw in q_lower for kw in [node_id, node_short, inc_type]):
+                        active_inc = inc
+                        break
+            
+            if not active_inc and any(kw in q_lower for kw in ["solve", "fix", "remediate", "active", "problem", "incident"]):
+                for inc in active_incidents:
+                    if inc.get("status") == "active":
+                        active_inc = inc
+                        break
+ 
+        if active_inc:
+            from backend.employee_simulator import generate_employee_activity
+            steps = [s.get("label") for s in active_inc.get("steps", [])]
+            node_name = active_inc.get("nodeId", "").replace("branch-", "").replace("hub-", "").title()
+            node_id = active_inc.get("nodeId", "")
+            
+            # Fetch employee activity for the incident branch
+            employees = generate_employee_activity(node_id, active_inc.get("severity", "CRITICAL"), active_incidents)
+            abusers = [e for e in employees if e.get("status") == "Abuse"]
+            
+            abuse_narrative = ""
+            if abusers:
+                abuser_strs = [
+                    f"{e.get('name')} ({e.get('role')}) on device {e.get('device_id')} ({e.get('ip_address')}) streaming '{e.get('active_application')}' consuming {e.get('bandwidth_mbps')} Mbps"
+                    for e in abusers
+                ]
+                abuse_narrative = " Specific bandwidth abusers identified on link: " + "; ".join(abuser_strs) + "."
+                
+            return {
+                "predicted_issue": active_inc.get("type", "Network Anomaly").upper(),
+                "confidence": 0.98,
+                "current_state": f"Site {node_name} has a CRITICAL alert: {active_inc.get('message')}.{abuse_narrative}",
+                "why_risky": f"Active network degradation on {node_name} link is threatening SLA thresholds due to unauthorized bandwidth utilization.",
+                "affected_scope": active_inc.get("nodeId", "Unknown").upper(),
+                "time_to_impact": "Active / Immediate",
+                "time_to_impact_minutes": 0.0,
+                "recommended_actions": steps + [f"Apply traffic rate-limit policy on device: {e.get('device_id')} ({e.get('ip_address')})" for e in abusers],
+                "evidence": [{"source": active_inc.get("id"), "title": f"Telemetry Incident Alert for {node_name}"}],
+                "narrative": f"Live telemetry confirms an active {active_inc.get('type')} on {node_name}." + 
+                             (f" RAG inspection detects heavy congestion caused by employee {abusers[0].get('name')} utilizing {abusers[0].get('bandwidth_mbps')} Mbps." if abusers else "") +
+                             " To resolve this immediately, follow the runbook steps or click the AUTO-FIX action button.",
+                "generated_by": "Live Incident Analyzer"
+            }
+
+        matching_branch = None
+        if live_branches:
+            for br in live_branches:
+                name = br.get("name", "").lower()
+                br_id = br.get("id", "").lower()
+                if any(kw in q_lower for kw in [name, br_id]):
+                    matching_branch = br
+                    break
+        
+        if matching_branch:
+            from backend.employee_simulator import generate_employee_activity, get_branch_assets_and_subnets
+            try:
+                from backend.main import GLOBAL_POLICIES
+            except ImportError:
+                GLOBAL_POLICIES = {"block_streaming": False, "scavenger_qos": False, "load_balancers": True, "maintenance_nodes": []}
+                
+            br_id = matching_branch.get("id")
+            in_maint = br_id in GLOBAL_POLICIES.get("maintenance_nodes", [])
+            status = "MAINTENANCE" if in_maint else matching_branch.get("status", "NORMAL")
+            
+            latency = 12.5 if in_maint else matching_branch.get("latency_ms", 0.0)
+            loss = 0.0 if in_maint else matching_branch.get("packet_loss_pct", 0.0)
+            util = 32.4 if in_maint else matching_branch.get("utilization_pct", 0.0)
+            sla = "MAINTENANCE MODE (EXEMPT)" if in_maint else matching_branch.get("sla", "COMPLIANT")
+            
+            extra = get_branch_assets_and_subnets(br_id)
+            employees = generate_employee_activity(br_id, status, active_incidents, policies=GLOBAL_POLICIES)
+            abusers = [e for e in employees if e.get("status") == "Abuse"]
+            throttled = [e for e in employees if e.get("status") == "Throttled"]
+            
+            abuse_desc = ""
+            rec_actions = ["No action required. Site telemetry is within nominal parameters."]
+            
+            if in_maint:
+                abuse_desc = " Site is in scheduled maintenance window. Active alerts are suppressed."
+                rec_actions = ["Verify maintenance tasks completion", "Restore site to active SLA monitoring once completed"]
+            elif status != "NORMAL":
+                rec_actions = [
+                    "Isolate link interface and review optical signal levels",
+                    "Verify routing table convergence and path cost overrides",
+                    "Verify if security group shaper or media block policies should be enabled in settings"
+                ]
+                if abusers:
+                    abuser_strs = [
+                        f"{e.get('name')} ({e.get('role')}) on device {e.get('device_id')} running '{e.get('active_application')}' ({e.get('bandwidth_mbps')} Mbps)"
+                        for e in abusers
+                    ]
+                    abuse_desc = " Bandwidth abusers detected: " + ", ".join(abuser_strs) + "."
+                    rec_actions.append(f"Deploy QoS rate-limits on device: {abusers[0].get('device_id')}")
+            elif throttled:
+                abuse_desc = f" Traffic shaper has actively throttled {len(throttled)} streaming devices."
+                
+            devices_str = ", ".join([f"{a['name']} ({a['model']})" for a in extra['assets']])
+            subnet_str = ", ".join([f"{s['name']}: {s['cidr']}" for s in extra['subnets'][:3]])
+            
+            return {
+                "predicted_issue": f"STATUS CHECK: {matching_branch.get('name').upper()}",
+                "confidence": 0.95,
+                "current_state": f"{matching_branch.get('name')} ({extra['role']}) status is currently {status}.{abuse_desc}",
+                "why_risky": "Link is within safe operating bounds." if status == "NORMAL" or in_maint else f"Elevated telemetry readings (Latency: {latency}ms, Loss: {loss}%, Util: {util}%) jeopardize SLA compliance.",
+                "affected_scope": br_id.upper(),
+                "time_to_impact": "None" if status == "NORMAL" or in_maint else "Immediate",
+                "time_to_impact_minutes": 0.0,
+                "recommended_actions": rec_actions,
+                "evidence": [
+                    {"source": br_id, "title": f"Live metrics: Latency {latency}ms, Loss {loss}%"},
+                    {"source": "INVENTORY", "title": f"Devices: {devices_str}"},
+                    {"source": "IPAM", "title": f"Subnets: {subnet_str}"}
+                ],
+                "narrative": f"Telemetry check for {matching_branch.get('name')} ({extra['role']}) shows status is {status}. Current metrics: Latency = {latency}ms, Loss = {loss}%, Util = {util}%. IPAM Subnets: {subnet_str}. Active hardware inventory: {devices_str}." +
+                             (f" Offending traffic is actively throttled by global firewall rules." if throttled else "") +
+                             (f" High bandwidth utilization is traced to {abusers[0].get('name')} streaming '{abusers[0].get('active_application')}'." if abusers else ""),
+                "generated_by": "Live Telemetry Tracker"
+            }
         predictions = load_predictions()
         incidents = load_incidents()
         runbooks = load_runbooks()
@@ -230,8 +488,6 @@ Return ONLY valid JSON, no other text."""
                 "generated_by": "Deterministic Fallback"
             }
 
-        # Find most relevant prediction
-        q_lower = question.lower()
         best_pred = None
         for p in predictions:
             site = p.get("predicted_at_site", "").lower()

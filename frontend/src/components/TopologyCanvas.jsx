@@ -11,20 +11,22 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import './TopologyCanvas.css';
 
-function TopologyCanvas({ topology: propTopology, onNodeSelect, onEdgeSelect, selectedNode, selectedEdge }) {
+function TopologyCanvas({ topology: propTopology, onNodeSelect, onEdgeSelect, selectedNode, selectedEdge, filters }) {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [topologyData, setTopologyData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Trigger transformation when prop changes (for live updates!)
+  // Trigger transformation when prop topology or filters change (for live updates!)
   useEffect(() => {
     if (propTopology) {
       setTopologyData(propTopology);
-      transformToReactFlow(propTopology);
+      transformToReactFlow(propTopology, filters);
+      setLoading(false);
     } else {
       fetchTopology();
     }
-  }, [propTopology]);
+  }, [propTopology, filters]);
 
   const fetchTopology = async () => {
     try {
@@ -32,21 +34,121 @@ function TopologyCanvas({ topology: propTopology, onNodeSelect, onEdgeSelect, se
       if (response.ok) {
         const data = await response.json();
         setTopologyData(data);
-        transformToReactFlow(data);
+        transformToReactFlow(data, filters);
       }
     } catch (error) {
       console.error('Failed to fetch topology:', error);
       const fallbackData = getFallbackTopology();
       setTopologyData(fallbackData);
-      transformToReactFlow(fallbackData);
+      transformToReactFlow(fallbackData, filters);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const transformToReactFlow = (topology) => {
+  const transformToReactFlow = (topology, currentFilters) => {
     if (!topology || !topology.nodes) return;
+
+    const { severity = 'all', type = 'all', showPredictions = true, showLabels = true } = currentFilters || {};
+
+    // 1. Calculate stable, collision-free coordinates for all nodes in the topology
+    const nodePositions = {};
+    const minDx = 230; // Minimum horizontal gap (node width 200px + 30px gap)
+    const minDy = 165; // Minimum vertical gap (node height 140px + 25px gap)
+
+    // Initial geographic coordinates mapping (expanded scale)
+    Object.entries(topology.nodes).forEach(([id, node]) => {
+      let lat = null;
+      let lon = null;
+      if (node.coordinates && node.coordinates.length === 2) {
+        lat = node.coordinates[0];
+        lon = node.coordinates[1];
+      } else if (typeof node.lat === 'number' && typeof node.lon === 'number') {
+        lat = node.lat;
+        lon = node.lon;
+      }
+
+      let x = 0;
+      let y = 0;
+      if (lat !== null && lon !== null) {
+        // Expand mapping scale so nodes are naturally further apart
+        x = (lon - 68) * 36.0 + 80;
+        y = 750 - (lat - 8) * 26.0;
+      } else if (node.type === 'HUB') {
+        x = 550; y = 200;
+      } else if (node.type === 'DATACENTER') {
+        x = 500; y = 450;
+      } else {
+        x = Math.random() * 800; y = Math.random() * 600;
+      }
+
+      // Manual adjustments for dense regions to improve default relative spacing
+      if (id === 'dc-mumbai') { x = 200; y = 480; }
+      if (id === 'branch-pune') { x = 220; y = 580; }
+      if (id === 'branch-bengaluru') { x = 320; y = 720; }
+      if (id === 'branch-kochi') { x = 300; y = 840; }
+      if (id === 'branch-chennai') { x = 450; y = 760; }
+      if (id === 'branch-hyderabad') { x = 480; y = 600; }
+      if (id === 'branch-nagpur') { x = 500; y = 450; }
+      if (id === 'branch-bhopal') { x = 480; y = 350; }
+      if (id === 'branch-ahmedabad') { x = 160; y = 350; }
+
+      nodePositions[id] = { x, y };
+    });
+
+    // Run collision resolution passes
+    for (let pass = 0; pass < 12; pass++) {
+      Object.keys(nodePositions).forEach(id1 => {
+        Object.keys(nodePositions).forEach(id2 => {
+          if (id1 === id2) return;
+
+          const pos1 = nodePositions[id1];
+          const pos2 = nodePositions[id2];
+
+          const dx = pos2.x - pos1.x;
+          const dy = pos2.y - pos1.y;
+          const absDx = Math.abs(dx);
+          const absDy = Math.abs(dy);
+
+          if (absDx < minDx && absDy < minDy) {
+            // Push them apart
+            const overlapX = minDx - absDx;
+            const overlapY = minDy - absDy;
+
+            const dirX = dx >= 0 ? 1 : -1;
+            const dirY = dy >= 0 ? 1 : -1;
+
+            if (overlapX < overlapY) {
+              nodePositions[id1].x -= (overlapX / 2) * dirX;
+              nodePositions[id2].x += (overlapX / 2) * dirX;
+            } else {
+              nodePositions[id1].y -= (overlapY / 2) * dirY;
+              nodePositions[id2].y += (overlapY / 2) * dirY;
+            }
+          }
+        });
+      });
+    }
+
+    // Keep all nodes within a clean viewport boundary
+    Object.keys(nodePositions).forEach(id => {
+      nodePositions[id].x = Math.max(50, Math.min(1050, nodePositions[id].x));
+      nodePositions[id].y = Math.max(50, Math.min(850, nodePositions[id].y));
+    });
     
-    const flowNodes = Object.entries(topology.nodes).map(([id, node]) => {
+    // 2. Map Nodes with Filter-Aware Opacity
+    const flowNodes = Object.entries(topology.nodes || {}).map(([id, node]) => {
       const status = node.status || 'NORMAL';
+      
+      // Determine if this node matches the active filters
+      let matchesFilter = true;
+      if (type !== 'all' && node.type !== type) {
+        matchesFilter = false;
+      }
+      if (severity !== 'all' && status.toLowerCase() !== severity.toLowerCase()) {
+        matchesFilter = false;
+      }
+      
       let borderColor = '#30363d'; // Default border
       let glowColor = 'transparent';
       
@@ -60,37 +162,8 @@ function TopologyCanvas({ topology: propTopology, onNodeSelect, onEdgeSelect, se
         borderColor = '#238636'; // Green
       }
 
-      // Map coordinates geographically
-      let position = { x: 0, y: 0 };
-      let lat = null;
-      let lon = null;
-      
-      if (node.coordinates && node.coordinates.length === 2) {
-        lat = node.coordinates[0];
-        lon = node.coordinates[1];
-      } else if (typeof node.lat === 'number' && typeof node.lon === 'number') {
-        lat = node.lat;
-        lon = node.lon;
-      }
-
-      if (lat !== null && lon !== null) {
-        // Map longitude (68 to 90) -> (50 to 750)
-        position.x = (lon - 68) * 31.8 + 50;
-        // Map latitude (8 to 33) -> (600 to 50) - inverted
-        position.y = 600 - (lat - 8) * 22.0;
-        
-        // Offset DC Mumbai
-        if (id === 'dc-mumbai' || id === 'dc-core') {
-          position.x += 40;
-          position.y += 20;
-        }
-      } else if (node.type === 'HUB') {
-        position = { x: 400, y: 300 };
-      } else if (node.type === 'DATACENTER') {
-        position = { x: 420, y: 280 };
-      } else {
-        position = { x: Math.random() * 800, y: Math.random() * 600 };
-      }
+      const position = nodePositions[id] || { x: 0, y: 0 };
+      const opacity = matchesFilter ? 1.0 : 0.15;
 
       return {
         id,
@@ -106,26 +179,58 @@ function TopologyCanvas({ topology: propTopology, onNodeSelect, onEdgeSelect, se
                 </div>
               </div>
               <div className="node-name">{node.name.split('-')[0].trim()}</div>
-              <div className="node-metrics">
-                <div className="metric-row">
-                  <span className="metric-label">Latency:</span>
-                  <span className="metric-value">{node.metrics?.latency_ms}ms</span>
-                </div>
-                <div className="metric-row">
-                  <span className="metric-label">Loss:</span>
-                  <span className="metric-value">{node.metrics?.packet_loss_pct}%</span>
-                </div>
-                <div className="metric-row">
-                  <span className="metric-label">Util:</span>
-                  <span className="metric-value">{node.metrics?.utilization_pct}%</span>
-                </div>
-              </div>
-              {node.prediction && (
-                <div className="node-prediction">
-                  <span className="prediction-indicator-dot" style={{ backgroundColor: borderColor }}></span>
-                  <span className="prediction-text">{node.prediction.issue}</span>
-                  <span className="prediction-eta">{node.prediction.eta_minutes}m</span>
-                </div>
+              
+              {showLabels && (
+                <>
+                  <div className="node-metrics">
+                    <div className="metric-row">
+                      <span className="metric-label">Latency:</span>
+                      <span className="metric-value">{node.metrics?.latency_ms}ms</span>
+                    </div>
+                    <div className="metric-row">
+                      <span className="metric-label">Loss:</span>
+                      <span className="metric-value">{node.metrics?.packet_loss_pct}%</span>
+                    </div>
+                    <div className="metric-row">
+                      <span className="metric-label">Util:</span>
+                      <span className="metric-value">{node.metrics?.utilization_pct}%</span>
+                    </div>
+                  </div>
+                  
+                  {showPredictions && node.prediction && (
+                    <div className="node-prediction">
+                      <span className="prediction-indicator-dot" style={{ backgroundColor: borderColor }}></span>
+                      <span className="prediction-text">{node.prediction.issue}</span>
+                      <span className="prediction-eta">{node.prediction.eta_minutes}m</span>
+                    </div>
+                  )}
+
+                  {/* Actions Toolbar directly in Map nodes */}
+                  <div className="node-actions" onClick={(e) => e.stopPropagation()}>
+                    <button 
+                      className="node-action-btn diag"
+                      onClick={() => {
+                        window.dispatchEvent(new CustomEvent('copilotQuery', { 
+                          detail: `Run diagnostics and check status on node ${id}` 
+                        }));
+                      }}
+                    >
+                      Diag
+                    </button>
+                    {node.prediction && (
+                      <button 
+                        className="node-action-btn fix"
+                        onClick={() => {
+                          window.dispatchEvent(new CustomEvent('copilotQuery', { 
+                            detail: `Auto-remediate issue on ${id}` 
+                          }));
+                        }}
+                      >
+                        Fix
+                      </button>
+                    )}
+                  </div>
+                </>
               )}
             </div>
           ),
@@ -138,15 +243,39 @@ function TopologyCanvas({ topology: propTopology, onNodeSelect, onEdgeSelect, se
           color: '#ffffff',
           width: 200,
           height: 'auto',
-          minHeight: 140,
+          minHeight: showLabels ? 140 : 60,
           boxShadow: glowColor !== 'transparent' ? `0 0 16px ${glowColor}` : 'none',
+          opacity: opacity,
+          pointerEvents: matchesFilter ? 'auto' : 'none',
+          transition: 'opacity 0.25s ease-in-out'
         },
         className: `topology-node node-${status.toLowerCase()}`,
       };
     });
 
-    const flowEdges = topology.edges.map((edge) => {
+    // 3. Map Edges with Filter-Aware Opacity
+    const flowEdges = (topology.edges || []).map((edge) => {
       const status = edge.status || 'NORMAL';
+      
+      // Determine if this edge connects filtered nodes
+      const sourceNode = topology.nodes[edge.source];
+      const targetNode = topology.nodes[edge.target];
+      
+      let matchesFilter = true;
+      if (sourceNode && targetNode) {
+        const sourceStatus = sourceNode.status || 'NORMAL';
+        const targetStatus = targetNode.status || 'NORMAL';
+        
+        if (type !== 'all' && (sourceNode.type !== type || targetNode.type !== type)) {
+          matchesFilter = false;
+        }
+        if (severity !== 'all' && (sourceStatus.toLowerCase() !== severity.toLowerCase() && targetStatus.toLowerCase() !== severity.toLowerCase())) {
+          matchesFilter = false;
+        }
+      }
+      
+      const opacity = matchesFilter ? 1.0 : 0.15;
+      
       let strokeColor = '#30363d'; // Default gray border
       let strokeWidth = 2;
       let animated = false;
@@ -171,10 +300,12 @@ function TopologyCanvas({ topology: propTopology, onNodeSelect, onEdgeSelect, se
         source: edge.source,
         target: edge.target,
         type: 'smoothstep',
-        animated,
+        animated: animated && matchesFilter,
         style: {
           stroke: strokeColor,
           strokeWidth: strokeWidth,
+          opacity: opacity,
+          transition: 'opacity 0.25s ease-in-out'
         },
         markerEnd: {
           type: MarkerType.ArrowClosed,
@@ -182,8 +313,8 @@ function TopologyCanvas({ topology: propTopology, onNodeSelect, onEdgeSelect, se
           width: 15,
           height: 15,
         },
-        label: (
-          <div className="edge-label">
+        label: showLabels ? (
+          <div className="edge-label" style={{ opacity: opacity, transition: 'opacity 0.25s ease-in-out' }}>
             <div className="edge-type">{edge.type}</div>
             <div className="edge-metrics">
               <span>L: {metrics.latency_ms || 'N/A'}ms</span>
@@ -195,7 +326,7 @@ function TopologyCanvas({ topology: propTopology, onNodeSelect, onEdgeSelect, se
               </div>
             )}
           </div>
-        ),
+        ) : null,
         labelStyle: {
           fill: '#ffffff',
           fontSize: 10,
@@ -228,7 +359,7 @@ function TopologyCanvas({ topology: propTopology, onNodeSelect, onEdgeSelect, se
     onEdgeSelect?.(edge);
   }, [onEdgeSelect]);
 
-  if (!nodes.length) {
+  if (loading) {
     return (
       <div className="topology-loading">
         <div className="loading-spinner"></div>
@@ -239,6 +370,15 @@ function TopologyCanvas({ topology: propTopology, onNodeSelect, onEdgeSelect, se
 
   return (
     <div className="topology-canvas">
+      {nodes.length === 0 && (
+        <div className="topology-empty-overlay">
+          <div className="empty-message-box">
+            <span className="empty-icon">⚠️</span>
+            <h4>No nodes match filters</h4>
+            <p>Try resetting severity/type options or waiting for live simulated alerts.</p>
+          </div>
+        </div>
+      )}
       <ReactFlow
         nodes={nodes}
         edges={edges}

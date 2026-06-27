@@ -1,22 +1,22 @@
 /* =========================================================
-   Reports Page — GitHub Releases style dark UI
+   Reports Page — matches Reports.jsx class names exactly
    ========================================================= */
 
 .reports-page {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
   padding: 24px;
-  overflow-y: auto;
   font-family: var(--sans);
   color: var(--text-primary);
+  overflow-y: auto;
 }
 
 /* ── Page header ── */
 .reports-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   padding-bottom: 16px;
   border-bottom: 1px solid var(--border);
 }
@@ -27,43 +27,69 @@
   color: var(--text-primary);
 }
 
-.reports-header-sub {
+/* export-btn used in JSX */
+.export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  font-family: var(--sans);
   font-size: 13px;
-  color: var(--text-muted);
-  margin-top: 2px;
+  font-weight: 500;
+  color: var(--text-primary);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
 }
+.export-btn:hover:not(:disabled) { background: #30363d; border-color: #8b949e; }
+.export-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
-/* ── Tab bar (like GitHub code/issues/PR tabs) ── */
-.report-tabs {
+/* ── Report controls bar ── */
+.report-controls {
   display: flex;
-  gap: 0;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 0;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--bg-overlay);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
 }
 
-.report-tab {
-  padding: 8px 16px;
-  font-size: 14px;
+.report-type-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.report-type-selector label {
+  font-size: 13px;
   font-weight: 500;
   color: var(--text-secondary);
-  background: none;
-  border: none;
-  border-bottom: 2px solid transparent;
-  cursor: pointer;
-  transition: color 0.12s ease, border-color 0.12s ease;
+  white-space: nowrap;
+}
+
+/* report-select used in JSX */
+.report-select {
+  padding: 5px 28px 5px 10px;
   font-family: var(--sans);
-  margin-bottom: -1px;
-}
-
-.report-tab:hover {
+  font-size: 13px;
   color: var(--text-primary);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%238b949e' d='M4.427 7.427l3.396 3.396a.25.25 0 00.354 0l3.396-3.396A.25.25 0 0011.396 7H4.604a.25.25 0 00-.177.427z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  transition: border-color 0.12s;
 }
-
-.report-tab.active {
-  color: var(--text-primary);
-  border-bottom-color: var(--red);
-  font-weight: 600;
-}
+.report-select:focus { border-color: #58a6ff; box-shadow: 0 0 0 3px rgba(88,166,255,0.12); }
+.report-select option { background: var(--bg-overlay); }
 
 /* ── Loading ── */
 .loading-state {
@@ -71,7 +97,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 48px;
+  padding: 64px;
   color: var(--text-secondary);
   font-size: 14px;
   gap: 12px;
@@ -85,256 +111,284 @@
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
+@keyframes spin { to { transform: rotate(360deg); } }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* ── Report card (GitHub release entry) ── */
-.report-card {
-  background-color: var(--bg-overlay);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-
-/* Release header strip */
-.report-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px;
-  background-color: var(--bg-subtle);
-  border-bottom: 1px solid var(--border);
-}
-
-.report-release-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 2px 10px;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--green);
-  background-color: rgba(63, 185, 80, 0.12);
-  border: 1px solid rgba(63, 185, 80, 0.3);
-  border-radius: 2em;
-  font-family: var(--mono);
-}
-
-.report-timestamp {
-  font-size: 12px;
-  color: var(--text-muted);
-  font-family: var(--mono);
-}
-
-.report-card-body {
-  padding: 16px;
+/* ── Report content wrapper ── */
+.report-content {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-/* ── Report title ── */
-.report-title {
+/* ── Report header card ── */
+.report-header {
+  background: var(--bg-overlay);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+}
+
+.report-header h3 {
   font-size: 18px;
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 4px;
 }
 
-.report-subtitle {
-  font-size: 13px;
-  color: var(--text-muted);
-}
-
-/* ── Stat chips row (like GitHub release download counts) ── */
-.report-stats-row {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.report-stat-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
+.report-generated {
   font-size: 12px;
-  font-weight: 500;
-  color: var(--text-secondary);
-  background-color: var(--bg-subtle);
-  border: 1px solid var(--border);
-  border-radius: 2em;
+  color: var(--text-muted);
   font-family: var(--mono);
+  margin: 0;
 }
 
-.report-stat-chip.critical {
-  color: var(--red);
-  background-color: rgba(248, 81, 73, 0.08);
-  border-color: rgba(248, 81, 73, 0.3);
-}
-
-.report-stat-chip.warning {
-  color: var(--yellow);
-  background-color: rgba(210, 153, 34, 0.08);
-  border-color: rgba(210, 153, 34, 0.3);
-}
-
-.report-stat-chip.success {
-  color: var(--green);
-  background-color: rgba(63, 185, 80, 0.08);
-  border-color: rgba(63, 185, 80, 0.3);
-}
-
-/* ── GitHub Releases-style collapsible section ── */
+/* ── Report section card ── */
 .report-section {
+  background: var(--bg-overlay);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
 }
 
-.report-section-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 16px;
-  background-color: var(--bg-subtle);
-  cursor: pointer;
-  user-select: none;
-  border-bottom: 1px solid var(--border);
-  transition: background 0.1s;
-}
-
-.report-section-header:hover {
-  background-color: #282e33;
-}
-
-.report-section-title {
+.report-section h4 {
   font-size: 13px;
   font-weight: 600;
   color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.section-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 0 6px;
-  font-size: 11px;
-  font-weight: 500;
-  line-height: 18px;
-  border-radius: 2em;
-  border: 1px solid transparent;
-}
-
-.section-badge-critical { background: rgba(248,81,73,0.12); color: var(--red); border-color: rgba(248,81,73,0.3); }
-.section-badge-warning  { background: rgba(210,153,34,0.12); color: var(--yellow); border-color: rgba(210,153,34,0.3); }
-.section-badge-info     { background: var(--bg-subtle); color: var(--text-muted); border-color: var(--border); }
-
-.report-section-toggle {
-  font-size: 11px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-subtle);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  font-size: 12px;
   color: var(--text-muted);
-  font-family: var(--mono);
 }
 
-.report-section-body {
-  padding: 14px 16px;
-  font-size: 13px;
-  color: var(--text-secondary);
-  line-height: 1.6;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-/* ── Prose / executive summary ── */
-.report-prose {
+/* report-text used in JSX */
+.report-text {
   font-size: 14px;
   color: var(--text-secondary);
   line-height: 1.7;
+  padding: 14px 16px;
+  margin: 0;
 }
 
-.report-prose h4 {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 6px;
-  margin-top: 14px;
+/* ── Health metrics grid ── */
+.health-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0;
+  padding: 0;
 }
 
-.report-prose p { margin-bottom: 8px; }
+.health-metric {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  font-size: 13px;
+}
+.health-metric:last-child { border-bottom: none; }
 
-.report-prose ul {
-  margin-left: 18px;
-  margin-bottom: 8px;
+.health-metric .metric-label { color: var(--text-muted); font-size: 12px; }
+.health-metric .metric-value { font-weight: 600; color: var(--text-primary); font-family: var(--mono); font-size: 12px; }
+
+/* ── Branch table ── */
+.branch-table {
+  overflow-x: auto;
 }
 
-.report-prose li {
-  margin-bottom: 3px;
-  color: var(--text-secondary);
-}
-
-/* ── Metric table ── */
-.report-table {
+.branch-table table {
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
 }
 
-.report-table th {
+.branch-table th {
   text-align: left;
-  padding: 8px 12px;
+  padding: 8px 16px;
   font-size: 12px;
   font-weight: 600;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.4px;
+  background: var(--bg-subtle);
   border-bottom: 1px solid var(--border);
-  background-color: var(--bg-subtle);
 }
 
-.report-table td {
-  padding: 9px 12px;
+.branch-table td {
+  padding: 10px 16px;
   color: var(--text-secondary);
-  border-bottom: 1px solid var(--border-muted);
+  border-bottom: 1px solid var(--border);
   font-family: var(--mono);
   font-size: 12px;
 }
 
-.report-table tr:last-child td { border-bottom: none; }
-.report-table tr:hover td { background-color: var(--bg-subtle); }
+.branch-table tr:last-child td { border-bottom: none; }
+.branch-table tr:hover td { background: var(--bg-subtle); }
+.branch-table td:first-child { color: var(--text-primary); font-weight: 500; font-family: var(--sans); }
 
-.td-name { color: var(--text-primary) !important; font-weight: 500; font-family: var(--sans) !important; }
-.td-critical { color: var(--red) !important; }
-.td-warning  { color: var(--yellow) !important; }
-.td-ok       { color: var(--green) !important; }
-
-/* ── Download / export button ── */
-.report-export-btn {
+/* status-badge for branch table */
+.status-badge {
   display: inline-flex;
   align-items: center;
+  padding: 0 8px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 20px;
+  border-radius: 2em;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+.status-badge.critical { background: rgba(248,81,73,0.15); color: var(--red); border-color: rgba(248,81,73,0.4); }
+.status-badge.warning  { background: rgba(210,153,34,0.15); color: var(--yellow); border-color: rgba(210,153,34,0.4); }
+.status-badge.normal   { background: rgba(63,185,80,0.15); color: var(--green); border-color: rgba(63,185,80,0.4); }
+
+/* ── Issues list ── */
+.issues-list { display: flex; flex-direction: column; }
+
+.issue-item {
+  display: flex;
+  flex-direction: column;
   gap: 6px;
-  padding: 5px 14px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.issue-item:last-child { border-bottom: none; }
+
+.issue-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.issue-title {
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-primary);
-  background-color: var(--bg-subtle);
+  flex: 1;
+}
+
+.issue-severity {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 8px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 18px;
+  border-radius: 2em;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+.issue-severity.critical { background: rgba(248,81,73,0.15); color: var(--red); border-color: rgba(248,81,73,0.4); }
+.issue-severity.warning  { background: rgba(210,153,34,0.15); color: var(--yellow); border-color: rgba(210,153,34,0.4); }
+.issue-severity.high     { background: rgba(248,81,73,0.15); color: var(--red); border-color: rgba(248,81,73,0.4); }
+
+.issue-details {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-family: var(--mono);
+}
+
+/* ── Predictions list in report ── */
+.predictions-list { display: flex; flex-direction: column; }
+
+.prediction-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.prediction-item:last-child { border-bottom: none; }
+
+.prediction-entity {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-family: var(--mono);
+}
+
+.prediction-details {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.prediction-issue {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.prediction-confidence {
+  font-size: 12px;
+  color: var(--green);
+  font-family: var(--mono);
+  font-weight: 600;
+}
+
+.prediction-eta {
+  font-size: 12px;
+  color: var(--yellow);
+  font-family: var(--mono);
+}
+
+/* ── Recommendations list ── */
+.recommendations-list {
+  margin: 0;
+  padding: 14px 16px 14px 34px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.recommendations-list li {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* ── Evidence tags ── */
+.evidence-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 12px 16px;
+}
+
+.evidence-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: 2em;
+  font-family: var(--mono);
+}
+
+/* no-data fallback */
+.no-data {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  color: var(--text-muted);
+  font-size: 14px;
+  background: var(--bg-overlay);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  cursor: pointer;
-  transition: background 0.12s, border-color 0.12s;
-  font-family: var(--sans);
 }
-.report-export-btn:hover { background-color: #30363d; border-color: #8b949e; }
 
-/* ── Responsive ── */
 @media (max-width: 768px) {
   .reports-page { padding: 16px; }
-  .reports-header { flex-direction: column; gap: 12px; }
-  .report-stats-row { gap: 6px; }
-  .report-table { font-size: 12px; }
-  .report-table th, .report-table td { padding: 6px 8px; }
+  .reports-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .health-metrics { grid-template-columns: 1fr; }
 }

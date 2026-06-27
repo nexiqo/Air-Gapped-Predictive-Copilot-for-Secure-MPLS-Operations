@@ -15,7 +15,7 @@ const SUGGESTED_PROMPTS = [
 ];
 
 // mode: 'closed' | 'popup' | 'fullscreen'
-function CopilotWidget({ activeIncidents = [], onResolveIncident }) {
+function CopilotWidget({ activeIncidents = [], liveBranches = [], onResolveIncident }) {
   const [mode, setMode] = useState('closed');
   const [messages, setMessages] = useState([]);
   const [conversations, setConversations] = useState([{ id: 'default', title: 'NOC Session', messages: [] }]);
@@ -169,7 +169,12 @@ function CopilotWidget({ activeIncidents = [], onResolveIncident }) {
       const response = await fetch('http://127.0.0.1:8000/copilot/stream', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: message.trim(), conversation_history: history }),
+        body: JSON.stringify({ 
+          question: message.trim(), 
+          conversation_history: history,
+          active_incidents: activeIncidents,
+          live_branches: liveBranches
+        }),
         signal: abortControllerRef.current.signal
       });
 
@@ -210,7 +215,12 @@ function CopilotWidget({ activeIncidents = [], onResolveIncident }) {
         const res = await fetch('http://127.0.0.1:8000/copilot/query', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ question: message.trim(), conversation_history: buildHistory(messages) })
+          body: JSON.stringify({ 
+            question: message.trim(), 
+            conversation_history: buildHistory(messages),
+            active_incidents: activeIncidents,
+            live_branches: liveBranches
+          })
         });
         if (res.ok) {
           const data = await res.json();
@@ -223,7 +233,7 @@ function CopilotWidget({ activeIncidents = [], onResolveIncident }) {
       setIsLoading(false);
       setIsStreaming(false);
     }
-  }, [isLoading, isStreaming, activeIncidents, onResolveIncident, messages, mode]);
+  }, [isLoading, isStreaming, activeIncidents, liveBranches, onResolveIncident, messages, mode]);
 
   const handleStop = () => {
     abortControllerRef.current?.abort();
