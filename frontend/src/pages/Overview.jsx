@@ -221,6 +221,38 @@ function OverviewPage({ networkSummary, topology: propTopology, alerts: propAler
     }
   };
 
+  const getTimelineEvents = () => {
+    const events = [];
+    if (loopState?.active_loops) {
+      loopState.active_loops.forEach(loop => {
+        events.push({
+          id: loop.incident_id || `active-${loop.node_id}`,
+          nodeId: loop.node_id,
+          type: loop.incident_type,
+          triggerTime: loop.trigger_time,
+          completionTime: null,
+          phase: loop.phase,
+          status: 'active'
+        });
+      });
+    }
+    if (loopState?.history) {
+      const sortedHist = [...loopState.history].reverse();
+      sortedHist.forEach((h, idx) => {
+        events.push({
+          id: `hist-${idx}`,
+          nodeId: h.node_id,
+          type: h.incident_type,
+          triggerTime: h.trigger_time,
+          completionTime: h.completion_time,
+          phase: 'RESOLVED',
+          status: 'resolved'
+        });
+      });
+    }
+    return events.slice(0, 4);
+  };
+
   const handleSelectSite = (node) => {
     onNodeSelect?.(node);
     navigate('/topology');
@@ -482,6 +514,69 @@ function OverviewPage({ networkSummary, topology: propTopology, alerts: propAler
         </div>
 
       </div>
+
+      {/* Incident Lifecycle Timeline View */}
+      {getTimelineEvents().length > 0 && (
+        <div className="overview-section incident-timeline-card" style={{ marginTop: '24px', marginBottom: '24px' }}>
+          <h3 style={{ marginBottom: '16px' }}>NOC Incident Lifecycle Timeline</h3>
+          <div className="timeline-container">
+            {getTimelineEvents().map((event, idx) => {
+              let p2Status = 'pending';
+              let p3Status = 'pending';
+              
+              if (event.status === 'resolved') {
+                p2Status = 'done';
+                p3Status = 'done';
+              } else if (event.status === 'active') {
+                if (event.phase === 'TRIAGE') {
+                  p2Status = 'active';
+                } else if (event.phase === 'MITIGATION' || event.phase === 'VERIFICATION') {
+                  p2Status = 'done';
+                  p3Status = 'active';
+                } else {
+                  p2Status = 'done';
+                  p3Status = 'done';
+                }
+              }
+              
+              return (
+                <div key={event.id || idx} className="timeline-row">
+                  <div className="timeline-info">
+                    <span className="timeline-node">{event.nodeId.replace('branch-', '').toUpperCase()}</span>
+                    <span className="timeline-type">{event.type}</span>
+                  </div>
+                  <div className="timeline-track">
+                    {/* Step 1: Triggered */}
+                    <div className="timeline-step done">
+                      <div className="step-dot red" />
+                      <div className="step-label">Incident Triggered <span className="step-time">({event.triggerTime})</span></div>
+                    </div>
+                    
+                    <div className={`timeline-line ${p2Status}`} />
+                    
+                    {/* Step 2: Loop Engaged */}
+                    <div className={`timeline-step ${p2Status}`}>
+                      <div className={`step-dot purple ${p2Status === 'active' ? 'pulse' : ''}`} />
+                      <div className="step-label">Loop Engaged</div>
+                    </div>
+                    
+                    <div className={`timeline-line ${p3Status}`} />
+                    
+                    {/* Step 3: Verified Recovery */}
+                    <div className={`timeline-step ${p3Status}`}>
+                      <div className={`step-dot green ${p3Status === 'active' ? 'pulse' : ''}`} />
+                      <div className="step-label">
+                        Verified Recovery 
+                        {event.completionTime && <span className="step-time"> ({event.completionTime})</span>}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Quick Actions */}
       <div className="overview-section">

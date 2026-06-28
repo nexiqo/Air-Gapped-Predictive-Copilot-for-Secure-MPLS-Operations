@@ -514,6 +514,136 @@
   background-color: var(--green);
 }
 
+/* ===== INCIDENT LIFECYCLE TIMELINE ===== */
+.timeline-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.timeline-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 20px;
+  transition: border-color 0.15s ease;
+}
+.timeline-row:hover {
+  border-color: var(--text-secondary);
+}
+
+.timeline-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+}
+
+.timeline-node {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: var(--mono);
+}
+
+.timeline-type {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.timeline-track {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  max-width: 600px;
+}
+
+.timeline-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  min-width: 130px;
+}
+
+.timeline-line {
+  height: 2px;
+  background-color: var(--border);
+  flex: 1;
+  min-width: 30px;
+  transition: background-color 0.3s ease;
+}
+.timeline-line.done {
+  background-color: var(--green);
+}
+.timeline-line.active {
+  background-color: var(--purple, #bc8cff);
+}
+
+.step-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--border);
+  border: 2px solid var(--bg-overlay);
+  transition: all 0.3s ease;
+  z-index: 5;
+}
+
+.step-dot.red {
+  background-color: var(--red);
+  box-shadow: 0 0 8px var(--red);
+}
+
+.step-dot.purple {
+  background-color: var(--purple, #bc8cff);
+  box-shadow: 0 0 8px var(--purple, #bc8cff);
+}
+
+.step-dot.green {
+  background-color: var(--green);
+  box-shadow: 0 0 8px var(--green);
+}
+
+.timeline-step.pending .step-dot {
+  background-color: #21262d;
+  border-color: #30363d;
+}
+
+.timeline-step.pending .step-label {
+  color: var(--text-muted);
+}
+
+.step-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.step-time {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-family: var(--mono);
+}
+
+/* Pulsing effect for active verification/mitigation nodes */
+.step-dot.pulse {
+  animation: pulse-dot-effect 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse-dot-effect {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(188, 140, 255, 0.7); }
+  70% { transform: scale(1.15); box-shadow: 0 0 0 8px rgba(188, 140, 255, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(188, 140, 255, 0); }
+}
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .overview-page {
