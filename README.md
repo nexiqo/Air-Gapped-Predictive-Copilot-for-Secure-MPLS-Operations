@@ -1,120 +1,118 @@
-# Air-Gapped Predictive NOC Copilot
+# 🛰️ Air-Gapped Predictive Copilot & Secure NOC Operations Dashboard
 
-**Business Scenario: Multi-State Enterprise Network Management System**
+An enterprise-grade, air-gapped network management and self-healing orchestration cockpit built for secure Space & Defense operations (representing a mission-critical **ISRO Network Operations Center**). This platform features real-time predictive anomaly diagnostics, local RAG document-grounded AI copilot, an autonomous maker-checker loop engineering engine, and browser-native security audit notifications.
 
-This project addresses a critical problem faced by "TechCorp India" - a rapidly growing financial services company with operations across 8 states (Maharashtra, Karnataka, Tamil Nadu, Telangana, Gujarat, Delhi, Kerala, and West Bengal). The company's distributed infrastructure serves over 2 million customers and processes 50,000+ transactions daily.
+---
 
-## The Business Problem
+## 📸 Architecture & Data Flow
 
-TechCorp India is experiencing critical network reliability issues across their multi-state branch network:
+Below is the real-time push telemetry architecture of the secure operations portal:
 
-- **Network Downtime**: Average 4-6 hours monthly downtime per branch, causing ₹2-3 crore daily revenue loss
-- **Service Disruption**: ATM and banking services become unavailable during network outages
-- **Manual Troubleshooting**: Network operations center (NOC) team spends 8+ hours diagnosing issues manually
-- **Predictive Failure**: Inability to predict network failures before they impact customers
-- **Security Concerns**: Cannot use cloud-based monitoring due to banking compliance requirements
-- **Resource Constraint**: Limited network engineers managing 20+ branch locations
-
-This repo transforms the network operations challenge into a practical MVP that is:
-
-- offline-first by design (critical for banking compliance)
-- explainable without cloud dependencies
-- ready to demo with synthetic telemetry before the full network lab is online
-- structured so you can swap in Containerlab, Prometheus, Ollama, and stronger ML models later
-
-## What is included
-
-- `topology.yml` and `configs/` for a 4-node FRRouting MPLS-style lab
-- `docker-compose-telemetry.yml` and `telemetry/` for Prometheus, Grafana, and Telegraf
-- `scripts/generate_demo_data.py` to create synthetic telemetry and ground truth labels
-- `ml/` baseline preprocessing and training scripts
-- `rag/knowledge_base.py` for local-only retrieval over runbooks, topology notes, and incident notes
-- `api/` FastAPI backend for `/health`, `/analyze`, and `/query`
-- `ui/dashboard.py` Streamlit demo UI
-- `validation/` scenarios and scorecard helpers
-- `docs/` architecture and air-gap compliance notes
-
-## Architecture
-
-The system models TechCorp India's actual network infrastructure:
-
-1. `Network sim`: Containerlab + FRRouting create a reproducible hub/branch/datacenter topology representing:
-   - **Mumbai Hub** (Main NOC): Central network operations center
-   - **Regional Branches**: Bangalore, Chennai, Hyderabad representing key business locations
-   - **Data Center Core**: Primary data center hosting core banking services
-
-2. `Telemetry`: Telegraf and Prometheus collect metrics from the simulated environment monitoring:
-   - Network latency and packet loss between branches
-   - Server resource utilization (CPU, memory, disk)
-   - Application performance metrics
-   - Transaction processing rates
-
-3. `Predictive engine`: A baseline risk engine works immediately; optional trained model artifacts can override it to:
-   - Predict network failures 30-60 minutes before occurrence
-   - Identify performance degradation patterns
-   - Provide actionable recommendations to prevent outages
-
-4. `Copilot`: Local retrieval grounds explanations in internal runbooks and topology documents. If Ollama is available locally, it can be added as a final generation layer without changing the API shape, enabling:
-   - Automated incident diagnosis and root cause analysis
-   - Step-by-step troubleshooting guidance for junior engineers
-   - Historical incident pattern recognition
-
-## Quick start
-
-1. Create a virtual environment and install `requirements.txt`.
-2. Generate demo data:
-
-```powershell
-python scripts/generate_demo_data.py
+```mermaid
+graph TD
+    A[MPLS Network Simulator] -->|Telemetry Metrics| B[FastAPI Backend Server]
+    B -->|Fast-Path TF-IDF RAG| C[Air-Gapped Predictive Copilot]
+    B -->|Loop Engine / Maker-Checker| D[Autonomous Self-Healing Loop]
+    B -->|WebSockets Telemetry Push / wss fallback| E[React Operations Dashboard]
+    E -->|Operator Actions| B
+    E -->|Audio Alert Synthesizer| F[Browser Web Audio API]
+    C -->|Local LLM Fallback| G[Local Ollama / Llama3]
 ```
 
-3. Train the baseline classifier:
+---
 
-```powershell
-python ml/preprocess.py
-python ml/train_models.py
-```
+## 🚀 Key Feature Catalog
 
-4. Start the API:
+Everything in this portal is built to run entirely offline, meeting the strictest regulatory compliance requirements for air-gapped government infrastructure.
 
-```powershell
-uvicorn api.main:app --reload --port 8000
-```
+### 1. 🔐 Secure holographic operator clearance portal
+* **Operator ID clearance gate:** Gates portal operations behind credentials (`ISRO-NOC-77` / `isronoc2026`).
+* **Holographic visuals:** Styled with glassmorphism overlays, laser scanning animations, and token decryption progress sequences.
+* **Auto-unlock sound context:** Clicking the authentication button unlocks browser AudioContext permissions for audible alerts.
 
-5. Start the dashboard:
+### 2. 📈 Live telemetry trends & SVG sparkline charts
+* **Geographically realistic Indian routing metrics:** Calibrated latency baselines corresponding to physical fiber distances in India (New Delhi Hub ~0.8ms, Delhi-Mumbai ~8.4ms, Delhi-Guwahati/Northeast ~46.2ms, Chennai ~31.8ms).
+* **Live sparklines:** Real-time inline SVG graphs rendering metric fluctuations next to each branch site.
+* **Global SLA area chart:** High-resolution average SLA latency area graph with gradient fill.
 
-```powershell
-streamlit run ui/dashboard.py
-```
+### 3. 🔄 NOC Incident Lifecycle Timeline
+* **Horizontal tracker cards:** Renders at the bottom of the overview dashboard detailing the full history of self-healing operations.
+* **State progressions:** Color-coded status dots (`Incident Triggered` [Red] ➔ `Loop Engaged` [Purple] ➔ `Verified Recovery` [Green]).
+* **Pulsing nodes:** Pulsing animations on indicators for currently active mitigation phases.
 
-## Demo-first workflow
+### 4. ⚙️ Autonomous Loop Engineering (Maker-Checker Panel)
+* **n8n-style node map:** Visualizes the loop orchestration pipeline connecting Triage ➔ Mitigation ➔ Verification ➔ Resolution.
+* **Maker-Checker verification checklists:** Requires scripts to run, telemetry to normalize, and health checks to clear before resolving an incident.
+* **Live status widget:** Embedded directly on the overview cockpit displaying active verification loops, progress fill bars, and current loop logs.
 
-You do not need the full network lab up on day one. This repo supports a staged build that mirrors TechCorp India's actual deployment strategy:
+### 5. 🛡️ Bandwidth Abuser Security Alerts
+* **Congestion simulation:** Simulates non-business packet hogs (YouTube 4K streams, BitTorrent downloads, Facebook scrolls) causing branch link saturation.
+* **Holographic warning toasts:** Displays custom warning cards ("YouTube traffic detected on branch-pune, 2.3GB wasted").
+* **Interactive rate-limiting:** "Deploy Rate-Limiter QoS" button feeds QoS blocking rules directly into the Copilot chat queue.
 
-- `Stage 1`: Use synthetic telemetry to validate the end-to-end copilot flow (Proof of Concept)
-- `Stage 2`: Replace synthetic CSV inputs with Prometheus exports from the real lab (Pilot deployment in 3 branches)
-- `Stage 3`: Add a local Ollama model for richer explanations (Full rollout across 8 states)
-- `Stage 4`: Run the four validation scenarios in `validation/scenarios.json` (Production readiness testing)
+### 6. 🔊 Audible NOC Alarm Notifications
+* **Double chirp chime:** Plays double high-pitched sine beep for `CRITICAL` alert triggers.
+* **Warm warning tone:** Plays a soft triangle tone for `WARNING` alert triggers.
+* **Browser-native synthesis:** Synthesizes sound using the HTML5 Web Audio API, avoiding media file downloads and running in offline environments.
 
-## Air-gap stance
+### 7. 📄 One-Click PDF executive reporting
+* **Print layout template:** Renders clean, print-ready reports containing executive summaries, incident timelines, and SLA metrics.
+* **Native print trigger:** Launches native browser printing to export professional PDFs.
 
-The code paths in this starter do not require external APIs. The optional local LLM integration targets `http://127.0.0.1:11434` only. See `docs/air_gap_compliance.md` for the operational checklist.
+---
 
-**Business Critical Requirement**: This air-gap compliance is essential for TechCorp India's banking operations under RBI regulations requiring all financial transaction monitoring systems to operate within secure, isolated environments.
+## 🛠️ How to Run Locally
 
-## Suggested next build steps
+Follow these instructions to start the air-gapped system on your local machine.
 
-1. Bring up the synthetic demo and verify `/analyze` (Simulate Mumbai-Bangalore network issues)
-2. Populate Grafana with the same signals used by the API (Create dashboards for branch-level monitoring)
-3. Replace the heuristic risk engine with your trained LSTM/XGBoost/forecast stack (Improve prediction accuracy for peak transaction hours)
-4. Cache Ollama models and embeddings locally before the final offline demo (Ensure compliance with RBI air-gap requirements)
+### Prerequisites
+* **Python 3.10+** (with virtual environment support)
+* **Node.js 18+** (with npm)
+* **Ollama** (optional, for local LLM text generation)
 
-## Expected Business Impact
+### 1. Initialize Backend Server
+1. Clone the repository and navigate to the project directory:
+   ```bash
+   cd Air-Gapped-Predictive-Copilot-for-Secure-MPLS-Operations
+   ```
+2. Create and activate a Python virtual environment:
+   ```bash
+   python -m venv .venv
+   .venv\Scripts\activate  # Windows Powershell
+   # or source .venv/bin/activate on Linux/Mac
+   ```
+3. Install Python dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. Start the FastAPI uvicorn server on port `8000`:
+   ```bash
+   $env:PYTHONPATH="."  # Windows
+   python -m uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
+   ```
 
-When fully deployed across TechCorp India's 8-state network:
+### 2. Initialize Frontend Client
+1. Open a new terminal and navigate to the frontend directory:
+   ```bash
+   cd frontend
+   ```
+2. Install npm dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the Vite React development server on port `5173`:
+   ```bash
+   npm run dev
+   ```
+4. Access the portal at [http://localhost:5173](http://localhost:5173).
 
-- **Reduce network downtime**: From 4-6 hours/month to <30 minutes/month per branch
-- **Faster incident resolution**: From 8+ hours to <30 minutes average resolution time
-- **Cost savings**: Estimated ₹15-20 crore annually in reduced downtime and improved operational efficiency
-- **Improved customer satisfaction**: 99.9% network availability during peak banking hours
-- **Compliance**: Full RBI regulatory compliance for financial network monitoring
+---
+
+## 🤖 Air-Gapped Copilot Query Reference
+
+The Predictive Copilot leverages a local vector store (ChromaDB) to ground queries in local network SOP documents. If a local Ollama model is unavailable, the copilot falls back to a deterministic, high-speed matching fast-path.
+
+* **BGP peer issues query:** `"What are the standard troubleshooting steps for BGP flaps on Chennai PE router?"`
+* **Bandwidth abuser query:** `"Who is using BitTorrent / YouTube right now?"`
+* **Status report query:** `"Show current active bandwidth abuse report"`
+* **Loop status query:** `"What is the current status of Bengaluru link self-healing loop?"`
