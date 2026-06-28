@@ -459,18 +459,28 @@ function OverviewPage({ networkSummary, topology: propTopology, alerts: propAler
                       key={node.id} 
                       className="compact-node-item"
                       onClick={() => handleSelectSite(node)}
-                      style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}
+                      style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', padding: '6px 10px', borderRadius: 'var(--radius)', background: 'var(--bg-inset)', border: '1px solid var(--border)' }}
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflow: 'hidden', flex: 1 }}>
-                        <span className="status-dot" style={{ backgroundColor: statusColor }}></span>
-                        <div className="node-details">
-                          <span className="node-name">{node.name.split('-')[0].trim()}</span>
-                          <span className="node-meta">{node.metrics?.latency_ms}ms</span>
-                        </div>
+                        <span className="status-dot" style={{ backgroundColor: statusColor, width: '8px', height: '8px', borderRadius: '50%', display: 'inline-block' }}></span>
+                        <span className="node-name" style={{ fontWeight: 600, fontSize: '13px', color: 'var(--text-primary)' }}>
+                          {node.name.split('-')[0].trim()}
+                        </span>
                       </div>
-                      <div className="compact-node-chart" style={{ flexShrink: 0, display: 'flex', alignItems: 'center' }}>
-                        <Sparkline data={hist} color={color} />
-                      </div>
+                      <span 
+                        style={{ 
+                          fontSize: '11px', 
+                          fontWeight: 'bold', 
+                          fontFamily: 'var(--mono)',
+                          color: color,
+                          background: `${color}15`,
+                          border: `1px solid ${color}33`,
+                          padding: '2px 8px',
+                          borderRadius: '12px'
+                        }}
+                      >
+                        {node.metrics?.latency_ms ? `${node.metrics.latency_ms.toFixed(2)}ms` : '0.00ms'}
+                      </span>
                     </div>
                   );
                 })}
