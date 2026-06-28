@@ -438,7 +438,7 @@ function CopilotWidget({ activeIncidents = [], liveBranches = [], onResolveIncid
   };
 
   // ---- Shared chat content (reused in both popup and fullscreen) ----
-  const ChatContent = ({ isFullscreen, scrollRef }) => (
+  const renderChatContent = (isFullscreen, scrollRef) => (
     <>
       {/* Active Incident Banner */}
       {activeInc && (
@@ -572,7 +572,7 @@ function CopilotWidget({ activeIncidents = [], liveBranches = [], onResolveIncid
               </div>
             </div>
 
-            <ChatContent isFullscreen={true} scrollRef={scrollContainerRef} />
+            {renderChatContent(true, scrollContainerRef)}
           </div>
         </div>
       )}
@@ -597,7 +597,7 @@ function CopilotWidget({ activeIncidents = [], liveBranches = [], onResolveIncid
               </div>
             </div>
             <div className="widget-body">
-              <ChatContent isFullscreen={false} scrollRef={scrollContainerRef} />
+              {renderChatContent(false, scrollContainerRef)}
             </div>
           </div>
         </div>
