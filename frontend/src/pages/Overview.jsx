@@ -83,21 +83,78 @@ function OverviewPage({ networkSummary, topology: propTopology, alerts: propAler
   const [globalHistory, setGlobalHistory] = useState(Array(15).fill(14));
   const [loopState, setLoopState] = useState({ active_loops: [], history: [] });
 
-  // Poll Loop Engine state for the live widget
+  // Connect to telemetry push notifications via WebSockets with HTTP fallback
   useEffect(() => {
-    const fetchLoopState = async () => {
+    const isHttps = window.location.protocol === 'https:';
+    // Dynamically choose host to match current deployment (local or serveo tunnel)
+    const host = window.location.hostname === 'localhost' ? '127.0.0.1:8000' : window.location.host;
+    const wsUrl = `${isHttps ? 'wss:' : 'ws:'}//${host}/ws/telemetry`;
+    
+    let ws;
+    let pingInterval;
+    let fallbackPoll;
+
+    const connectWS = () => {
       try {
-        const res = await fetch('http://127.0.0.1:8000/loop/state');
-        if (res.ok) {
-          setLoopState(await res.json());
-        }
+        ws = new WebSocket(wsUrl);
+
+        ws.onopen = () => {
+          console.log("[WebSocket] Connected to live telemetry feed");
+          ws.send(JSON.stringify({ type: 'TELEMETRY_SYNC' }));
+        };
+
+        ws.onmessage = (event) => {
+          try {
+            const payload = JSON.parse(event.data);
+            if (payload.type === 'TELEMETRY_RESPONSE') {
+              setLoopState({
+                active_loops: payload.active_loops || [],
+                history: payload.loop_history || []
+              });
+            }
+          } catch (e) {
+            console.error("[WebSocket] Parsing error:", e);
+          }
+        };
+
+        ws.onerror = (err) => {
+          console.warn("[WebSocket] Telemetry socket encountered error:", err);
+        };
+
+        ws.onclose = () => {
+          console.log("[WebSocket] Telemetry socket closed. Reconnect/polling fallback active.");
+        };
       } catch (e) {
-        console.error("Failed to fetch loop state:", e);
+        console.error("[WebSocket] Connection failed:", e);
       }
     };
-    fetchLoopState();
-    const interval = setInterval(fetchLoopState, 3000);
-    return () => clearInterval(interval);
+
+    connectWS();
+
+    // Heartbeat pings over WebSocket channel
+    pingInterval = setInterval(() => {
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ type: 'TELEMETRY_SYNC' }));
+      }
+    }, 2000);
+
+    // Fallback polling if WebSocket is blocked or disconnected
+    fallbackPoll = setInterval(async () => {
+      if (!ws || ws.readyState !== WebSocket.OPEN) {
+        try {
+          const res = await fetch('http://127.0.0.1:8000/loop/state');
+          if (res.ok) {
+            setLoopState(await res.json());
+          }
+        } catch {}
+      }
+    }, 3000);
+
+    return () => {
+      if (ws) ws.close();
+      clearInterval(pingInterval);
+      clearInterval(fallbackPoll);
+    };
   }, []);
  
   useEffect(() => {

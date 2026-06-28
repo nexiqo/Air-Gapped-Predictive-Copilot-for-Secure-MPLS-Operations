@@ -6,7 +6,7 @@ import time
 from datetime import datetime
 from pathlib import Path
 from typing import Any
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from fastapi.staticfiles import StaticFiles
@@ -592,6 +592,30 @@ def get_ml_metrics() -> dict[str, Any]:
         data = json.load(f)
     data["status"] = "trained"
     return data
+
+
+@app.websocket("/ws/telemetry")
+async def websocket_telemetry(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        while True:
+            # Wait for sync messages from the client
+            data = await websocket.receive_text()
+            payload = json.loads(data)
+            
+            if payload.get("type") == "TELEMETRY_SYNC":
+                from backend.loop_engine import loop_engine
+                response = {
+                    "type": "TELEMETRY_RESPONSE",
+                    "active_loops": list(loop_engine.active_loops.values()),
+                    "loop_history": loop_engine.history,
+                    "timestamp": time.time()
+                }
+                await websocket.send_json(response)
+    except WebSocketDisconnect:
+        pass
+    except Exception as e:
+        print(f"[WebSocket] Telemetry Socket Error: {e}")
 
 
 # ── Serve built React frontend as static files (for public sharing) ────────────
