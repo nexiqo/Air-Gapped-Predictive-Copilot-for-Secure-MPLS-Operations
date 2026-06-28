@@ -466,6 +466,44 @@ function App() {
     return () => clearInterval(interval);
   }, [liveBranches, activeIncidents]);
 
+  // Periodic random Bandwidth Abuser event generator
+  useEffect(() => {
+    if (!liveBranches.length || !isAuthenticated) return;
+
+    const interval = setInterval(() => {
+      // Don't inject if there is already an active incident or security toast
+      if (currentToast) return;
+
+      const nonHqBranches = liveBranches.filter(b => b.id !== 'hub-delhi' && b.id !== 'dc-mumbai');
+      if (nonHqBranches.length === 0) return;
+      const target = nonHqBranches[Math.floor(Math.random() * nonHqBranches.length)];
+      
+      const apps = [
+        { name: 'YouTube', appName: 'YouTube (4K Video Stream)', wasted: '2.3GB' },
+        { name: 'Facebook', appName: 'Facebook Video Scrolling', wasted: '1.4GB' },
+        { name: 'BitTorrent', appName: 'High-Volume Bittorrent Download', wasted: '8.7GB' },
+        { name: 'Netflix', appName: 'Netflix (HD Streaming)', wasted: '3.1GB' }
+      ];
+      const selectedApp = apps[Math.floor(Math.random() * apps.length)];
+      
+      const nodeId = target.id;
+      const branchName = target.name || nodeId.replace('branch-', '').toUpperCase();
+
+      setCurrentToast({
+        id: `SEC-AUDIT-${Date.now()}`,
+        nodeId: nodeId,
+        type: 'SECURITY_AUDIT',
+        severity: 'warning',
+        message: `${selectedApp.name} traffic detected on ${nodeId}, ${selectedApp.wasted} wasted.`,
+        appName: selectedApp.appName,
+        wasted: selectedApp.wasted,
+        branchName: branchName
+      });
+    }, 40000);
+
+    return () => clearInterval(interval);
+  }, [liveBranches, currentToast, isAuthenticated]);
+
   // Global listener for node selection requests
   useEffect(() => {
     const handleSelectNodeEvent = (e) => {

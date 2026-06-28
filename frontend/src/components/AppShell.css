@@ -386,3 +386,19 @@
   color: var(--text-secondary);
 }
 .toast-btn.manual-btn:hover { background: var(--bg-subtle); color: var(--text-primary); }
+
+/* Security Toast Overrides */
+.incident-toast.security-toast {
+  border-color: var(--purple, #bc8cff);
+}
+.incident-toast.security-toast .toast-header {
+  background: rgba(188, 140, 255, 0.08);
+  border-bottom-1px-solid: rgba(188, 140, 255, 0.25);
+}
+.incident-toast.security-toast .toast-severity-dot {
+  background: var(--purple, #bc8cff);
+  box-shadow: 0 0 6px var(--purple, #bc8cff);
+}
+.incident-toast.security-toast .toast-title {
+  color: var(--purple, #bc8cff);
+}

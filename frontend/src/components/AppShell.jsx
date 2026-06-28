@@ -35,10 +35,17 @@ function AppShell({ networkSummary, currentToast, onCloseToast, onResolveInciden
 
   const handleResolveAuto = () => {
     if (currentToast) {
-      onResolveIncident(currentToast.id, 'copilot');
-      window.dispatchEvent(new CustomEvent('copilotRemediate', {
-        detail: { nodeId: currentToast.nodeId, type: currentToast.type, method: 'auto' }
-      }));
+      if (currentToast.type === 'SECURITY_AUDIT') {
+        window.dispatchEvent(new CustomEvent('copilotQuery', { 
+          detail: `Block and throttle the ${currentToast.appName} abuser on ${currentToast.nodeId}` 
+        }));
+        onCloseToast();
+      } else {
+        onResolveIncident(currentToast.id, 'copilot');
+        window.dispatchEvent(new CustomEvent('copilotRemediate', {
+          detail: { nodeId: currentToast.nodeId, type: currentToast.type, method: 'auto' }
+        }));
+      }
     }
   };
 
@@ -119,19 +126,36 @@ function AppShell({ networkSummary, currentToast, onCloseToast, onResolveInciden
 
       {/* ===== INCIDENT TOAST ===== */}
       {currentToast && (
-        <div className="incident-toast">
+        <div className={`incident-toast ${currentToast.type === 'SECURITY_AUDIT' ? 'security-toast' : ''}`}>
           <div className="toast-header">
             <span className="toast-severity-dot" />
             <strong className="toast-title">
-              {currentToast.severity?.toUpperCase()} — {currentToast.type}
+              {currentToast.type === 'SECURITY_AUDIT' 
+                ? '🛡️ SECURITY AUDIT — POLICY DRIFT' 
+                : `${currentToast.severity?.toUpperCase()} — ${currentToast.type}`}
             </strong>
             <button className="toast-close" onClick={onCloseToast}>✕</button>
           </div>
           <div className="toast-body">
-            <p>Incident detected on node <strong>{currentToast.nodeId?.replace('branch-', '').toUpperCase()}</strong>. {currentToast.message}</p>
+            {currentToast.type === 'SECURITY_AUDIT' ? (
+              <p>Non-business <strong>{currentToast.appName}</strong> detected on site <strong>{currentToast.nodeId?.replace('branch-', '').toUpperCase()}</strong>. Telemetry waste: <strong style={{ color: '#d29922' }}>{currentToast.wasted}</strong>.</p>
+            ) : (
+              <p>Incident detected on node <strong>{currentToast.nodeId?.replace('branch-', '').toUpperCase()}</strong>. {currentToast.message}</p>
+            )}
             <div className="toast-actions">
-              <button className="toast-btn auto-btn" onClick={handleResolveAuto}>Auto-Resolve via Copilot</button>
-              <button className="toast-btn manual-btn" onClick={handleResolveManual}>View in Topology</button>
+              {currentToast.type === 'SECURITY_AUDIT' ? (
+                <>
+                  <button className="toast-btn auto-btn" style={{ background: '#bc8cff15', borderColor: '#bc8cff44', color: '#bc8cff' }} onClick={handleResolveAuto}>
+                    Deploy Rate-Limiter QoS
+                  </button>
+                  <button className="toast-btn manual-btn" onClick={onCloseToast}>Dismiss</button>
+                </>
+              ) : (
+                <>
+                  <button className="toast-btn auto-btn" onClick={handleResolveAuto}>Auto-Resolve via Copilot</button>
+                  <button className="toast-btn manual-btn" onClick={handleResolveManual}>View in Topology</button>
+                </>
+              )}
             </div>
           </div>
         </div>
