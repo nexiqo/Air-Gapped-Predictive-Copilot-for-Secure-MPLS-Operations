@@ -19,9 +19,18 @@ const SUGGESTED_PROMPTS = [
 function CopilotWidget({ activeIncidents = [], liveBranches = [], onResolveIncident }) {
   const navigate = useNavigate();
   const [mode, setMode] = useState('closed');
+  const [conversations, setConversations] = useState(() => {
+    try {
+      const saved = localStorage.getItem('copilot-sessions');
+      return saved ? JSON.parse(saved) : [{ id: 'default', title: 'NOC Session', messages: [] }];
+    } catch {
+      return [{ id: 'default', title: 'NOC Session', messages: [] }];
+    }
+  });
+  const [activeConvId, setActiveConvId] = useState(() => {
+    return localStorage.getItem('copilot-active-session') || 'default';
+  });
   const [messages, setMessages] = useState([]);
-  const [conversations, setConversations] = useState([{ id: 'default', title: 'NOC Session', messages: [] }]);
-  const [activeConvId, setActiveConvId] = useState('default');
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
@@ -49,17 +58,55 @@ function CopilotWidget({ activeIncidents = [], liveBranches = [], onResolveIncid
     return () => clearInterval(interval);
   }, []);
 
-  // Welcome message
+  // Sync active session activeConvId -> messages state
   useEffect(() => {
-    const welcome = {
-      id: 'welcome',
-      role: 'assistant',
-      content: 'NOC Copilot online. I have access to your network topology, runbooks, and incident history. Ask me anything about your MPLS network.',
-      timestamp: new Date(),
-      type: 'text'
-    };
-    setMessages([welcome]);
-  }, []);
+    const activeConv = conversations.find(c => c.id === activeConvId);
+    if (activeConv) {
+      if (activeConv.messages.length === 0) {
+        setMessages([
+          {
+            id: 'welcome-' + activeConvId,
+            role: 'assistant',
+            content: 'NOC Copilot online. I have access to your network topology, runbooks, and incident history. Ask me anything about your MPLS network.',
+            timestamp: new Date(),
+            type: 'text'
+          }
+        ]);
+      } else {
+        setMessages(activeConv.messages);
+      }
+    }
+  }, [activeConvId]);
+
+  // Sync updates messages -> conversations state & localStorage
+  useEffect(() => {
+    if (messages.length > 0) {
+      setConversations(prev => {
+        const next = prev.map(c => {
+          if (c.id === activeConvId) {
+            let title = c.title;
+            // Generate a dynamic title from first user query if generic
+            if (title === 'NOC Session' || title.startsWith('Session')) {
+              const firstUserMsg = messages.find(m => m.role === 'user');
+              if (firstUserMsg) {
+                const queryContent = firstUserMsg.content.trim();
+                title = queryContent.slice(0, 20) + (queryContent.length > 20 ? '...' : '');
+              }
+            }
+            return { ...c, title, messages };
+          }
+          return c;
+        });
+        localStorage.setItem('copilot-sessions', JSON.stringify(next));
+        return next;
+      });
+    }
+  }, [messages, activeConvId]);
+
+  // Save activeConvId to localStorage
+  useEffect(() => {
+    localStorage.setItem('copilot-active-session', activeConvId);
+  }, [activeConvId]);
 
   // Scroll to bottom on new messages — always pin to bottom
   useEffect(() => {
