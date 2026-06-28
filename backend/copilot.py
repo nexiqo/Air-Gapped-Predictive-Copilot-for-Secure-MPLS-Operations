@@ -163,22 +163,41 @@ class CopilotService:
         return "\n".join(lines)
 
     def query(self, question: str, conversation_history: list[dict] | None = None, active_incidents: list[dict] | None = None, live_branches: list[dict] | None = None) -> dict[str, Any]:
-        """Main query method - tries Ollama first, falls back to deterministic analysis."""
+        """Main query method - tries local NLP router first, falls back to Ollama."""
         docs = self.rag.query(question, limit=5)
+        fallback = self._generate_deterministic_fallback(question, docs, active_incidents, live_branches)
         
-        if self._check_ollama():
-            result = self._query_ollama_chat(question, docs, conversation_history or [], active_incidents, live_branches)
-            if result:
-                return result
-
-        return self._generate_deterministic_fallback(question, docs, active_incidents, live_branches)
+        is_generic_conversational = (
+            fallback.get("predicted_issue") == "CONVERSATIONAL" 
+            and "Offline RAG NLP Mode" in fallback.get("current_state", "")
+        )
+        
+        if not is_generic_conversational or not self._check_ollama():
+            return fallback
+            
+        result = self._query_ollama_chat(question, docs, conversation_history or [], active_incidents, live_branches)
+        return result or fallback
 
     def stream_query(self, question: str, conversation_history: list[dict] | None = None, active_incidents: list[dict] | None = None, live_branches: list[dict] | None = None) -> Generator[str, None, None]:
-        """Stream tokens from Ollama for real-time response display."""
+        """Stream response. Uses high-speed local NLP router first, falls back to Ollama if general question."""
         docs = self.rag.query(question, limit=5)
-        if not self._check_ollama():
-            fallback = self._generate_deterministic_fallback(question, docs, active_incidents, live_branches)
-            yield self._format_fallback_as_text(fallback)
+        
+        fallback = self._generate_deterministic_fallback(question, docs, active_incidents, live_branches)
+        
+        is_generic_conversational = (
+            fallback.get("predicted_issue") == "CONVERSATIONAL" 
+            and "Offline RAG NLP Mode" in fallback.get("current_state", "")
+        )
+        
+        if not is_generic_conversational or not self._check_ollama():
+            text = self._format_fallback_as_text(fallback)
+            words = text.split(" ")
+            # Yield in small groups of words for a smooth, high-fidelity simulated streaming typing effect
+            for i in range(0, len(words), 3):
+                chunk = " ".join(words[i:i+3]) + " "
+                yield chunk
+                import time
+                time.sleep(0.015)  # 15ms delay per 3 words -> smooth typing effect!
             return
 
         context_str = self._build_context(docs)
