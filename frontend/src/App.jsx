@@ -11,6 +11,7 @@ import Reports from './pages/Reports';
 import SettingsPage from './pages/SettingsPage';
 import LoopEnginePanel from './pages/LoopEnginePanel';
 import CopilotWidget from './components/CopilotWidget';
+import LoginOnboard from './pages/LoginOnboard';
 import './App.css';
 
 // Incident Templates for game-like simulation
@@ -64,6 +65,9 @@ function App() {
   const [selectedNode, setSelectedNode] = useState(null);
   const [selectedEdge, setSelectedEdge] = useState(null);
   const [theme, setTheme] = useState(() => localStorage.getItem('app-theme') || 'dark');
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return localStorage.getItem('isro-noc-auth') === 'true';
+  });
 
   useEffect(() => {
     localStorage.setItem('app-theme', theme);
@@ -602,98 +606,104 @@ function App() {
 
   return (
     <BrowserRouter>
-      <AppShell 
-        networkSummary={liveSummary}
-        currentToast={currentToast}
-        onCloseToast={() => setCurrentToast(null)}
-        onResolveIncident={handleResolveIncident}
-      >
-        <Routes>
-          <Route 
-            path="/" 
-            element={
-              <Overview 
-                networkSummary={liveSummary} 
-                topology={liveTopology} 
-                alerts={liveAlerts} 
-                onNodeSelect={handleNodeSelect} 
+      {!isAuthenticated ? (
+        <LoginOnboard onLoginSuccess={() => setIsAuthenticated(true)} />
+      ) : (
+        <>
+          <AppShell 
+            networkSummary={liveSummary}
+            currentToast={currentToast}
+            onCloseToast={() => setCurrentToast(null)}
+            onResolveIncident={handleResolveIncident}
+          >
+            <Routes>
+              <Route 
+                path="/" 
+                element={
+                  <Overview 
+                    networkSummary={liveSummary} 
+                    topology={liveTopology} 
+                    alerts={liveAlerts} 
+                    onNodeSelect={handleNodeSelect} 
+                  />
+                } 
               />
-            } 
-          />
-          <Route 
-            path="/topology" 
-            element={
-              <Topology 
-                topology={liveTopology}
-                networkSummary={liveSummary}
-                selectedNode={selectedNode}
-                selectedEdge={selectedEdge}
-                onNodeSelect={handleNodeSelect}
-                onEdgeSelect={handleEdgeSelect}
-                activeIncidents={activeIncidents}
-                onStepExecute={handleStepExecute}
-                onResolveIncident={handleResolveIncident}
+              <Route 
+                path="/topology" 
+                element={
+                  <Topology 
+                    topology={liveTopology}
+                    networkSummary={liveSummary}
+                    selectedNode={selectedNode}
+                    selectedEdge={selectedEdge}
+                    onNodeSelect={handleNodeSelect}
+                    onEdgeSelect={handleEdgeSelect}
+                    activeIncidents={activeIncidents}
+                    onStepExecute={handleStepExecute}
+                    onResolveIncident={handleResolveIncident}
+                  />
+                } 
               />
-            } 
-          />
-          <Route 
-            path="/branches" 
-            element={
-              <Branches 
-                branches={liveBranches} 
-                onNodeSelect={handleNodeSelect} 
+              <Route 
+                path="/branches" 
+                element={
+                  <Branches 
+                    branches={liveBranches} 
+                    onNodeSelect={handleNodeSelect} 
+                  />
+                } 
               />
-            } 
-          />
-          <Route 
-            path="/alerts" 
-            element={
-              <Alerts 
-                alerts={liveAlerts} 
+              <Route 
+                path="/alerts" 
+                element={
+                  <Alerts 
+                    alerts={liveAlerts} 
+                  />
+                } 
               />
-            } 
-          />
-          <Route 
-            path="/predictions" 
-            element={
-              <Predictions 
-                topology={liveTopology} 
+              <Route 
+                path="/predictions" 
+                element={
+                  <Predictions 
+                    topology={liveTopology} 
+                  />
+                } 
               />
-            } 
+              <Route 
+                path="/reports" 
+                element={
+                  <Reports />
+                } 
+              />
+              <Route 
+                path="/settings" 
+                element={
+                  <SettingsPage theme={theme} setTheme={setTheme} />
+                } 
+              />
+              <Route 
+                path="/loop-engine" 
+                element={
+                  <LoopEnginePanel activeIncidents={activeIncidents} />
+                } 
+              />
+              <Route 
+                path="/runbooks" 
+                element={
+                  <Runbooks />
+                } 
+              />
+            </Routes>
+          </AppShell>
+          
+          {/* Universal Floating Copilot popup chatbot */}
+          <CopilotWidget 
+            activeIncidents={activeIncidents}
+            liveBranches={liveBranches}
+            onResolveIncident={handleResolveIncident}
           />
-          <Route 
-            path="/reports" 
-            element={
-              <Reports />
-            } 
-          />
-          <Route 
-            path="/settings" 
-            element={
-              <SettingsPage theme={theme} setTheme={setTheme} />
-            } 
-          />
-          <Route 
-            path="/loop-engine" 
-            element={
-              <LoopEnginePanel activeIncidents={activeIncidents} />
-            } 
-          />
-          <Route 
-            path="/runbooks" 
-            element={
-              <Runbooks />
-            } 
-          />
-        </Routes>
-      </AppShell>
-      
-      {/* Universal Floating Copilot popup chatbot */}
-      <CopilotWidget 
-        activeIncidents={activeIncidents}
-        liveBranches={liveBranches}
-        onResolveIncident={handleResolveIncident}
-      />
+        </>
+      )}
     </BrowserRouter>
   );
 }
