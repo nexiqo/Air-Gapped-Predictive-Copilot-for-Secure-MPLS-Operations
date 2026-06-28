@@ -81,6 +81,24 @@ function OverviewPage({ networkSummary, topology: propTopology, alerts: propAler
   const [localAlerts, setLocalAlerts] = useState([]);
   const [latencyHistory, setLatencyHistory] = useState({});
   const [globalHistory, setGlobalHistory] = useState(Array(15).fill(14));
+  const [loopState, setLoopState] = useState({ active_loops: [], history: [] });
+
+  // Poll Loop Engine state for the live widget
+  useEffect(() => {
+    const fetchLoopState = async () => {
+      try {
+        const res = await fetch('http://127.0.0.1:8000/loop/state');
+        if (res.ok) {
+          setLoopState(await res.json());
+        }
+      } catch (e) {
+        console.error("Failed to fetch loop state:", e);
+      }
+    };
+    fetchLoopState();
+    const interval = setInterval(fetchLoopState, 3000);
+    return () => clearInterval(interval);
+  }, []);
  
   useEffect(() => {
     if (!propTopology || !propAlerts.length) {
@@ -262,6 +280,52 @@ function OverviewPage({ networkSummary, topology: propTopology, alerts: propAler
               </div>
             </div>
           )}
+
+          {/* Live Loop Engine Status Widget */}
+          <div className="overview-section" style={{ cursor: 'pointer' }} onClick={() => navigate('/loop-engine')}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', paddingBottom: '6px', borderBottom: '1px solid var(--border)' }}>
+              <h3 style={{ margin: 0, fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: 'none', paddingBottom: 0 }}>Live Loop Engine Status</h3>
+              <span className="live-indicator" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '9px', padding: '2px 8px', borderRadius: '12px', background: '#3fb95015', border: '1px solid #3fb95044', color: '#3fb950', fontWeight: 'bold' }}>
+                <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#3fb950', display: 'inline-block' }}></span>
+                ACTIVE
+              </span>
+            </div>
+
+            {loopState.active_loops && loopState.active_loops.length > 0 ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {loopState.active_loops.map(loop => {
+                  const phaseColor = loop.phase === 'TRIAGE' ? '#d29922' : loop.phase === 'MITIGATION' ? '#58a6ff' : loop.phase === 'VERIFICATION' ? '#bc8cff' : '#3fb950';
+                  const percent = loop.phase === 'TRIAGE' ? 25 : loop.phase === 'MITIGATION' ? 50 : loop.phase === 'VERIFICATION' ? 75 : 100;
+                  return (
+                    <div key={loop.incident_id} style={{ padding: '10px', border: '1px solid var(--border)', borderRadius: '6px', background: 'var(--bg-inset)', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span style={{ fontWeight: 600, fontSize: '13px', color: 'var(--text-primary)' }}>
+                          {loop.node_id.replace('branch-', '').toUpperCase()} Auto-Remediation
+                        </span>
+                        <span style={{ fontSize: '10px', color: phaseColor, fontWeight: 'bold', letterSpacing: '0.5px' }}>{loop.phase}</span>
+                      </div>
+                      <div style={{ height: '4px', background: 'var(--border)', borderRadius: '2px', overflow: 'hidden' }}>
+                        <div style={{ height: '100%', width: `${percent}%`, background: phaseColor, transition: 'width 0.3s ease' }} />
+                      </div>
+                      <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--mono)' }}>
+                        {loop.last_log || 'Executing self-healing instructions...'}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px', borderRadius: '6px', background: 'var(--bg-inset)', border: '1px solid var(--border)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span className="status-dot online" style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#3fb950', display: 'inline-block', boxShadow: '0 0 8px #3fb950' }}></span>
+                  <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>All core MPLS links stable. Monitoring underlay...</span>
+                </div>
+                <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 500 }}>
+                  {loopState.history ? `${loopState.history.filter(h => h.status === 'resolved').length} Auto-Resolved` : '0 Auto-Resolved'}
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Compact Topology Map Preview with Sparklines */}
           {topology?.nodes && (
