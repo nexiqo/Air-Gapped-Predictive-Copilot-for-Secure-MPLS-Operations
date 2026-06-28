@@ -30,6 +30,7 @@ function CopilotWidget({ activeIncidents = [], liveBranches = [], onResolveIncid
   const [hasUnread, setHasUnread] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const messagesEndRef = useRef(null);
+  const scrollContainerRef = useRef(null);
   const inputRef = useRef(null);
   const abortControllerRef = useRef(null);
 
@@ -60,12 +61,14 @@ function CopilotWidget({ activeIncidents = [], liveBranches = [], onResolveIncid
     setMessages([welcome]);
   }, []);
 
-  // Scroll to bottom
+  // Scroll to bottom on new messages — always pin to bottom
   useEffect(() => {
-    if (mode !== 'closed') {
-      setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 50);
+    if (mode !== 'closed' && scrollContainerRef.current) {
+      const el = scrollContainerRef.current;
+      // Use instant scroll on first open, smooth otherwise
+      el.scrollTop = el.scrollHeight;
     }
-  }, [messages, isStreaming, mode]);
+  }, [messages, isLoading, isStreaming, mode]);
 
   // Focus input
   useEffect(() => {
@@ -430,7 +433,7 @@ function CopilotWidget({ activeIncidents = [], liveBranches = [], onResolveIncid
   };
 
   // ---- Shared chat content (reused in both popup and fullscreen) ----
-  const ChatContent = ({ isFullscreen }) => (
+  const ChatContent = ({ isFullscreen, scrollRef }) => (
     <>
       {/* Active Incident Banner */}
       {activeInc && (
@@ -447,7 +450,10 @@ function CopilotWidget({ activeIncidents = [], liveBranches = [], onResolveIncid
       )}
 
       {/* Messages */}
-      <div className={`widget-messages ${isFullscreen ? 'fullscreen-messages' : ''}`}>
+      <div
+        ref={scrollRef}
+        className={`widget-messages ${isFullscreen ? 'fullscreen-messages' : ''}`}
+      >
         {/* Suggestions (show when empty) */}
         {showSuggestions && messages.length <= 1 && (
           <div className="suggestions-section">
@@ -561,7 +567,7 @@ function CopilotWidget({ activeIncidents = [], liveBranches = [], onResolveIncid
               </div>
             </div>
 
-            <ChatContent isFullscreen={true} />
+            <ChatContent isFullscreen={true} scrollRef={scrollContainerRef} />
           </div>
         </div>
       )}
@@ -586,7 +592,7 @@ function CopilotWidget({ activeIncidents = [], liveBranches = [], onResolveIncid
               </div>
             </div>
             <div className="widget-body">
-              <ChatContent isFullscreen={false} />
+              <ChatContent isFullscreen={false} scrollRef={scrollContainerRef} />
             </div>
           </div>
         </div>
