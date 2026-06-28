@@ -61,6 +61,55 @@ const incidentTemplates = [
   }
 ];
 
+// Web Audio API Sound Synthesizer for NOC audible alarms
+const playAlertSound = (severity = 'CRITICAL') => {
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+    const ctx = new AudioContext();
+    const now = ctx.currentTime;
+    
+    if (severity === 'CRITICAL') {
+      // Double alarm chirp (High A5 note)
+      const osc1 = ctx.createOscillator();
+      const gain1 = ctx.createGain();
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(880, now);
+      gain1.gain.setValueAtTime(0.12, now);
+      gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+      osc1.connect(gain1);
+      gain1.connect(ctx.destination);
+      osc1.start(now);
+      osc1.stop(now + 0.12);
+      
+      const osc2 = ctx.createOscillator();
+      const gain2 = ctx.createGain();
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(880, now + 0.16);
+      gain2.gain.setValueAtTime(0.12, now + 0.16);
+      gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
+      osc2.connect(gain2);
+      gain2.connect(ctx.destination);
+      osc2.start(now + 0.16);
+      osc2.stop(now + 0.28);
+    } else {
+      // Warm warning tone (Triangle D5 note)
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(587.33, now);
+      gain.gain.setValueAtTime(0.1, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.22);
+    }
+  } catch (err) {
+    console.warn("Audio playback blocked or failed:", err);
+  }
+};
+
 function App() {
   const [selectedNode, setSelectedNode] = useState(null);
   const [selectedEdge, setSelectedEdge] = useState(null);
@@ -82,6 +131,13 @@ function App() {
   // Game-like interactive incident states
   const [activeIncidents, setActiveIncidents] = useState([]);
   const [currentToast, setCurrentToast] = useState(null);
+
+  // Play audible alarm when toast fires
+  useEffect(() => {
+    if (currentToast) {
+      playAlertSound(currentToast.severity);
+    }
+  }, [currentToast]);
   
   const [activePolicies, setActivePolicies] = useState({
     block_streaming: false,
