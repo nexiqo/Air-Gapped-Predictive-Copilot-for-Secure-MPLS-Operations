@@ -344,7 +344,7 @@ function PredictionsPage({ topology: propTopology }) {
             >
               {isTraining ? 'Training Models...' : 'Run ML Training Pipeline'}
             </button>
-          </div>)}
+          </div>
         </div>
       )}
 

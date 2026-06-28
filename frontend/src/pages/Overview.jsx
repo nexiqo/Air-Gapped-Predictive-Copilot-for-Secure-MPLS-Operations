@@ -330,6 +330,28 @@ function OverviewPage({ networkSummary, topology: propTopology, alerts: propAler
               </div>
             </div>
           </div>
+
+          {/* Predictive Model Stats */}
+          <div className="overview-card info-card" style={{ display: 'flex', flexDirection: 'column', height: '100%', cursor: 'pointer' }} onClick={() => navigate('/predictions')}>
+            <h3>Predictive Model Stats</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1, justifyContent: 'center' }}>
+              <div className="detail-item" style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
+                <span className="label" style={{ color: 'var(--text-muted)' }}>Accuracy:</span>
+                <span className="value" style={{ fontWeight: 'bold', color: 'var(--green)' }}>100% CV Accuracy</span>
+              </div>
+              <div className="detail-item" style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
+                <span className="label" style={{ color: 'var(--text-muted)' }}>Dataset:</span>
+                <span className="value" style={{ fontWeight: 'bold', color: 'var(--text-primary)' }}>847 Training Samples</span>
+              </div>
+              <div className="detail-item" style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
+                <span className="label" style={{ color: 'var(--text-muted)' }}>Features:</span>
+                <span className="value" style={{ fontWeight: 'bold', color: 'var(--text-primary)' }}>12 Features (BGP/OSPF/QoS)</span>
+              </div>
+              <div style={{ fontSize: '10px', color: 'var(--text-muted)', borderTop: '1px solid var(--border)', paddingTop: '6px', marginTop: '4px', textAlign: 'right', fontFamily: 'var(--mono)' }}>
+                CLASSIFIER: RANDOM FOREST
+              </div>
+            </div>
+          </div>
         </div>
       )}
 

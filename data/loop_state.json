@@ -1620,6 +1620,138 @@
       "incident_type": "link_flap",
       "status": "resolved",
       "completion_time": "15:04:38"
+    },
+    {
+      "node_id": "hub-delhi",
+      "incident_type": "bgp_route_flap",
+      "status": "resolved",
+      "completion_time": "15:14:20"
+    },
+    {
+      "node_id": "hub-delhi",
+      "incident_type": "ospf_adjacency_lost",
+      "status": "resolved",
+      "completion_time": "15:14:20"
+    },
+    {
+      "node_id": "branch-bengaluru",
+      "incident_type": "progressive_congestion",
+      "status": "resolved",
+      "completion_time": "15:14:20"
+    },
+    {
+      "node_id": "hub-delhi",
+      "incident_type": "route_flap_cascade",
+      "status": "resolved",
+      "completion_time": "15:14:20"
+    },
+    {
+      "node_id": "branch-chennai",
+      "incident_type": "bgp_route_flap",
+      "status": "resolved",
+      "completion_time": "15:14:20"
+    },
+    {
+      "node_id": "branch-chennai",
+      "incident_type": "congestion_buildup",
+      "status": "resolved",
+      "completion_time": "15:14:20"
+    },
+    {
+      "node_id": "branch-guwahati",
+      "incident_type": "mpls_tunnel_degradation",
+      "status": "resolved",
+      "completion_time": "15:14:20"
+    },
+    {
+      "node_id": "branch-bhubaneswar",
+      "incident_type": "link_congestion",
+      "status": "resolved",
+      "completion_time": "15:14:20"
+    },
+    {
+      "node_id": "branch-lucknow",
+      "incident_type": "congestion_buildup",
+      "status": "resolved",
+      "completion_time": "15:14:20"
+    },
+    {
+      "node_id": "dc-mumbai",
+      "incident_type": "interface_error_spike",
+      "status": "resolved",
+      "completion_time": "15:14:20"
+    },
+    {
+      "node_id": "branch-ahmedabad",
+      "incident_type": "bgp_route_flap",
+      "status": "resolved",
+      "completion_time": "15:14:20"
+    },
+    {
+      "node_id": "branch-kochi",
+      "incident_type": "mpls_tunnel_degradation",
+      "status": "resolved",
+      "completion_time": "15:14:20"
+    },
+    {
+      "node_id": "branch-pune",
+      "incident_type": "ospf_adjacency_lost",
+      "status": "resolved",
+      "completion_time": "15:14:20"
+    },
+    {
+      "node_id": "branch-bhopal",
+      "incident_type": "congestion_buildup",
+      "status": "resolved",
+      "completion_time": "15:14:20"
+    },
+    {
+      "node_id": "branch-guwahati",
+      "incident_type": "packet_loss_spike",
+      "status": "resolved",
+      "completion_time": "15:14:20"
+    },
+    {
+      "node_id": "hub-delhi",
+      "incident_type": "congestion_buildup",
+      "status": "resolved",
+      "completion_time": "15:14:20"
+    },
+    {
+      "node_id": "branch-bhubaneswar",
+      "incident_type": "packet_loss_spike",
+      "status": "resolved",
+      "completion_time": "15:14:21"
+    },
+    {
+      "node_id": "branch-jaipur",
+      "incident_type": "bgp_route_flap",
+      "status": "resolved",
+      "completion_time": "15:14:21"
+    },
+    {
+      "node_id": "branch-nagpur",
+      "incident_type": "tunnel_rekey_anomaly",
+      "status": "resolved",
+      "completion_time": "15:14:21"
+    },
+    {
+      "node_id": "branch-chandigarh",
+      "incident_type": "packet_loss_spike",
+      "status": "resolved",
+      "completion_time": "15:14:21"
+    },
+    {
+      "node_id": "branch-hyderabad",
+      "incident_type": "qos_policy_drift",
+      "status": "resolved",
+      "completion_time": "15:14:21"
+    },
+    {
+      "node_id": "branch-jaipur",
+      "incident_type": "link_flap",
+      "status": "resolved",
+      "completion_time": "15:14:21"
     }
   ]
 }
