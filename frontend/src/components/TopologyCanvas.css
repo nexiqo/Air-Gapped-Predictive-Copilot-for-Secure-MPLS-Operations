@@ -62,15 +62,49 @@
   box-shadow: 0 0 0 2px rgba(88,166,255,0.4) !important;
 }
 
-/* n8n Status Border Highlights */
+/* n8n Status Border Highlights & Pulsing Glows */
 .topology-node.node-normal {
   border-left: 4px solid var(--green) !important;
 }
-.topology-node.node-warning {
-  border-left: 4px solid var(--yellow) !important;
+
+@keyframes pulse-critical {
+  0% { 
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 0 6px rgba(248, 81, 73, 0.2) !important; 
+    border-color: #da3633 !important; 
+  }
+  50% { 
+    box-shadow: 0 4px 20px rgba(248, 81, 73, 0.5), 0 0 18px rgba(248, 81, 73, 0.75) !important; 
+    border-color: #ff7b72 !important; 
+  }
+  100% { 
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 0 6px rgba(248, 81, 73, 0.2) !important; 
+    border-color: #da3633 !important; 
+  }
 }
+
+@keyframes pulse-warning {
+  0% { 
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 0 4px rgba(210, 153, 34, 0.1) !important; 
+    border-color: #d29922 !important; 
+  }
+  50% { 
+    box-shadow: 0 4px 16px rgba(210, 153, 34, 0.4), 0 0 12px rgba(210, 153, 34, 0.55) !important; 
+    border-color: #e3b341 !important; 
+  }
+  100% { 
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 0 4px rgba(210, 153, 34, 0.1) !important; 
+    border-color: #d29922 !important; 
+  }
+}
+
 .topology-node.node-critical {
   border-left: 4px solid var(--red) !important;
+  animation: pulse-critical 1.6s ease-in-out infinite !important;
+}
+
+.topology-node.node-warning {
+  border-left: 4px solid var(--yellow) !important;
+  animation: pulse-warning 2.2s ease-in-out infinite !important;
 }
 
 .node-header {
@@ -163,19 +197,21 @@
   stroke: var(--red) !important;
   stroke-width: 3px;
   stroke-dasharray: 8, 4;
-  animation: fast-flow 1.2s linear infinite !important;
+  animation: fast-flow 0.8s linear infinite !important;
 }
 
 .react-flow__edge.degraded .react-flow__edge-path {
   stroke: var(--yellow) !important;
   stroke-width: 2.5px;
   stroke-dasharray: 8, 4;
-  animation: fast-flow 2.2s linear infinite !important;
+  animation: fast-flow 1.5s linear infinite !important;
 }
 
 .react-flow__edge.normal .react-flow__edge-path,
 .react-flow__edge.healthy .react-flow__edge-path {
   stroke: var(--green) !important;
+  stroke-dasharray: 6, 6;
+  animation: slow-flow 12s linear infinite !important;
 }
 
 @keyframes fast-flow {
