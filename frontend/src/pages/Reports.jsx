@@ -25,10 +25,9 @@ function ReportsPage() {
     }
   };
 
-  const handleExport = () => {
-    if (!reportData) return;
-    
-    const htmlContent = `<!DOCTYPE html>
+  const buildHTMLReport = () => {
+    if (!reportData) return '';
+    return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -232,16 +231,16 @@ function ReportsPage() {
     }
     @media print {
       body {
-        background-color: #ffffff;
-        color: #000000;
-        padding: 0;
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        padding: 20px !important;
       }
       .report-container {
-        box-shadow: none;
-        border: none;
-        padding: 0;
-        max-width: 100%;
-        background-color: #ffffff;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+        background-color: #ffffff !important;
       }
       h1, h2, th {
         color: #000000 !important;
@@ -360,7 +359,11 @@ function ReportsPage() {
   </div>
 </body>
 </html>`;
+  };
 
+  const handleExportHTML = () => {
+    if (!reportData) return;
+    const htmlContent = buildHTMLReport();
     const blob = new Blob([htmlContent], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -372,17 +375,43 @@ function ReportsPage() {
     URL.revokeObjectURL(url);
   };
 
+  const handleExportPDF = () => {
+    if (!reportData) return;
+    const htmlContent = buildHTMLReport();
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(htmlContent);
+      printWindow.document.close();
+      printWindow.focus();
+      // Allow browser styling engine to run before invoking printing
+      setTimeout(() => {
+        printWindow.print();
+        printWindow.close();
+      }, 350);
+    }
+  };
+
   return (
     <div className="reports-page">
       <div className="reports-header">
         <h2>Network Reports</h2>
-        <button 
-          className="export-btn"
-          onClick={handleExport}
-          disabled={!reportData || loading}
-        >
-          Export Report
-        </button>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button 
+            className="export-btn"
+            onClick={handleExportHTML}
+            disabled={!reportData || loading}
+            style={{ background: '#21262d', border: '1px solid #30363d', color: 'var(--text-secondary)' }}
+          >
+            Export HTML
+          </button>
+          <button 
+            className="export-btn"
+            onClick={handleExportPDF}
+            disabled={!reportData || loading}
+          >
+            Download PDF Report
+          </button>
+        </div>
       </div>
 
       <div className="report-controls">

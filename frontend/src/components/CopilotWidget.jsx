@@ -65,8 +65,13 @@ function CopilotWidget({ activeIncidents = [], liveBranches = [], onResolveIncid
   useEffect(() => {
     if (mode !== 'closed' && scrollContainerRef.current) {
       const el = scrollContainerRef.current;
-      // Use instant scroll on first open, smooth otherwise
       el.scrollTop = el.scrollHeight;
+      const timer = setTimeout(() => {
+        if (scrollContainerRef.current) {
+          scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
+        }
+      }, 50);
+      return () => clearTimeout(timer);
     }
   }, [messages, isLoading, isStreaming, mode]);
 
