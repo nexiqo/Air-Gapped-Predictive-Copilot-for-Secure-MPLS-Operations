@@ -6,6 +6,24 @@ function PredictionsPage({ topology: propTopology }) {
   const [loading, setLoading] = useState(false);
   const [explainabilityData, setExplainabilityData] = useState(null);
   const [mlMetrics, setMlMetrics] = useState(null);
+  const [isTraining, setIsTraining] = useState(false);
+
+  const handleTrainModel = async () => {
+    setIsTraining(true);
+    try {
+      const res = await fetch('http://127.0.0.1:8000/ml/train', { method: 'POST' });
+      if (res.ok) {
+        const data = await res.json();
+        setMlMetrics(data);
+      } else {
+        alert("Training failed on the backend server.");
+      }
+    } catch (e) {
+      console.error("Failed to run ML training:", e);
+    } finally {
+      setIsTraining(false);
+    }
+  };
 
   // XAI Playground States
   const [playgroundLatency, setPlaygroundLatency] = useState(15);
@@ -268,38 +286,65 @@ function PredictionsPage({ topology: propTopology }) {
                 </div>
               </div>
             </div>
-          </div>
-
-          {mlMetrics && mlMetrics.status === "trained" && (
-            <div className="ml-diagnostic-card">
-              <h3>Model Validation (5-Fold CV)</h3>
-              <p className="card-sub">Supervised Random Forest performance on NOC telemetry</p>
-              <div style={{ marginTop: '12px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                <div className="metric-box" style={{ background: 'var(--bg-subtle)', padding: '10px', borderRadius: 'var(--radius)', border: '1px solid var(--border)', textAlign: 'center' }}>
-                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>ACCURACY</div>
-                  <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--green)' }}>{(mlMetrics.accuracy * 100).toFixed(1)}%</div>
+          </div>          {/* MLOps Operations & Classifier Training Card */}
+          <div className="ml-diagnostic-card">
+            <h3>Model Operations (MLOps)</h3>
+            <p className="card-sub">Supervised Random Forest performance on NOC telemetry</p>
+            
+            {mlMetrics && mlMetrics.status === "trained" ? (
+              <>
+                <div style={{ marginTop: '12px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                  <div className="metric-box" style={{ background: 'var(--bg-subtle)', padding: '10px', borderRadius: 'var(--radius)', border: '1px solid var(--border)', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>ACCURACY</div>
+                    <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--green)' }}>{(mlMetrics.accuracy * 100).toFixed(1)}%</div>
+                  </div>
+                  <div className="metric-box" style={{ background: 'var(--bg-subtle)', padding: '10px', borderRadius: 'var(--radius)', border: '1px solid var(--border)', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>F1-SCORE</div>
+                    <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--green)' }}>{mlMetrics.f1_score.toFixed(3)}</div>
+                  </div>
+                  <div className="metric-box" style={{ background: 'var(--bg-subtle)', padding: '10px', borderRadius: 'var(--radius)', border: '1px solid var(--border)', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>PRECISION</div>
+                    <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--green)' }}>{mlMetrics.precision.toFixed(3)}</div>
+                  </div>
+                  <div className="metric-box" style={{ background: 'var(--bg-subtle)', padding: '10px', borderRadius: 'var(--radius)', border: '1px solid var(--border)', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>RECALL</div>
+                    <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--green)' }}>{mlMetrics.recall.toFixed(3)}</div>
+                  </div>
                 </div>
-                <div className="metric-box" style={{ background: 'var(--bg-subtle)', padding: '10px', borderRadius: 'var(--radius)', border: '1px solid var(--border)', textAlign: 'center' }}>
-                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>F1-SCORE</div>
-                  <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--green)' }}>{mlMetrics.f1_score.toFixed(3)}</div>
+                <div style={{ marginTop: '12px', fontSize: '0.7rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <div><strong>Algorithm:</strong> {mlMetrics.algorithm}</div>
+                  <div><strong>Dataset size:</strong> {mlMetrics.training_samples} rows &times; {mlMetrics.feature_count} features</div>
+                  <div><strong>Trained at:</strong> {mlMetrics.trained_at}</div>
                 </div>
-                <div className="metric-box" style={{ background: 'var(--bg-subtle)', padding: '10px', borderRadius: 'var(--radius)', border: '1px solid var(--border)', textAlign: 'center' }}>
-                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>PRECISION</div>
-                  <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--green)' }}>{mlMetrics.precision.toFixed(3)}</div>
-                </div>
-                <div className="metric-box" style={{ background: 'var(--bg-subtle)', padding: '10px', borderRadius: 'var(--radius)', border: '1px solid var(--border)', textAlign: 'center' }}>
-                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>RECALL</div>
-                  <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--green)' }}>{mlMetrics.recall.toFixed(3)}</div>
-                </div>
+              </>
+            ) : (
+              <div style={{ margin: '15px 0', padding: '15px', background: 'var(--bg-inset)', border: '1px dashed var(--border)', borderRadius: '6px', textAlign: 'center' }}>
+                <span style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'block', marginBottom: '6px' }}>
+                  Model metrics not loaded. Classifier running on static fallback rules.
+                </span>
+                <span style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block' }}>
+                  Trigger a live training run to build and save validation metrics.
+                </span>
               </div>
-              <div style={{ marginTop: '12px', fontSize: '0.7rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <div><strong>Algorithm:</strong> {mlMetrics.algorithm}</div>
-                <div><strong>Training Dataset:</strong> {mlMetrics.training_samples} samples &times; {mlMetrics.feature_count} features</div>
-                <div><strong>Validation:</strong> Stratified k-fold cross-validation</div>
-                <div style={{ fontSize: '0.65rem', borderTop: '1px solid var(--border)', paddingTop: '6px', marginTop: '4px' }}>Trained at: {mlMetrics.trained_at}</div>
-              </div>
-            </div>
-          )}
+            )}
+            
+            <button 
+              className="action-btn" 
+              style={{ 
+                marginTop: '16px', 
+                width: '100%', 
+                justifyContent: 'center', 
+                backgroundColor: isTraining ? '#1f6feb' : '#238636', 
+                border: '1px solid rgba(240,246,252,0.1)',
+                color: '#ffffff',
+                cursor: isTraining ? 'not-allowed' : 'pointer'
+              }}
+              onClick={handleTrainModel}
+              disabled={isTraining}
+            >
+              {isTraining ? 'Training Models...' : 'Run ML Training Pipeline'}
+            </button>
+          </div>)}
         </div>
       )}
 

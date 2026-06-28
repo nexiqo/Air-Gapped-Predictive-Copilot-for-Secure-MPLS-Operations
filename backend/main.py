@@ -594,6 +594,18 @@ def get_ml_metrics() -> dict[str, Any]:
     return data
 
 
+@app.post("/ml/train")
+def run_ml_train() -> dict[str, Any]:
+    """Trigger the supervised Random Forest ML classifier training pipeline."""
+    try:
+        from backend.ml_trainer import train_and_save
+        metrics = train_and_save()
+        metrics["status"] = "trained"
+        return metrics
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.websocket("/ws/telemetry")
 async def websocket_telemetry(websocket: WebSocket):
     await websocket.accept()
