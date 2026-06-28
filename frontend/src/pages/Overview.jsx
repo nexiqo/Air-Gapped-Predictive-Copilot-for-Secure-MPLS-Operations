@@ -2,11 +2,86 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Overview.css';
 
+// Lightweight inline SVG Sparkline Chart Component
+function Sparkline({ data, color = '#58a6ff' }) {
+  if (!data || data.length < 2) return null;
+  const width = 76;
+  const height = 22;
+  const padding = 2;
+  
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const range = max - min || 1;
+  
+  const points = data.map((val, idx) => {
+    const x = (idx / (data.length - 1)) * (width - padding * 2) + padding;
+    const y = height - ((val - min) / range) * (height - padding * 2) - padding;
+    return `${x},${y}`;
+  });
+  
+  return (
+    <svg width={width} height={height} style={{ overflow: 'visible', marginLeft: 'auto' }}>
+      <path
+        d={`M ${points.join(' L ')}`}
+        fill="none"
+        stroke={color}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+// Lightweight Area Chart for Global Latency History
+function AreaChart({ data, color = '#58a6ff' }) {
+  if (!data || data.length < 2) return null;
+  const width = 140;
+  const height = 40;
+  const padding = 2;
+  
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const range = max - min || 1;
+  
+  const points = data.map((val, idx) => {
+    const x = (idx / (data.length - 1)) * (width - padding * 2) + padding;
+    const y = height - ((val - min) / range) * (height - padding * 2) - padding;
+    return { x, y };
+  });
+  
+  const pathD = `M ${points.map(p => `${p.x},${p.y}`).join(' L ')}`;
+  const areaD = `${pathD} L ${points[points.length - 1].x},${height} L ${points[0].x},${height} Z`;
+  const gradId = `areaGrad-${color.replace('#', '')}`;
+  
+  return (
+    <svg width={width} height={height} style={{ overflow: 'visible', marginTop: '6px' }}>
+      <defs>
+        <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={color} stopOpacity="0.25" />
+          <stop offset="100%" stopColor={color} stopOpacity="0.0" />
+        </linearGradient>
+      </defs>
+      <path d={areaD} fill={`url(#${gradId})`} />
+      <path
+        d={pathD}
+        fill="none"
+        stroke={color}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 function OverviewPage({ networkSummary, topology: propTopology, alerts: propAlerts, onNodeSelect }) {
   const navigate = useNavigate();
   const [localTopology, setLocalTopology] = useState(null);
   const [localAlerts, setLocalAlerts] = useState([]);
-
+  const [latencyHistory, setLatencyHistory] = useState({});
+  const [globalHistory, setGlobalHistory] = useState(Array(15).fill(14));
+ 
   useEffect(() => {
     if (!propTopology || !propAlerts.length) {
       fetchOverviewData();
@@ -36,6 +111,33 @@ function OverviewPage({ networkSummary, topology: propTopology, alerts: propAler
   const topology = propTopology || localTopology;
   const alerts = propAlerts.length > 0 ? propAlerts : localAlerts;
 
+  // Sync latency histories on topology metrics polling
+  useEffect(() => {
+    if (topology?.nodes) {
+      // 1. Update node sparkline arrays
+      setLatencyHistory(prev => {
+        const next = { ...prev };
+        Object.entries(topology.nodes).forEach(([id, node]) => {
+          const val = node.metrics?.latency_ms ?? 0;
+          const hist = prev[id] ? [...prev[id]] : Array(10).fill(val);
+          hist.push(val);
+          if (hist.length > 10) hist.shift();
+          next[id] = hist;
+        });
+        return next;
+      });
+
+      // 2. Update global average SLA timeline
+      const nodesArr = Object.values(topology.nodes);
+      const avgLat = nodesArr.reduce((sum, n) => sum + (n.metrics?.latency_ms ?? 0), 0) / nodesArr.length;
+      setGlobalHistory(prev => {
+        const next = [...prev, avgLat];
+        if (next.length > 15) next.shift();
+        return next;
+      });
+    }
+  }, [topology]);
+
   const getHealthBadgeClass = (health) => {
     switch (health) {
       case 'CRITICAL': return 'badge-critical';
@@ -48,6 +150,8 @@ function OverviewPage({ networkSummary, topology: propTopology, alerts: propAler
     onNodeSelect?.(node);
     navigate('/topology');
   };
+
+  const healthColor = networkSummary?.overall_health === 'CRITICAL' ? '#da3633' : networkSummary?.overall_health === 'DEGRADED' ? '#d29922' : '#238636';
 
   return (
     <div className="overview-page">
@@ -64,29 +168,31 @@ function OverviewPage({ networkSummary, topology: propTopology, alerts: propAler
       {networkSummary && (
         <div className="overview-grid">
           {/* Global Risk Summary */}
-          <div className="overview-card">
+          <div className="overview-card" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h3>Network Health</h3>
-            <div className="health-display">
-              <span className={`health-badge ${getHealthBadgeClass(networkSummary.overall_health)}`}>
-                {networkSummary.overall_health}
-              </span>
-            </div>
-            <div className="health-details">
-              <div className="detail-item">
-                <span className="label">Total Nodes:</span>
-                <span className="value">{networkSummary.total_nodes}</span>
+            <div style={{ display: 'flex', flex: 1, gap: '16px', alignItems: 'center' }}>
+              <div className="health-details" style={{ flex: 1 }}>
+                <div className="health-display">
+                  <span className={`health-badge ${getHealthBadgeClass(networkSummary.overall_health)}`}>
+                    {networkSummary.overall_health}
+                  </span>
+                </div>
+                <div className="detail-item">
+                  <span className="label">Total Nodes:</span>
+                  <span className="value">{networkSummary.total_nodes}</span>
+                </div>
+                <div className="detail-item">
+                  <span className="label">Critical:</span>
+                  <span className="value critical">{networkSummary.critical_nodes}</span>
+                </div>
+                <div className="detail-item">
+                  <span className="label">Warning:</span>
+                  <span className="value warning">{networkSummary.warning_nodes}</span>
+                </div>
               </div>
-              <div className="detail-item">
-                <span className="label">Critical:</span>
-                <span className="value critical">{networkSummary.critical_nodes}</span>
-              </div>
-              <div className="detail-item">
-                <span className="label">Warning:</span>
-                <span className="value warning">{networkSummary.warning_nodes}</span>
-              </div>
-              <div className="detail-item">
-                <span className="label">Normal:</span>
-                <span className="value normal">{networkSummary.normal_nodes}</span>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+                <span style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Avg SLA Latency</span>
+                <AreaChart data={globalHistory} color={healthColor} />
               </div>
             </div>
           </div>
@@ -157,7 +263,7 @@ function OverviewPage({ networkSummary, topology: propTopology, alerts: propAler
             </div>
           )}
 
-          {/* Compact Topology Map Preview */}
+          {/* Compact Topology Map Preview with Sparklines */}
           {topology?.nodes && (
             <div className="overview-section">
               <h3>Topology Site Monitor</h3>
@@ -167,17 +273,25 @@ function OverviewPage({ networkSummary, topology: propTopology, alerts: propAler
                   if (node.status === 'CRITICAL') statusColor = '#da3633';
                   else if (node.status === 'WARNING') statusColor = '#d29922';
                   
+                  const hist = latencyHistory[node.id] || [];
+                  const color = node.status === 'CRITICAL' ? '#da3633' : node.status === 'WARNING' ? '#d29922' : '#238636';
+
                   return (
                     <div 
                       key={node.id} 
                       className="compact-node-item"
                       onClick={() => handleSelectSite(node)}
-                      style={{ cursor: 'pointer' }}
+                      style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}
                     >
-                      <span className="status-dot" style={{ backgroundColor: statusColor }}></span>
-                      <div className="node-details">
-                        <span className="node-name">{node.name}</span>
-                        <span className="node-meta">{node.type} | {node.metrics?.latency_ms}ms</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflow: 'hidden', flex: 1 }}>
+                        <span className="status-dot" style={{ backgroundColor: statusColor }}></span>
+                        <div className="node-details">
+                          <span className="node-name">{node.name.split('-')[0].trim()}</span>
+                          <span className="node-meta">{node.metrics?.latency_ms}ms</span>
+                        </div>
+                      </div>
+                      <div className="compact-node-chart" style={{ flexShrink: 0, display: 'flex', alignItems: 'center' }}>
+                        <Sparkline data={hist} color={color} />
                       </div>
                     </div>
                   );
