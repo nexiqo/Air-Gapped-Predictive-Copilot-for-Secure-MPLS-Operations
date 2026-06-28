@@ -204,7 +204,7 @@ function DetailPanel({ selectedNode, selectedEdge, activeIncidents = [], onStepE
                       <tr key={index} className={`employee-row status-${emp.status.toLowerCase()}`}>
                         <td>
                           <div className="emp-name">
-                            {emp.status === 'Abuse' && <span className="warning-indicator">⚠️ </span>}
+                            {emp.status === 'Abuse' && <span className="warning-indicator">[ALERT] </span>}
                             {emp.name}
                           </div>
                           <div className="emp-role">{emp.role} • {emp.ip_address}</div>

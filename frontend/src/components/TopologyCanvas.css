@@ -36,105 +36,151 @@
   border-radius: var(--radius) !important;
 }
 
-/* Custom Node */
+/* Custom Node — n8n visual flow style with GitHub Dark palette */
 .topology-node {
-  background: var(--bg-overlay);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 8px 12px;
-  min-width: 120px;
+  background: #0d1117 !important;
+  border: 1px solid var(--border) !important;
+  border-left: 4px solid var(--border) !important;
+  border-radius: 8px !important;
+  padding: 0 !important;
+  min-width: 200px;
   cursor: pointer;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
   font-family: var(--sans);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+  overflow: hidden;
 }
 
 .topology-node:hover {
-  border-color: #8b949e;
-  box-shadow: 0 0 0 2px rgba(139,148,158,0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6) !important;
+  border-color: #8b949e !important;
 }
 
 .topology-node.selected {
-  border-color: #58a6ff;
-  box-shadow: 0 0 0 2px rgba(88,166,255,0.25);
+  border-color: #58a6ff !important;
+  box-shadow: 0 0 0 2px rgba(88,166,255,0.4) !important;
 }
 
-.topology-node.status-critical {
-  border-color: var(--red);
-  box-shadow: 0 0 0 2px rgba(248,81,73,0.15);
+/* n8n Status Border Highlights */
+.topology-node.node-normal {
+  border-left: 4px solid var(--green) !important;
 }
-
-.topology-node.status-warning {
-  border-color: var(--yellow);
-  box-shadow: 0 0 0 2px rgba(210,153,34,0.15);
+.topology-node.node-warning {
+  border-left: 4px solid var(--yellow) !important;
+}
+.topology-node.node-critical {
+  border-left: 4px solid var(--red) !important;
 }
 
 .node-header {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-bottom: 4px;
+  justify-content: space-between;
+  background: #161b22;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--border);
+  gap: 8px;
+}
+
+.node-type {
+  font-size: 9px;
+  color: var(--text-muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: var(--mono);
+}
+
+.node-status {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 .node-status-dot {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   flex-shrink: 0;
 }
 
-.node-label {
-  font-size: 12px;
+.node-name {
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-primary);
+  padding: 10px 12px 6px 12px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.node-type-badge {
-  font-size: 10px;
-  color: var(--text-muted);
-  font-family: var(--mono);
-  background: var(--bg-subtle);
-  padding: 0 4px;
-  border-radius: 2px;
-  border: 1px solid var(--border-muted);
-  white-space: nowrap;
-}
-
 .node-metrics {
   display: flex;
-  gap: 6px;
-  margin-top: 4px;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 12px 10px 12px;
 }
 
-.node-metric {
-  font-size: 10px;
-  font-family: var(--mono);
+.metric-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+}
+
+.metric-label {
   color: var(--text-muted);
-  background: var(--bg-inset);
-  padding: 1px 4px;
-  border-radius: 2px;
 }
 
-/* Edges */
+.metric-value {
+  font-family: var(--mono);
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* Edges — Animated Data Pipelines (n8n Style) */
 .react-flow__edge-path {
-  stroke: var(--border) !important;
-  stroke-width: 1.5px !important;
+  stroke: var(--border);
+  stroke-width: 2px;
+  stroke-dasharray: 6, 6;
+  animation: slow-flow 25s linear infinite;
+  transition: stroke 0.15s;
+}
+
+@keyframes slow-flow {
+  from { stroke-dashoffset: 200; }
+  to { stroke-dashoffset: 0; }
 }
 
 .react-flow__edge.selected .react-flow__edge-path {
   stroke: #58a6ff !important;
+  stroke-width: 2.5px;
 }
 
 .react-flow__edge.critical .react-flow__edge-path {
   stroke: var(--red) !important;
-  animation: edge-pulse 1.5s ease infinite;
+  stroke-width: 3px;
+  stroke-dasharray: 8, 4;
+  animation: fast-flow 1.2s linear infinite !important;
 }
 
-@keyframes edge-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
+.react-flow__edge.degraded .react-flow__edge-path {
+  stroke: var(--yellow) !important;
+  stroke-width: 2.5px;
+  stroke-dasharray: 8, 4;
+  animation: fast-flow 2.2s linear infinite !important;
+}
+
+.react-flow__edge.normal .react-flow__edge-path,
+.react-flow__edge.healthy .react-flow__edge-path {
+  stroke: var(--green) !important;
+}
+
+@keyframes fast-flow {
+  from { stroke-dashoffset: 36; }
+  to { stroke-dashoffset: 0; }
 }
 
 /* Legend */
@@ -276,4 +322,25 @@
   font-size: 0.65rem;
   color: var(--text-secondary);
   margin: 0 2px;
+}
+
+/* Custom Datacenter Node Style overrides (different color) */
+.topology-node.node-type-datacenter {
+  background: var(--bg-inset) !important;
+  border-color: #388bfd !important;
+  box-shadow: 0 4px 16px rgba(56, 139, 253, 0.15) !important;
+}
+
+.topology-node.node-type-datacenter .node-header {
+  background: rgba(56, 139, 253, 0.1) !important;
+  border-bottom: 1px solid rgba(56, 139, 253, 0.25) !important;
+}
+
+.topology-node.node-type-datacenter .node-header .node-type {
+  color: #388bfd !important;
+  font-weight: 800;
+}
+
+.topology-node.node-type-datacenter.node-normal {
+  border-left: 4px solid #388bfd !important; /* Blue state indicator instead of green */
 }

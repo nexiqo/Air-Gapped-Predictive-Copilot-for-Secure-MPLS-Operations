@@ -25,7 +25,8 @@ from backend.data_loader import (
     load_predictions,
     load_bgp_events,
     load_syslog_events,
-    load_validation_results
+    load_validation_results,
+    load_runbooks
 )
 from backend.copilot import CopilotService
 from backend.predictive_engine import PredictiveEngine
@@ -179,6 +180,26 @@ def get_summary() -> dict[str, Any]:
             
     alerts_info = summary.get("alerts", {})
     
+    # Compute dynamic top_risk_branches list from live branches metrics
+    from backend.data_loader import load_branches
+    current_branches = liveBranches if liveBranches else load_branches()
+    sorted_branches = sorted(current_branches, key=lambda b: b.get("risk_score", 0.0), reverse=True)
+    
+    top_risk = []
+    for b in sorted_branches[:5]:
+        score = b.get("risk_score", 0.0)
+        level = "LOW"
+        if score >= 7.0:
+            level = "CRITICAL"
+        elif score >= 4.0:
+            level = "WARNING"
+        top_risk.append({
+            "id": b["id"],
+            "name": b["name"],
+            "risk_score": score,
+            "risk_level": level
+        })
+    
     return {
         "overall_health": summary.get("network_health", "NORMAL"),
         "total_nodes": summary.get("sites", {}).get("total", 16),
@@ -198,7 +219,7 @@ def get_summary() -> dict[str, Any]:
         "prediction_engine": summary.get("prediction_engine", {}),
         "sites": summary.get("sites", {}),
         "sla": summary.get("sla", {}),
-        "top_risk_branches": summary.get("top_risk_branches", []),
+        "top_risk_branches": top_risk,
         "recent_predictions": summary.get("recent_predictions", []),
         "air_gap_status": summary.get("air_gap_status", ""),
         "llm_status": summary.get("llm_status", ""),
@@ -215,26 +236,7 @@ def get_branch(branch_id: str, status: str = "NORMAL") -> dict[str, Any]:
     """Get mapped single branch full detail from branch_details.json"""
     detail = load_branch_detail(branch_id)
     if not detail:
-        if branch_id in ("hub-delhi", "dc-mumbai"):
-            detail = {
-                "branch_id": branch_id,
-                "name": "Delhi Hub" if branch_id == "hub-delhi" else "Mumbai DC",
-                "city": "New Delhi" if branch_id == "hub-delhi" else "Mumbai",
-                "state": "Delhi" if branch_id == "hub-delhi" else "Maharashtra",
-                "current_status": status.lower(),
-                "users": 150,
-                "computers": 135,
-                "current_metrics": {
-                    "latency_ms": 1.2 if branch_id == "hub-delhi" else 0.8,
-                    "bandwidth_util_pct": 45.0,
-                    "packet_loss_pct": 0.0,
-                    "jitter_ms": 0.1
-                },
-                "recent_incidents": [],
-                "active_predictions": []
-            }
-        else:
-            raise HTTPException(status_code=404, detail=f"Branch {branch_id} not found")
+        raise HTTPException(status_code=404, detail=f"Branch {branch_id} not found")
     
     from backend.employee_simulator import generate_employee_activity, get_branch_assets_and_subnets
     
@@ -437,6 +439,11 @@ def analyze(payload: AnalyzeRequest) -> dict[str, Any]:
 def copilot_status() -> dict[str, Any]:
     """Returns current copilot mode (Ollama LLM or fallback), model name, RAG doc count."""
     return copilot.status()
+
+@app.get("/runbooks")
+def get_runbooks() -> list[dict[str, Any]]:
+    """Returns the list of standard operational runbooks (SOPs)."""
+    return load_runbooks()
 
 @app.post("/copilot/query")
 def copilot_query(payload: CopilotQueryRequest) -> dict[str, Any]:

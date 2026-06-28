@@ -253,13 +253,20 @@ class RAGService:
         # Seed the Loop Engine live state document on startup
         self.refresh_live_docs()
 
+    _last_refresh: float = 0.0
+    _REFRESH_INTERVAL: float = 30.0  # Only refresh every 30 seconds, not per query
+
     def refresh_live_docs(self) -> None:
         """
         Read the Loop Engine's live STATE.md and loop_state.json and upsert them
-        as real searchable RAG documents. Called on startup and on every query so
-        the Copilot always has the freshest loop knowledge.
+        as real searchable RAG documents. Throttled to at most once every 30 seconds
+        to prevent blocking every single Copilot query with an expensive IDF rebuild.
         """
         import json as _json, time as _time
+        now = _time.time()
+        if now - RAGService._last_refresh < RAGService._REFRESH_INTERVAL:
+            return
+        RAGService._last_refresh = now
 
         # ── 1. Build a rich text document from the live Loop Engine singleton ──
         try:
@@ -343,21 +350,22 @@ class RAGService:
                 })
                 self.fallback_db.doc_tokens_list.append(TOKEN_RE.findall(loop_doc.lower()))
 
-            # Rebuild IDF with updated vocab
-            all_tokens_lists = self.fallback_db.doc_tokens_list
-            total_docs = len(all_tokens_lists)
-            doc_frequencies: Counter = Counter()
-            new_vocab: set[str] = set()
-            for tokens in all_tokens_lists:
-                unique = set(tokens)
-                new_vocab.update(unique)
-                for t in unique:
-                    doc_frequencies[t] += 1
-            self.fallback_db.vocab = new_vocab
-            self.fallback_db.idf = {
-                term: math.log(1.0 + (total_docs / (1.0 + doc_frequencies[term])))
-                for term in new_vocab
-            }
+            # Only rebuild IDF when a NEW document was added (not on every update)
+            if existing is None:
+                all_tokens_lists = self.fallback_db.doc_tokens_list
+                total_docs = len(all_tokens_lists)
+                doc_frequencies: Counter = Counter()
+                new_vocab: set[str] = set()
+                for tokens in all_tokens_lists:
+                    unique = set(tokens)
+                    new_vocab.update(unique)
+                    for t in unique:
+                        doc_frequencies[t] += 1
+                self.fallback_db.vocab = new_vocab
+                self.fallback_db.idf = {
+                    term: math.log(1.0 + (total_docs / (1.0 + doc_frequencies[term])))
+                    for term in new_vocab
+                }
         else:
             try:
                 self.collection.upsert(
@@ -378,8 +386,7 @@ class RAGService:
             return 0
 
     def query(self, query_text: str, limit: int = 4) -> list[dict[str, Any]]:
-        # Refresh the live Loop Engine document on every query so the
-        # Copilot always has the most current loop state as a RAG source.
+        # Refresh live Loop Engine doc (throttled to max once per 30s)
         self.refresh_live_docs()
 
         if self.use_fallback:

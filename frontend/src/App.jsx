@@ -6,6 +6,7 @@ import Overview from './pages/Overview';
 import Branches from './pages/Branches';
 import Alerts from './pages/Alerts';
 import Predictions from './pages/Predictions';
+import Runbooks from './pages/Runbooks';
 import Reports from './pages/Reports';
 import SettingsPage from './pages/SettingsPage';
 import LoopEnginePanel from './pages/LoopEnginePanel';
@@ -62,6 +63,12 @@ const incidentTemplates = [
 function App() {
   const [selectedNode, setSelectedNode] = useState(null);
   const [selectedEdge, setSelectedEdge] = useState(null);
+  const [theme, setTheme] = useState(() => localStorage.getItem('app-theme') || 'dark');
+
+  useEffect(() => {
+    localStorage.setItem('app-theme', theme);
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
 
   const [liveSummary, setLiveSummary] = useState(null);
   const [liveTopology, setLiveTopology] = useState(null);
@@ -204,6 +211,28 @@ function App() {
              activeInc.type.toLowerCase().includes('utilization'))) {
           setTimeout(() => {
             handleResolveIncident(activeInc.id, 'firewall_policy');
+          }, 0);
+        }
+
+        // C. If scavenger QoS policy is active, auto-resolve tunnel/latency/loss/degradation incidents
+        if (activeInc && activePolicies.scavenger_qos && 
+            (activeInc.type.toLowerCase().includes('tunnel') || 
+             activeInc.type.toLowerCase().includes('latency') || 
+             activeInc.type.toLowerCase().includes('loss') ||
+             activeInc.type.toLowerCase().includes('degradation'))) {
+          setTimeout(() => {
+            handleResolveIncident(activeInc.id, 'qos_policy');
+          }, 0);
+        }
+
+        // D. If load balancers policy is active, auto-resolve routing/BGP incidents
+        if (activeInc && activePolicies.load_balancers && 
+            (activeInc.type.toLowerCase().includes('bgp') || 
+             activeInc.type.toLowerCase().includes('flap') || 
+             activeInc.type.toLowerCase().includes('route') ||
+             activeInc.type.toLowerCase().includes('routing'))) {
+          setTimeout(() => {
+            handleResolveIncident(activeInc.id, 'route_optimization');
           }, 0);
         }
 
@@ -389,6 +418,48 @@ function App() {
     window.addEventListener('selectTopologyNode', handleSelectNodeEvent);
     return () => window.removeEventListener('selectTopologyNode', handleSelectNodeEvent);
   }, [liveTopology]);
+
+  // Listen to chaos injection events from Loop Engine Control Panel
+  useEffect(() => {
+    const handleInjectChaos = (e) => {
+      const type = e.detail;
+      let templateIdx = 0;
+      if (type === 'bgp_flap') templateIdx = 1;
+      else if (type === 'congestion') templateIdx = 3;
+      else if (type === 'tunnel_fail') templateIdx = 0;
+
+      const template = incidentTemplates[templateIdx];
+      const nonHqBranches = liveBranches.filter(b => b.id !== 'hub-delhi' && b.id !== 'dc-mumbai');
+      if (nonHqBranches.length === 0) return;
+      const targetBranch = nonHqBranches[Math.floor(Math.random() * nonHqBranches.length)];
+
+      if (activeIncidents.some(i => i.nodeId === targetBranch.id && i.status === 'active')) {
+        return;
+      }
+
+      const newIncident = {
+        id: `INC-${Date.now().toString().slice(-4)}`,
+        nodeId: targetBranch.id,
+        type: template.type,
+        severity: template.severity,
+        message: template.message,
+        metrics: template.metrics,
+        steps: template.steps.map((s, idx) => ({ ...s, id: idx, status: 'pending' })),
+        status: 'active'
+      };
+
+      setActiveIncidents(prev => [...prev, newIncident]);
+      setCurrentToast({
+        id: newIncident.id,
+        nodeId: newIncident.nodeId,
+        type: newIncident.type,
+        severity: newIncident.severity,
+        message: newIncident.message
+      });
+    };
+    window.addEventListener('injectChaos', handleInjectChaos);
+    return () => window.removeEventListener('injectChaos', handleInjectChaos);
+  }, [liveBranches, activeIncidents]);
 
   // Inject a new incident manually/randomly
   const injectIncident = (nodeId) => {
@@ -599,13 +670,19 @@ function App() {
           <Route 
             path="/settings" 
             element={
-              <SettingsPage />
+              <SettingsPage theme={theme} setTheme={setTheme} />
             } 
           />
           <Route 
             path="/loop-engine" 
             element={
               <LoopEnginePanel activeIncidents={activeIncidents} />
+            } 
+          />
+          <Route 
+            path="/runbooks" 
+            element={
+              <Runbooks />
             } 
           />
         </Routes>

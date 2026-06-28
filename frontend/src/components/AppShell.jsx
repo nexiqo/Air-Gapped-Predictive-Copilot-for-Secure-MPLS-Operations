@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { path: '/alerts',       label: 'Alerts',       icon: '⚑' },
   { path: '/predictions',  label: 'Predictions',  icon: '◎' },
   { path: '/loop-engine',  label: 'Loop Engine',  icon: '⟳' },
+  { path: '/runbooks',     label: 'Runbooks',     icon: '▤' },
   { path: '/reports',      label: 'Reports',      icon: '☰' },
   { path: '/settings',     label: 'Settings',     icon: '⚙' },
 ];
@@ -142,7 +143,7 @@ function AppShell({ networkSummary, currentToast, onCloseToast, onResolveInciden
           <div className="nav-items">
             {NAV_ITEMS.map((item) => {
               const isActive = location.pathname === item.path;
-              const badge = item.path === '/alerts' && criticalCount > 0 ? criticalCount : null;
+              const badge = item.path === '/alerts' && (criticalCount + warningCount) > 0 ? (criticalCount + warningCount) : null;
               return (
                 <Link
                   key={item.path}
@@ -171,7 +172,7 @@ function AppShell({ networkSummary, currentToast, onCloseToast, onResolveInciden
           </div>
         </nav>
 
-        {/* ===== MAIN ===== */}
+        {/* ===== MAIN CONTENT AREA ===== */}
         <main className="main-content">
           {children}
         </main>

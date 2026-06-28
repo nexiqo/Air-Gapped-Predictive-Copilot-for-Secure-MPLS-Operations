@@ -573,6 +573,7 @@
   color: var(--text-secondary);
   margin: 0;
   line-height: 1.5;
+  white-space: pre-wrap;
 }
 .struct-text.narrative {
   color: var(--text-primary);

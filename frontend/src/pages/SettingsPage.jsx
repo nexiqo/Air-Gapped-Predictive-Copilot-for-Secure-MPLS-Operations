@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import './SettingsPage.css';
 
-function SettingsPage() {
+function SettingsPage({ theme, setTheme }) {
   const [activeTab, setActiveTab] = useState('general');
   const [settings, setSettings] = useState({
     refreshInterval: 30,
@@ -12,8 +12,12 @@ function SettingsPage() {
     enableOfflineMode: true,
     dataRetentionDays: 30,
     enableAuditLogging: true,
-    theme: 'dark'
+    theme: theme || 'dark'
   });
+
+  useEffect(() => {
+    setSettings(prev => ({ ...prev, theme }));
+  }, [theme]);
   
   const [policies, setPolicies] = useState({
     block_streaming: false,
@@ -42,6 +46,9 @@ function SettingsPage() {
       ...prev,
       [key]: value
     }));
+    if (key === 'theme' && setTheme) {
+      setTheme(value);
+    }
   };
 
   const handleSave = async () => {

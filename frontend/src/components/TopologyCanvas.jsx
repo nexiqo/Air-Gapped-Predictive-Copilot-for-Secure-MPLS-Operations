@@ -76,42 +76,46 @@ function TopologyCanvasInner({ topology: propTopology, onNodeSelect, onEdgeSelec
     const minDx = 230; // Minimum horizontal gap (node width 200px + 30px gap)
     const minDy = 165; // Minimum vertical gap (node height 140px + 25px gap)
 
-    // Initial geographic coordinates mapping (expanded scale)
+    // Map coordinates to a structured concentric hierarchical grid
     Object.entries(topology.nodes).forEach(([id, node]) => {
-      let lat = null;
-      let lon = null;
-      if (node.coordinates && node.coordinates.length === 2) {
-        lat = node.coordinates[0];
-        lon = node.coordinates[1];
-      } else if (typeof node.lat === 'number' && typeof node.lon === 'number') {
-        lat = node.lat;
-        lon = node.lon;
-      }
+      let x = 100;
+      let y = 450;
 
-      let x = 0;
-      let y = 0;
-      if (lat !== null && lon !== null) {
-        // Expand mapping scale so nodes are naturally further apart
-        x = (lon - 68) * 36.0 + 80;
-        y = 750 - (lat - 8) * 26.0;
-      } else if (node.type === 'HUB') {
-        x = 550; y = 200;
-      } else if (node.type === 'DATACENTER') {
-        x = 500; y = 450;
+      if (id === 'hub-delhi') {
+        x = 425; y = 80;
+      } else if (id === 'dc-mumbai') {
+        x = 675; y = 80;
+      } else if (id === 'branch-ahmedabad') {
+        x = 100; y = 260;
+      } else if (id === 'branch-jaipur') {
+        x = 350; y = 260;
+      } else if (id === 'branch-chandigarh') {
+        x = 600; y = 260;
+      } else if (id === 'branch-lucknow') {
+        x = 850; y = 260;
+      } else if (id === 'branch-bhopal') {
+        x = 100; y = 440;
+      } else if (id === 'branch-nagpur') {
+        x = 325; y = 440;
+      } else if (id === 'branch-kolkata') {
+        x = 550; y = 440;
+      } else if (id === 'branch-pune') {
+        x = 775; y = 440;
+      } else if (id === 'branch-bhubaneswar') {
+        x = 1000; y = 440;
+      } else if (id === 'branch-hyderabad') {
+        x = 100; y = 620;
+      } else if (id === 'branch-bengaluru') {
+        x = 325; y = 620;
+      } else if (id === 'branch-chennai') {
+        x = 550; y = 620;
+      } else if (id === 'branch-kochi') {
+        x = 775; y = 620;
+      } else if (id === 'branch-guwahati') {
+        x = 1000; y = 620;
       } else {
         x = Math.random() * 800; y = Math.random() * 600;
       }
-
-      // Manual adjustments for dense regions to improve default relative spacing
-      if (id === 'dc-mumbai') { x = 200; y = 480; }
-      if (id === 'branch-pune') { x = 220; y = 580; }
-      if (id === 'branch-bengaluru') { x = 320; y = 720; }
-      if (id === 'branch-kochi') { x = 300; y = 840; }
-      if (id === 'branch-chennai') { x = 450; y = 760; }
-      if (id === 'branch-hyderabad') { x = 480; y = 600; }
-      if (id === 'branch-nagpur') { x = 500; y = 450; }
-      if (id === 'branch-bhopal') { x = 480; y = 350; }
-      if (id === 'branch-ahmedabad') { x = 160; y = 350; }
 
       nodePositions[id] = { x, y };
     });
@@ -269,7 +273,7 @@ function TopologyCanvasInner({ topology: propTopology, onNodeSelect, onEdgeSelec
           pointerEvents: matchesFilter ? 'auto' : 'none',
           transition: 'opacity 0.25s ease-in-out'
         },
-        className: `topology-node node-${status.toLowerCase()}`,
+        className: `topology-node node-${status.toLowerCase()} node-type-${(node.type || 'branch').toLowerCase()}`,
       };
     });
 
@@ -322,11 +326,10 @@ function TopologyCanvasInner({ topology: propTopology, onNodeSelect, onEdgeSelec
         type: 'smoothstep',
         animated: animated && matchesFilter,
         style: {
-          stroke: strokeColor,
-          strokeWidth: strokeWidth,
           opacity: opacity,
           transition: 'opacity 0.25s ease-in-out'
         },
+        className: status.toLowerCase(),
         markerEnd: {
           type: MarkerType.ArrowClosed,
           color: strokeColor,
@@ -393,7 +396,7 @@ function TopologyCanvasInner({ topology: propTopology, onNodeSelect, onEdgeSelec
       {nodes.length === 0 && (
         <div className="topology-empty-overlay">
           <div className="empty-message-box">
-            <span className="empty-icon">⚠️</span>
+            <span className="empty-icon">[NO DATA]</span>
             <h4>No nodes match filters</h4>
             <p>Try resetting severity/type options or waiting for live simulated alerts.</p>
           </div>

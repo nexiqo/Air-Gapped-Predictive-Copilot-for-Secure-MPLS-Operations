@@ -178,3 +178,43 @@ pre, code {
   font-family: var(--mono);
   font-size: 12px;
 }
+
+/* Light Mode Theme */
+[data-theme="light"] {
+  --bg-canvas:    #f6f8fa;
+  --bg-overlay:   #ffffff;
+  --bg-inset:     #eaeef2;
+  --bg-subtle:    #f6f8fa;
+
+  --border:       #d0d7de;
+  --border-muted: #afb8c1;
+
+  --text-primary:   #24292f;
+  --text-secondary: #57606a;
+  --text-muted:     #6e7781;
+  --text-link:      #0969da;
+
+  --red:    #cf222e;
+  --yellow: #9a6700;
+  --green:  #1a7f37;
+}
+
+/* High Contrast Theme */
+[data-theme="high-contrast"] {
+  --bg-canvas:    #000000;
+  --bg-overlay:   #000000;
+  --bg-inset:     #000000;
+  --bg-subtle:    #161b22;
+
+  --border:       #ffffff;
+  --border-muted: #ffffff;
+
+  --text-primary:   #ffffff;
+  --text-secondary: #ffffff;
+  --text-muted:     #e6edf3;
+  --text-link:      #58a6ff;
+
+  --red:    #ff7b72;
+  --yellow: #f2cc60;
+  --green:  #56d364;
+}

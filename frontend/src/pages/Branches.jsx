@@ -14,10 +14,10 @@ function BranchesPage({ branches: propBranches, onNodeSelect }) {
   const BRANCH_ROLES = {
     "hub-delhi": "Corporate Operations Headquarters",
     "dc-mumbai": "Primary Enterprise Data Center",
-    "branch-bengaluru": "Zoho R&D Development Center",
+    "branch-bengaluru": "XYZ R&D Development Center",
     "branch-chennai": "Enterprise Product Engineering Hub",
     "branch-hyderabad": "Cloud Security Operations Center",
-    "branch-pune": "ZF Smart Manufacturing Plant",
+    "branch-pune": "XYZ Smart Manufacturing Plant",
     "branch-ahmedabad": "Advanced IoT CNC Foundry",
     "branch-kolkata": "Regional Supply Chain Headquarters",
     "branch-bhubaneswar": "Automated Logistics Hub",
@@ -25,7 +25,7 @@ function BranchesPage({ branches: propBranches, onNodeSelect }) {
     "branch-chandigarh": "Regional Sales & Executive Hub",
     "branch-jaipur": "Satellite Dev & QA Outpost",
     "branch-lucknow": "Billing & Customer Operations Hub",
-    "branch-kochi": "Zoho Tenkasi R&D Center",
+    "branch-kochi": "XYZ Branch R&D Center",
     "branch-nagpur": "Central RFID Supply Chain Hub",
     "branch-bhopal": "Central IoT Inventory Depot"
   };

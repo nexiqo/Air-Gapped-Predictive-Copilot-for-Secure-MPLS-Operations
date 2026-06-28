@@ -6,8 +6,9 @@ import './index.css'
 const originalFetch = window.fetch;
 window.fetch = function (input, init) {
   if (typeof input === 'string' && (input.includes('127.0.0.1:8000') || input.includes('localhost:8000'))) {
-    const isDev = window.location.port === '5173' || window.location.port === '3000';
-    const base = isDev ? 'http://127.0.0.1:8000' : window.location.origin;
+    const host = window.location.hostname;
+    const isLocal = host === 'localhost' || host === '127.0.0.1' || host === '0.0.0.0';
+    const base = isLocal ? `http://${host}:8000` : window.location.origin;
     input = input.replace(/https?:\/\/(127\.0\.0\.1|localhost):8000/g, base);
   }
   return originalFetch(input, init);

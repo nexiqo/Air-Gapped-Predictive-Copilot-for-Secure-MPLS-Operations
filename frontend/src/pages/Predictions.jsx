@@ -7,6 +7,13 @@ function PredictionsPage({ topology: propTopology }) {
   const [explainabilityData, setExplainabilityData] = useState(null);
   const [mlMetrics, setMlMetrics] = useState(null);
 
+  // XAI Playground States
+  const [playgroundLatency, setPlaygroundLatency] = useState(15);
+  const [playgroundLoss, setPlaygroundLoss] = useState(0.0);
+  const [playgroundUtil, setPlaygroundUtil] = useState(30);
+
+  const playgroundProb = Math.min(99.9, Math.max(0.1, (playgroundLatency * 0.3) + (playgroundLoss * 6.5) + (playgroundUtil * 0.4)));
+
   useEffect(() => {
     if (!propTopology) {
       fetchTopology();
@@ -188,6 +195,78 @@ function PredictionsPage({ topology: propTopology }) {
                   </div>
                 );
               })}
+            </div>
+          </div>
+
+          {/* Interactive XAI Playground Card */}
+          <div className="ml-diagnostic-card">
+            <h3>Interactive XAI Playground</h3>
+            <p className="card-sub">Manually simulate network parameters to see failure state probability calculation</p>
+            <div style={{ marginTop: '4px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', marginBottom: '4px' }}>
+                  <span>LINK LATENCY</span>
+                  <span>{playgroundLatency} ms</span>
+                </div>
+                <input 
+                  type="range" 
+                  min="1" 
+                  max="150" 
+                  value={playgroundLatency} 
+                  onChange={(e) => setPlaygroundLatency(Number(e.target.value))}
+                  style={{ width: '100%', accentColor: '#58a6ff', cursor: 'pointer' }}
+                />
+              </div>
+
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', marginBottom: '4px' }}>
+                  <span>PACKET LOSS</span>
+                  <span>{playgroundLoss.toFixed(1)} %</span>
+                </div>
+                <input 
+                  type="range" 
+                  min="0" 
+                  max="10" 
+                  step="0.1"
+                  value={playgroundLoss} 
+                  onChange={(e) => setPlaygroundLoss(Number(e.target.value))}
+                  style={{ width: '100%', accentColor: '#d29922', cursor: 'pointer' }}
+                />
+              </div>
+
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', marginBottom: '4px' }}>
+                  <span>BANDWIDTH UTILIZATION</span>
+                  <span>{playgroundUtil} %</span>
+                </div>
+                <input 
+                  type="range" 
+                  min="5" 
+                  max="100" 
+                  value={playgroundUtil} 
+                  onChange={(e) => setPlaygroundUtil(Number(e.target.value))}
+                  style={{ width: '100%', accentColor: '#a371f7', cursor: 'pointer' }}
+                />
+              </div>
+
+              <div style={{ borderTop: '1px solid var(--border)', paddingTop: '10px', marginTop: '5px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', fontWeight: 'bold' }}>
+                  <span>CLASSIFICATION RESULT</span>
+                  <span style={{ color: playgroundProb > 75 ? '#f85149' : playgroundProb > 40 ? '#d29922' : '#3fb950' }}>
+                    {playgroundProb > 75 ? 'CRITICAL RISK' : playgroundProb > 40 ? 'ELEVATED RISK' : 'NOMINAL OPERATION'}
+                  </span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '4px' }}>
+                  <span>Failure Probability:</span>
+                  <span>{playgroundProb.toFixed(1)}%</span>
+                </div>
+                <div className="class-track" style={{ marginTop: '6px' }}>
+                  <div 
+                    className={`class-bar ${playgroundProb > 75 ? 'critical' : playgroundProb > 40 ? 'warning' : 'nominal'}`}
+                    style={{ width: `${playgroundProb}%` }}
+                  ></div>
+                </div>
+              </div>
             </div>
           </div>
 

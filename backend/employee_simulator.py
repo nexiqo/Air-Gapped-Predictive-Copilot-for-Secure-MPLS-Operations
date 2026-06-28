@@ -57,10 +57,10 @@ ABUSE_APPS = [
 BRANCH_ROLES = {
     "hub-delhi": {"role": "Corporate Operations Headquarters", "type": "HQ"},
     "dc-mumbai": {"role": "Primary Enterprise Data Center", "type": "DC"},
-    "branch-bengaluru": {"role": "Zoho R&D Development Center", "type": "DEV"},
+    "branch-bengaluru": {"role": "XYZ R&D Development Center", "type": "DEV"},
     "branch-chennai": {"role": "Enterprise Product Engineering Hub", "type": "DEV"},
     "branch-hyderabad": {"role": "Cloud Security Operations Center", "type": "DEV"},
-    "branch-pune": {"role": "ZF Smart Manufacturing Plant", "type": "MFG"},
+    "branch-pune": {"role": "XYZ Smart Manufacturing Plant", "type": "MFG"},
     "branch-ahmedabad": {"role": "Advanced IoT CNC Foundry", "type": "MFG"},
     "branch-kolkata": {"role": "Regional Supply Chain Headquarters", "type": "HQ"},
     "branch-bhubaneswar": {"role": "Automated Logistics Hub", "type": "LOG"},
@@ -68,7 +68,7 @@ BRANCH_ROLES = {
     "branch-chandigarh": {"role": "Regional Sales & Executive Hub", "type": "HQ"},
     "branch-jaipur": {"role": "Satellite Dev & QA Outpost", "type": "DEV"},
     "branch-lucknow": {"role": "Billing & Customer Operations Hub", "type": "HQ"},
-    "branch-kochi": {"role": "Zoho Tenkasi R&D Center", "type": "DEV"},
+    "branch-kochi": {"role": "XYZ Branch R&D Center", "type": "DEV"},
     "branch-nagpur": {"role": "Central RFID Supply Chain Hub", "type": "LOG"},
     "branch-bhopal": {"role": "Central IoT Inventory Depot", "type": "LOG"}
 }

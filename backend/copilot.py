@@ -26,13 +26,16 @@ class CopilotService:
         self._last_check = 0.0
 
     def _check_ollama(self) -> bool:
-        """Check if Ollama is running. Cache result for 10 seconds."""
+        """Check if Ollama is running. Cache forever once confirmed unavailable."""
         now = time.time()
-        if self._ollama_available is not None and now - self._last_check < 10:
+        # If already confirmed False, never retry — Ollama is not installed
+        if self._ollama_available is False:
+            return False
+        if self._ollama_available is not None and now - self._last_check < 60:
             return self._ollama_available
         try:
             req = Request("http://127.0.0.1:11434/api/tags", method="GET")
-            with urlopen(req, timeout=2.0) as resp:
+            with urlopen(req, timeout=1.0) as resp:
                 data = json.loads(resp.read())
                 models = [m["name"] for m in data.get("models", [])]
                 self._ollama_available = any("llama" in m for m in models)
@@ -173,6 +176,11 @@ class CopilotService:
     def stream_query(self, question: str, conversation_history: list[dict] | None = None, active_incidents: list[dict] | None = None, live_branches: list[dict] | None = None) -> Generator[str, None, None]:
         """Stream tokens from Ollama for real-time response display."""
         docs = self.rag.query(question, limit=5)
+        if not self._check_ollama():
+            fallback = self._generate_deterministic_fallback(question, docs, active_incidents, live_branches)
+            yield self._format_fallback_as_text(fallback)
+            return
+
         context_str = self._build_context(docs)
         live_str = self._build_live_context(active_incidents, live_branches)
 
@@ -347,6 +355,50 @@ Return ONLY valid JSON, no other text."""
     def _generate_deterministic_fallback(self, question: str, docs: list[dict], active_incidents: list[dict] | None = None, live_branches: list[dict] | None = None) -> dict[str, Any]:
         q_lower = question.lower()
 
+        # ── Hackathon / ISRO challenges info ──
+        if any(hk in q_lower for hk in ["hackathon", "challenge", "isro", "bharatiya antariksh"]):
+            if "13" in q_lower or "mpls" in q_lower or "copilot" in q_lower:
+                msg = (
+                    "We are solving Challenge 13: 'Air-Gapped Predictive Copilot for Secure MPLS Operations' "
+                    "for the Bharatiya Antariksh Hackathon 2026. "
+                    "Our solution fulfills the four main objectives:\n"
+                    "1. Objective 1 (Simulation): Multi-site SD-WAN/MPLS environment (1 hub, 1 datacenter, 14 branches) with underlay/overlay networks.\n"
+                    "2. Objective 2 (Prediction): Time-series metrics and Random Forest classifier modeling path degradation & congestion anomalies.\n"
+                    "3. Objective 3 (Offline Copilot): Quantized LLaMA 3 model RAG parsing local inventory documents and runbooks.\n"
+                    "4. Objective 4 (NOC Automation): Loop Engine Maker-Checker workflows, auto-remediating issues like Chennai's BGP flap."
+                )
+            elif any(c in q_lower for c in ["8", "lunar", "south pole", "ice"]):
+                msg = (
+                    "Challenge 8 focuses on the 'Detection and Characterization of Subsurface Ice in Lunar South Polar Regions' "
+                    "using Chandrayaan-2 Dual-Frequency Synthetic Aperture Radar (DFSAR) and optical imagery data. This is critical "
+                    "for landing site selection and rover traverse planning."
+                )
+            elif any(c in q_lower for c in ["15", "solar", "flare", "aditya"]):
+                msg = (
+                    "Challenge 15 focuses on 'Forecasting and/or Nowcasting of Solar Flares' "
+                    "using combined Soft and Hard X-ray spectrometer telemetry from ISRO's Aditya-L1 solar observatory."
+                )
+            else:
+                msg = (
+                    "Welcome to the Bharatiya Antariksh Hackathon 2026! "
+                    "ISRO has presented 15 challenges for student innovators across India, ranging from satellite image cloud removal, "
+                    "lunar subsurface ice mapping, solar flare forecasting, to secure MPLS network operations copilot (Challenge 13). "
+                    "Ask me about any specific challenge to learn more!"
+                )
+            return {
+                "predicted_issue": "HACKATHON INFO",
+                "confidence": 1.0,
+                "current_state": "Bharatiya Antariksh Hackathon 2026",
+                "why_risky": "N/A",
+                "affected_scope": "N/A",
+                "time_to_impact": "N/A",
+                "time_to_impact_minutes": 0.0,
+                "recommended_actions": [],
+                "evidence": [{"source": "ISRO-BAH-2026", "title": "Official Challenge Booklet"}],
+                "narrative": msg,
+                "generated_by": "Hackathon Info Agent"
+            }
+
         noc_keywords = [
             "incident", "remediate", "resolve", "solve", "fix", "branch", "hub", "dc-", "site", 
             "latency", "packet", "loss", "utilization", "status", "error", "flap", "failure", "alert", 
@@ -474,37 +526,174 @@ Return ONLY valid JSON, no other text."""
                 "narrative": narrative,
                 "generated_by": "Loop Engine Status Reporter"
             }
-        is_noc = any(kw in q_lower for kw in noc_keywords)
 
-        if not is_noc:
+        # ── NLP Intent Router for Conversational / Concepts Q&A ──
+        is_noc = any(kw in q_lower for kw in noc_keywords)
+        is_abuse_query = any(kw in q_lower for kw in ["facebook", "youtube", "abuse", "abuser", "streaming", "torrent", "bittorrent", "social media", "netflix", "instagram"])
+        
+        # If the user asks about BGP, OSPF, MPLS, QoS, Latency, or Hackathon, bypass is_noc and treat as conversational concept Q&A
+        is_concept_query = any(kw in q_lower for kw in ["bgp", "ospf", "mpls", "qos", "scavenger", "latency", "packet loss", "error", "sfp", "crc"])
+        
+        if not is_noc or is_concept_query or is_abuse_query:
+            msg = ""
+            predicted_issue = "CONVERSATIONAL"
+            evidence = []
+            
             if any(h in q_lower for h in ["hello", "hi", "hey", "greetings"]):
-                msg = "Hello! I am your ISRO NOC Copilot. I am running in secure offline mode. I can help you diagnose branch failures, look up runbooks, and analyze telemetry. How can I assist you today?"
-            elif any(w in q_lower for w in ["who are you", "what is this", "what do you do"]):
-                msg = "I am the Air-Gapped NOC Predictive Copilot, designed for secure ISRO MPLS operations. I monitor 16 nodes across India and forecast network anomalies using machine learning. You can ask me to troubleshoot specific branches (e.g. 'Bengaluru', 'Chennai') or active incidents."
+                msg = "Hello! I am your air-gapped ISRO NOC Copilot, trained in secure offline mode for MPLS Operations.\nI can assist you in troubleshooting route flaps, link congestion, underlay failures, and identifying network policy violations. How can I help you today?"
+            
+            elif is_abuse_query:
+                # Compile a live report of all abusers across the simulated network
+                abuser_records = []
+                from backend.employee_simulator import generate_employee_activity
+                for br in (live_branches or []):
+                    br_id = br.get("id")
+                    br_status = br.get("status", "NORMAL")
+                    employees = generate_employee_activity(br_id, br_status, active_incidents)
+                    for emp in employees:
+                        if emp.get("status") == "Abuse":
+                            abuser_records.append({
+                                "branch": br.get("name"),
+                                "name": emp.get("name"),
+                                "role": emp.get("role"),
+                                "app": emp.get("active_application"),
+                                "bandwidth": emp.get("bandwidth_mbps"),
+                                "device": emp.get("device_id"),
+                                "ip": emp.get("ip_address")
+                            })
+                
+                if abuser_records:
+                    lines = [
+                        "[NOC SECURITY & AUDIT - ACTIVE BANDWIDTH ABUSE REPORT]",
+                        "The following users are currently consuming substantial bandwidth on non-corporate applications:",
+                        ""
+                    ]
+                    for rec in abuser_records:
+                        lines.append(f"• Site: {rec['branch']} | User: {rec['name']} ({rec['role']})")
+                        lines.append(f"  Device ID: {rec['device']} | IP Address: {rec['ip']}")
+                        lines.append(f"  Application: {rec['app']} | Bandwidth Consumed: {rec['bandwidth']} Mbps")
+                        lines.append("")
+                    
+                    lines.append("SUGGESTED CORRECTIVE ACTION PLAYBOOK:")
+                    lines.append("1. Revert/apply the Scavenger QoS Rate-Limiting Policy map via the Settings tab to drop non-critical traffic queues.")
+                    lines.append("2. Implement edge switch rate-limiting to restrict workstations to 10 Mbps (Runbook RB-002).")
+                    lines.append("3. Deploy an access control rule (ACL) on the local PE router firewall to block traffic to unauthorized video-sharing destinations.")
+                    
+                    msg = "\n".join(lines)
+                    predicted_issue = "BANDWIDTH POLICY VIOLATION"
+                    evidence.append({"source": "NETFLOW", "title": "Top-Talkers Stream Ingestion"})
+                else:
+                    msg = (
+                        "Audit completed. No active bandwidth abuse detected on any branch links. All workstations "
+                        "are operating within baseline compliance guidelines. Traffic flows show standard corporate "
+                        "applications (Microsoft Teams, Outlook, GitHub commit sync, database SQL queries)."
+                    )
+            
             elif "bgp" in q_lower:
-                msg = "BGP (Border Gateway Protocol) is the routing protocol used to exchange routing information. In our network, Delhi Hub (AS-65000) peer adjacencies are monitored. Route flapping or prefix drop incidents can be resolved using Runbook RB-001."
+                msg = (
+                    "BGP (Border Gateway Protocol) is a Path Vector protocol running over TCP port 179, managing routing decisions "
+                    "across autonomous systems (AS).\n\n"
+                    "Common Causes of BGP neighbor flaps or down states in our network:\n"
+                    "• Link layer errors: Bad transceivers causing physical carrier loss and TCP session drop.\n"
+                    "• Keepalive drops: CPU spikes on routers causing BGP keepalive packets to be dropped, triggering hold-time expiration (default 90s).\n"
+                    "• MTU mismatch on peer interfaces: Prevents exchange of large BGP UPDATE packets, keeping neighbor stuck in ExStart/Active state.\n\n"
+                    "Diagnostics & Mitigation commands:\n"
+                    "- Check neighbor summary: vtysh -c 'show bgp summary'\n"
+                    "- Apply route dampening: vtysh -c 'conf t' -c 'router bgp 65000' -c 'bgp dampening' (suppresses flapping routes)\n"
+                    "- Soft reset session: vtysh -c 'clear bgp neighbor <ip> soft' (reloads route entries without dropping TCP connection)"
+                )
+                predicted_issue = "BGP TELEMETRY KNOWLEDGE"
+                evidence.append({"source": "RB-001", "title": "BGP Neighbors SOP"})
+                
+            elif "ospf" in q_lower:
+                msg = (
+                    "OSPF (Open Shortest Path First) is a Link-State routing protocol utilizing the SPF (Dijkstra) algorithm "
+                    "for interior gateway routing.\n\n"
+                    "OSPF Adjacency Failures (OSPF state stuck in ExStart or Exchange):\n"
+                    "• Cause: Interface MTU mismatch. OSPF DBD packets carry MTU size; if they don't match on both sides of the link, "
+                    "Database Description updates fail and routers flap OSPF neighbor states.\n"
+                    "• Other causes: Hello/Dead interval mismatch, Area ID mismatch, or subnet mask mismatch.\n\n"
+                    "Diagnostics & Mitigation commands:\n"
+                    "- Verify interface parameters: vtysh -c 'show ip ospf interface'\n"
+                    "- Set interface MTU size matching peer: ip link set <iface> mtu 9000\n"
+                    "- Restart stuck adjacency: vtysh -c 'clear ip ospf process'"
+                )
+                predicted_issue = "OSPF TELEMETRY KNOWLEDGE"
+                evidence.append({"source": "RB-004", "title": "OSPF Adjacency SOP"})
+                
             elif "mpls" in q_lower:
-                msg = "MPLS (Multiprotocol Label Switching) speeds up and shapes network traffic flows by using path labels. Runbook RB-005 covers label forwarding table errors."
-            elif any(s in q_lower for s in ["snmp", "syslog", "log"]):
-                msg = "SNMP metrics provide telemetry on CPU, memory, and bandwidth utilization. Syslogs collect device events. You can view syslog streams on the logs pages or ask me to check a site's status."
+                msg = (
+                    "MPLS (Multiprotocol Label Switching) operates between L2 (Data Link) and L3 (Network Layer), speeding up "
+                    "forwarding by swapping labels rather than performing long-longest prefix route lookups.\n\n"
+                    "MPLS Tunnel Degradation causes:\n"
+                    "• Path congestion: Underlay link utilization approaching capacity, causing label-switched path (LSP) drops.\n"
+                    "• LDP session failures: LDP (Label Distribution Protocol) neighbor adjacency lost, halting path label mapping.\n\n"
+                    "Diagnostics & Mitigation commands:\n"
+                    "- Check LDP states: vtysh -c 'show mpls ldp neighbor'\n"
+                    "- traceroute path labels: traceroute mpls ipv4 <destination_ip>\n"
+                    "- Set path cost metric override: vtysh -c 'ip route <prefix> <next_hop> 5' (directs packets to alternate overlay path)"
+                )
+                predicted_issue = "MPLS TELEMETRY KNOWLEDGE"
+                evidence.append({"source": "RB-003", "title": "MPLS Tunnel SOP"})
+                
+            elif "qos" in q_lower or "scavenger" in q_lower:
+                msg = (
+                    "Quality of Service (QoS) prioritizes critical network applications using Class Maps and Policy Maps based "
+                    "on DSCP (Differentiated Services Code Point) headers:\n\n"
+                    "• EF (Expedited Forwarding): VoIP and real-time streams requiring sub-millisecond delay.\n"
+                    "• AF (Assured Forwarding): Corporate database traffic, ERP-Client, and collaborative tools.\n"
+                    "• Scavenger Class (CS1): Background non-corporate traffic (YouTube 4K, social media scrolling, torrents).\n\n"
+                    "Mitigation commands:\n"
+                    "- Apply rate limit on Bulk/Scavenger queues: vtysh -c 'conf t' -c 'policy-map BRANCH-OUT' -c 'class BULK' -c 'police rate 50 mbps'\n"
+                    "- Check active drops on policy maps: vtysh -c 'show policy-map interface'"
+                )
+                predicted_issue = "QOS POLICY KNOWLEDGE"
+                evidence.append({"source": "RB-002", "title": "Interface Congestion SOP"})
+                
+            elif "latency" in q_lower or "packet loss" in q_lower or "error" in q_lower or "sfp" in q_lower or "crc" in q_lower:
+                msg = (
+                    "High Latency & Packet Loss diagnostics guide:\n"
+                    "• CRC errors: Indicate physical layer noise, dirty fiber connections, or failing transceivers.\n"
+                    "• Duplex Mismatch: Causes high collision rates and output errors under load.\n"
+                    "• SFP Optics Power levels: Check if optical receive (Rx) or transmit (Tx) power falls below -20 dBm.\n\n"
+                    "Diagnostics & Mitigation commands:\n"
+                    "- Inspect interface error statistics: show interface <interface> | grep -E 'CRC|error|drops'\n"
+                    "- Replace degraded SFP module if optical power is poor.\n"
+                    "- Force speed/duplex negotiation: show interface status"
+                )
+                predicted_issue = "PHYSICAL DIAGNOSTICS"
+                evidence.append({"source": "RB-005", "title": "Packet Loss & CRC SOP"})
+                
             elif "help" in q_lower:
-                msg = "Here are some things you can try asking me:\n1. 'What is the status of Bengaluru?'\n2. 'Solve active incidents'\n3. 'Show runbook for progressive congestion'\n4. 'List all branches'"
+                msg = (
+                    "Here are some operational queries you can ask me:\n"
+                    "1. 'What is the status of Bengaluru?' (provides live telemetry metrics and user list)\n"
+                    "2. 'Who is using facebook / youtube right now?' (queries NetFlow and lists bandwidth abusers)\n"
+                    "3. 'How do OSPF MTU mismatches behave?' (concept diagnostics explanation)\n"
+                    "4. 'Explain how to configure BGP dampening' (runbook configuration commands)\n"
+                    "5. 'Show details on Challenge 13' (hackathon problem statement roadmap)"
+                )
+                predicted_issue = "COPILOT HELP DESK"
             else:
                 snippet = docs[0]['document'] if docs else 'N/A'
-                msg = f"I am your offline NOC Copilot assistant. I've analyzed your question and scanned the local RAG documents, but to run a full diagnostic scan, please specify a branch name (e.g., 'Bengaluru status') or an active incident keyword.\n\nHere is a snippet from our knowledge base that might help:\n- {snippet}"
+                msg = (
+                    f"I've scanned the local RAG offline knowledge base regarding your question.\n\n"
+                    f"To perform a live telemetry lookup, specify a site name (e.g. 'Bengaluru status') or an active incident keyword.\n\n"
+                    f"Relevant knowledge base context:\n- {snippet}"
+                )
             
             return {
-                "predicted_issue": "CONVERSATIONAL",
+                "predicted_issue": predicted_issue,
                 "confidence": 1.0,
-                "current_state": "Chatbot Mode",
+                "current_state": "Offline RAG NLP Mode",
                 "why_risky": "N/A",
                 "affected_scope": "N/A",
                 "time_to_impact": "N/A",
                 "time_to_impact_minutes": 0.0,
                 "recommended_actions": [],
-                "evidence": [],
+                "evidence": evidence,
                 "narrative": msg,
-                "generated_by": "Offline Conversational Agent"
+                "generated_by": "Offline NLP Conversational Agent"
             }
 
         active_inc = None

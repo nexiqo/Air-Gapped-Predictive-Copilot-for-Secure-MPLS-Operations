@@ -193,7 +193,26 @@ def load_branch_detail(branch_id: str) -> dict[str, Any] | None:
         details = json.load(f)
     info = details.get(branch_id)
     if not info:
-        return None
+        if branch_id in ("hub-delhi", "dc-mumbai"):
+            info = {
+                "name": "Delhi Corporate Hub" if branch_id == "hub-delhi" else "Mumbai Enterprise Data Center",
+                "city": "New Delhi" if branch_id == "hub-delhi" else "Mumbai",
+                "state": "Delhi" if branch_id == "hub-delhi" else "Maharashtra",
+                "region": "North" if branch_id == "hub-delhi" else "West",
+                "current_status": "healthy",
+                "users": 150 if branch_id == "hub-delhi" else 80,
+                "current_metrics": {
+                    "latency_ms": 1.2 if branch_id == "hub-delhi" else 0.8,
+                    "bandwidth_util_pct": 22.0 if branch_id == "hub-delhi" else 35.0,
+                    "packet_loss_pct": 0.0,
+                    "jitter_ms": 0.1
+                },
+                "recent_incidents": [],
+                "active_predictions": [],
+                "services": ["ERP", "LDAP", "Active Directory", "VoIP Core"] if branch_id == "hub-delhi" else ["Core Database", "Storage SAN", "Kubernetes Core", "Identity API"]
+            }
+        else:
+            return None
         
     status = info.get("current_status", "healthy").upper()
     if status == "HEALTHY":

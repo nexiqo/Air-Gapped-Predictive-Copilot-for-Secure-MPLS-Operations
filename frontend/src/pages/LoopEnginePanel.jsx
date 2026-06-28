@@ -4,18 +4,18 @@ import './LoopEnginePanel.css';
 const API = 'http://127.0.0.1:8000';
 
 const PHASE_META = {
-  TRIAGE:       { label: 'Triage',       color: '#d29922', icon: '🔍' },
-  MITIGATION:   { label: 'Mitigation',   color: '#388bfd', icon: '🛠️' },
-  VERIFICATION: { label: 'Verification', color: '#a371f7', icon: '🔬' },
-  COMPLETED:    { label: 'Completed',    color: '#3fb950', icon: '✅' },
-  ESCALATED:    { label: 'Escalated',    color: '#f85149', icon: '🚨' },
+  TRIAGE:       { label: 'Triage',       color: '#d29922', icon: '[TRIAGE]' },
+  MITIGATION:   { label: 'Mitigation',   color: '#388bfd', icon: '[MITIGATE]' },
+  VERIFICATION: { label: 'Verification', color: '#a371f7', icon: '[VERIFY]' },
+  COMPLETED:    { label: 'Completed',    color: '#3fb950', icon: '[OK]' },
+  ESCALATED:    { label: 'Escalated',    color: '#f85149', icon: '[ALERT]' },
 };
 
 const STEP_STATUS_META = {
-  verified: { icon: '✅', color: '#3fb950' },
-  active:   { icon: '⏳', color: '#388bfd' },
-  failed:   { icon: '❌', color: '#f85149' },
-  pending:  { icon: '⬜', color: '#6e7781' },
+  verified: { icon: '[OK]', color: '#3fb950' },
+  active:   { icon: '[RUN]', color: '#388bfd' },
+  failed:   { icon: '[FAIL]', color: '#f85149' },
+  pending:  { icon: '[PEND]', color: '#6e7781' },
 };
 
 function PhaseBar({ phase }) {
@@ -30,7 +30,7 @@ function PhaseBar({ phase }) {
         return (
           <div key={p} className={`le-phase-step ${active ? 'active' : ''} ${done ? 'done' : ''}`}>
             <div className="le-phase-dot" style={{ background: done || active ? meta.color : '#30363d' }}>
-              {done ? '✓' : active ? meta.icon : (i + 1)}
+              {done ? '✓' : (i + 1)}
             </div>
             <span className="le-phase-label">{meta.label}</span>
             {i < phases.length - 1 && (
@@ -109,7 +109,9 @@ function HistoryRow({ entry }) {
   const resolved = entry.status === 'resolved';
   return (
     <div className={`le-history-row ${resolved ? 'resolved' : 'escalated'}`}>
-      <span className="le-hist-icon">{resolved ? '🟢' : '🔴'}</span>
+      <span className="le-hist-icon" style={{ fontSize: 11, fontWeight: 'bold', color: resolved ? '#3fb950' : '#f85149' }}>
+        {resolved ? '[OK]' : '[ALERT]'}
+      </span>
       <div className="le-hist-info">
         <span className="le-hist-node">{entry.node_id?.replace('branch-', '').toUpperCase()}</span>
         <span className="le-hist-type">{entry.incident_type}</span>
@@ -169,6 +171,10 @@ export default function LoopEnginePanel({ activeIncidents = [] }) {
     }
   }, [liveLog]);
 
+  const injectChaos = (type) => {
+    window.dispatchEvent(new CustomEvent('injectChaos', { detail: type }));
+  };
+
   const activeLoops = loopState.active_loops || [];
   const history = loopState.history || [];
 
@@ -178,7 +184,7 @@ export default function LoopEnginePanel({ activeIncidents = [] }) {
       <div className="le-header">
         <div className="le-header-left">
           <div className="le-header-title">
-            <span className="le-header-icon">⚙️</span>
+            <span className="le-header-icon">[SYS]</span>
             Loop Engineering Engine
           </div>
           <div className="le-header-subtitle">
@@ -226,7 +232,7 @@ export default function LoopEnginePanel({ activeIncidents = [] }) {
         {/* Left column: active loops */}
         <div className="le-left-col">
           <div className="le-section-title">
-            <span>🔄 Active Verification Loops</span>
+            <span>Active Verification Loops</span>
             <span className="le-count-badge">{activeLoops.length}</span>
           </div>
 
@@ -237,7 +243,7 @@ export default function LoopEnginePanel({ activeIncidents = [] }) {
             </div>
           ) : activeLoops.length === 0 ? (
             <div className="le-empty-state">
-              <span className="le-empty-icon">✅</span>
+              <span className="le-empty-icon">[NO ACTIVE]</span>
               <span className="le-empty-title">No Active Loops</span>
               <span className="le-empty-sub">All network incidents are stable. The engine will automatically register a loop when an anomaly is detected.</span>
             </div>
@@ -251,8 +257,8 @@ export default function LoopEnginePanel({ activeIncidents = [] }) {
 
           {/* Live log terminal */}
           <div className="le-section-title" style={{ marginTop: '20px' }}>
-            <span>📟 Live Engine Log</span>
-            <span className="le-live-indicator">● LIVE</span>
+            <span>Live Engine Log</span>
+            <span className="le-live-indicator">LIVE</span>
           </div>
           <div className="le-log-terminal" ref={logRef}>
             {liveLog.length === 0 ? (
@@ -265,13 +271,32 @@ export default function LoopEnginePanel({ activeIncidents = [] }) {
           </div>
         </div>
 
-        {/* Right column: history + how it works */}
+        {/* Right column: history + chaos control + how it works */}
         <div className="le-right-col">
+          {/* Chaos Control Panel */}
+          <div className="le-explainer-card" style={{ marginBottom: '20px', borderColor: '#30363d' }}>
+            <div className="le-explainer-title" style={{ color: '#58a6ff' }}>[CONTROL] Chaos Control Panel</div>
+            <div className="le-ex-desc" style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '12px' }}>
+              Inject active disruptions into the SD-WAN/MPLS simulation to test the autonomous self-healing loops.
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <button className="toast-btn auto-btn" style={{ background: '#21262d', border: '1px solid #30363d', color: '#58a6ff', padding: '8px' }} onClick={() => injectChaos('bgp_flap')}>
+                Inject BGP Route Flapping Scenario
+              </button>
+              <button className="toast-btn auto-btn" style={{ background: '#21262d', border: '1px solid #30363d', color: '#d29922', padding: '8px' }} onClick={() => injectChaos('congestion')}>
+                Inject Interface Traffic Congestion
+              </button>
+              <button className="toast-btn auto-btn" style={{ background: '#21262d', border: '1px solid #30363d', color: '#f85149', padding: '8px' }} onClick={() => injectChaos('tunnel_fail')}>
+                Inject IPSec Tunnel Degradation
+              </button>
+            </div>
+          </div>
+
           <div className="le-section-title">
-            <span>📜 Completion History</span>
+            <span>Completion History</span>
             <span className="le-count-badge">{history.length}</span>
           </div>
-          <div className="le-history-list">
+          <div className="le-history-list" style={{ marginBottom: '20px' }}>
             {history.length === 0 ? (
               <div className="le-empty-state small">
                 <span className="le-empty-sub">Completed loops will appear here.</span>
@@ -285,7 +310,7 @@ export default function LoopEnginePanel({ activeIncidents = [] }) {
 
           {/* How it works explainer */}
           <div className="le-explainer-card">
-            <div className="le-explainer-title">🤖 How the Loop Engine Works</div>
+            <div className="le-explainer-title">How the Loop Engine Works</div>
             <div className="le-explainer-steps">
               <div className="le-ex-step">
                 <div className="le-ex-num" style={{ background: '#d29922' }}>1</div>

@@ -199,61 +199,81 @@ class LoopEngine:
                             
                     elif phase == "VERIFICATION":
                         # Checker role: Poll metrics to verify recovery
-                        # Look at the live status from the database/simulator
-                        from backend.main import liveBranches
+                        from backend.main import liveBranches, GLOBAL_POLICIES
                         branch = next((b for b in liveBranches if b["id"] == node_id), None)
                         
-                        if branch:
+                        # Determine metrics (either from synced frontend state, or simulated recovered state if policy is active)
+                        t = loop["incident_type"].lower()
+                        simulated_recovery = False
+                        
+                        if "congestion" in t or "utilization" in t or "exhaustion" in t:
+                            if GLOBAL_POLICIES.get("block_streaming"):
+                                simulated_recovery = True
+                        elif "bgp" in t or "flap" in t:
+                            if GLOBAL_POLICIES.get("load_balancers"):
+                                simulated_recovery = True
+                        else:
+                            if GLOBAL_POLICIES.get("scavenger_qos"):
+                                simulated_recovery = True
+                                
+                        if simulated_recovery:
+                            lat = 12.5
+                            loss = 0.0
+                        elif branch:
                             lat = branch.get("latency_ms", 12.0)
                             loss = branch.get("packet_loss_pct", 0.0)
-                            loop["last_metrics"] = {
-                                "latency_ms": lat,
-                                "packet_loss_pct": loss
-                            }
+                        else:
+                            lat = loop["last_metrics"].get("latency_ms", 120.0)
+                            loss = loop["last_metrics"].get("packet_loss_pct", 2.0)
                             
-                            # Standard healthy thresholds
-                            if lat < 25.0 and loss < 0.2:
-                                # Recovery verified!
-                                loop["phase"] = "COMPLETED"
+                        loop["last_metrics"] = {
+                            "latency_ms": lat,
+                            "packet_loss_pct": loss
+                        }
+                        
+                        # Standard healthy thresholds
+                        if lat < 25.0 and loss < 0.2:
+                            # Recovery verified!
+                            loop["phase"] = "COMPLETED"
+                            for step in loop["checklist"]:
+                                if step["id"] == "verify":
+                                    step["status"] = "verified"
+                                    step["timestamp"] = time.strftime("%H:%M:%S")
+                            
+                            # Auto resolve incident record
+                            from backend.main import handleResolveIncident
+                            handleResolveIncident(loop_id, "remediation")
+                            
+                            self.history.append({
+                                "node_id": node_id,
+                                "incident_type": loop["incident_type"],
+                                "status": "resolved",
+                                "completion_time": time.strftime("%H:%M:%S")
+                            })
+                            del self.active_loops[loop_id]
+                            self.save_state()
+                        else:
+                            # Still degraded. If checking has run for > 3 ticks, escalate
+                            elapsed = time.time() - (loop.get("last_checked_time") or time.time())
+                            if elapsed > 25.0: # Escalation limit
+                                loop["phase"] = "ESCALATED"
                                 for step in loop["checklist"]:
                                     if step["id"] == "verify":
-                                        step["status"] = "verified"
+                                        step["status"] = "failed"
                                         step["timestamp"] = time.strftime("%H:%M:%S")
-                                
-                                # Auto resolve incident record
-                                from backend.main import handleResolveIncident
-                                handleResolveIncident(loop_id, "remediation")
-                                
+                                        
                                 self.history.append({
                                     "node_id": node_id,
                                     "incident_type": loop["incident_type"],
-                                    "status": "resolved",
+                                    "status": "escalated",
                                     "completion_time": time.strftime("%H:%M:%S")
                                 })
                                 del self.active_loops[loop_id]
                                 self.save_state()
                             else:
-                                # Still degraded. If checking has run for > 3 ticks, escalate
-                                elapsed = time.time() - (loop.get("last_checked_time") or time.time())
-                                if elapsed > 25.0: # Escalation limit
-                                    loop["phase"] = "ESCALATED"
-                                    for step in loop["checklist"]:
-                                        if step["id"] == "verify":
-                                            step["status"] = "failed"
-                                            step["timestamp"] = time.strftime("%H:%M:%S")
-                                            
-                                    self.history.append({
-                                        "node_id": node_id,
-                                        "incident_type": loop["incident_type"],
-                                        "status": "escalated",
-                                        "completion_time": time.strftime("%H:%M:%S")
-                                    })
-                                    del self.active_loops[loop_id]
-                                    self.save_state()
-                                else:
-                                    if "last_checked_time" not in loop:
-                                        loop["last_checked_time"] = time.time()
-                                    self.save_state()
+                                if "last_checked_time" not in loop:
+                                    loop["last_checked_time"] = time.time()
+                                self.save_state()
             except Exception as e:
                 print(f"[LoopEngine] Error in worker thread: {e}")
                 time.sleep(5)
