@@ -10,6 +10,30 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
 
+def get_realistic_latency(node_id: str) -> float:
+    # Map node IDs to realistic baseline latencies (ms) based on real network geography from Delhi PE Hub
+    mapping = {
+        "hub-delhi": 0.8,
+        "dc-mumbai": 8.4,
+        "branch-mumbai": 8.6,
+        "branch-guwahati": 46.2,
+        "branch-shillong": 48.7,
+        "branch-bengaluru": 29.3,
+        "branch-chennai": 31.8,
+        "branch-hyderabad": 24.1,
+        "branch-kochi": 39.5,
+        "branch-kolkata": 34.2,
+        "branch-bhubaneswar": 29.8,
+        "branch-chandigarh": 4.6,
+        "branch-jaipur": 5.1,
+        "branch-lucknow": 10.5,
+        "branch-ahmedabad": 15.2,
+        "branch-pune": 13.6,
+        "branch-nagpur": 18.9,
+        "branch-bhopal": 14.8
+    }
+    return mapping.get(node_id, 15.0)
+
 # ── Simple TTL cache for hot-path functions ───────────────────────────────────
 _CACHE: dict[str, tuple[Any, float]] = {}
 
@@ -55,8 +79,9 @@ def load_topology() -> dict[str, Any]:
                 coords = node["coordinates"]
                 
             m = node.get("metrics", {})
+            base_latency = get_realistic_latency(node_id)
             metrics = {
-                "latency_ms": m.get("latency_ms", 0.0),
+                "latency_ms": base_latency,
                 "packet_loss_pct": m.get("packet_loss_pct", 0.0),
                 "utilization_pct": m.get("bandwidth_util_pct", 0.0),
                 "jitter_ms": m.get("jitter_ms", 0.0)
@@ -112,9 +137,15 @@ def load_topology() -> dict[str, Any]:
         if status == "HEALTHY":
             status = "NORMAL"
             
+        source_lat = get_realistic_latency(source)
+        target_lat = get_realistic_latency(target)
+        edge_lat = round(abs(target_lat - source_lat), 2)
+        if edge_lat < 1.0:
+            edge_lat = max(source_lat, target_lat)
+            
         m = edge.get("metrics", {})
         metrics = {
-            "latency_ms": m.get("latency_ms", 0.0),
+            "latency_ms": edge_lat,
             "utilization_pct": m.get("util_pct", 0.0),
             "jitter_ms": m.get("jitter_ms", 0.0),
             "packet_loss_pct": m.get("packet_loss_pct", 0.0)
@@ -165,6 +196,7 @@ def load_branches() -> list[dict[str, Any]]:
         users_count = info.get("users", 120)
         computers_count = int(users_count * 0.85)
         
+        base_latency = get_realistic_latency(branch_id)
         branches.append({
             "id": branch_id,
             "name": info.get("name", branch_id.replace("branch-", "").title()),
@@ -172,13 +204,16 @@ def load_branches() -> list[dict[str, Any]]:
             "location": location,
             "type": "BRANCH" if "branch" in branch_id else "HUB" if "hub" in branch_id else "DATACENTER",
             "status": status,
-            "latency_ms": info.get("current_metrics", {}).get("latency_ms", 0.0),
+            "latency_ms": base_latency,
             "packet_loss_pct": info.get("current_metrics", {}).get("packet_loss_pct", 0.0),
             "utilization_pct": info.get("current_metrics", {}).get("bandwidth_util_pct", 0.0),
             "risk_score": risk_score,
             "predicted_issue": info.get("active_predictions", [{}])[0].get("predicted_fault_type", "None") if info.get("active_predictions") else "None",
             "sla": info.get("sla_status", "COMPLIANT"),
-            "current_metrics": info.get("current_metrics", {}),
+            "current_metrics": {
+                **info.get("current_metrics", {}),
+                "latency_ms": base_latency
+            },
             "has_prediction": has_prediction,
             "users": users_count,
             "computers": computers_count
@@ -191,6 +226,7 @@ def load_branch_detail(branch_id: str) -> dict[str, Any] | None:
         return None
     with path.open("r", encoding="utf-8") as f:
         details = json.load(f)
+    base_latency = get_realistic_latency(branch_id)
     info = details.get(branch_id)
     if not info:
         if branch_id in ("hub-delhi", "dc-mumbai"):
@@ -202,7 +238,7 @@ def load_branch_detail(branch_id: str) -> dict[str, Any] | None:
                 "current_status": "healthy",
                 "users": 150 if branch_id == "hub-delhi" else 80,
                 "current_metrics": {
-                    "latency_ms": 1.2 if branch_id == "hub-delhi" else 0.8,
+                    "latency_ms": base_latency,
                     "bandwidth_util_pct": 22.0 if branch_id == "hub-delhi" else 35.0,
                     "packet_loss_pct": 0.0,
                     "jitter_ms": 0.1
@@ -213,6 +249,9 @@ def load_branch_detail(branch_id: str) -> dict[str, Any] | None:
             }
         else:
             return None
+            
+    if "current_metrics" in info:
+        info["current_metrics"]["latency_ms"] = base_latency
         
     status = info.get("current_status", "healthy").upper()
     if status == "HEALTHY":
