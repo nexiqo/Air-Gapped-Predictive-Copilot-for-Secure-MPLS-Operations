@@ -1752,6 +1752,18 @@
       "incident_type": "link_flap",
       "status": "resolved",
       "completion_time": "15:14:21"
+    },
+    {
+      "node_id": "branch-bengaluru",
+      "incident_type": "MPLS Tunnel Degradation",
+      "status": "resolved",
+      "completion_time": "15:22:13"
+    },
+    {
+      "node_id": "branch-chennai",
+      "incident_type": "SD-WAN Policy Drift",
+      "status": "resolved",
+      "completion_time": "15:22:13"
     }
   ]
 }

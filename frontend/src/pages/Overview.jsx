@@ -299,6 +299,9 @@ function OverviewPage({ networkSummary, topology: propTopology, alerts: propAler
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
                 <span style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Avg SLA Latency</span>
+                <span style={{ fontSize: '18px', fontWeight: 'bold', color: 'var(--text-primary)', fontFamily: 'var(--mono)' }}>
+                  {globalHistory.length > 0 ? `${globalHistory[globalHistory.length - 1].toFixed(1)} ms` : '--'}
+                </span>
                 <AreaChart data={globalHistory} color={healthColor} />
               </div>
             </div>
