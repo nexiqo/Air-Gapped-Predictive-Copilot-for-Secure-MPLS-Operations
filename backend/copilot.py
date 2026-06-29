@@ -605,7 +605,7 @@ Return ONLY valid JSON, no other text."""
                     msg = (
                         "Audit completed. No active bandwidth abuse detected on any branch links. All workstations "
                         "are operating within baseline compliance guidelines. Traffic flows show standard corporate "
-                        "applications (Microsoft Teams, Outlook, GitHub commit sync, database SQL queries)."
+                        "applications (Microsoft Teams, Outlook, Git repository sync, database SQL queries)."
                     )
             
             elif "bgp" in q_lower:

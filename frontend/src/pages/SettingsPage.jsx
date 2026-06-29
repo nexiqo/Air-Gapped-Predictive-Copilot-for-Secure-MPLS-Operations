@@ -178,7 +178,7 @@ function SettingsPage({ theme, setTheme }) {
                 onChange={(e) => handleSettingChange('theme', e.target.value)}
                 className="form-select"
               >
-                <option value="dark">Dark (GitHub Dark Mode)</option>
+                <option value="dark">Dark</option>
                 <option value="light">Light</option>
                 <option value="high-contrast">High Contrast</option>
               </select>

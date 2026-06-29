@@ -67,7 +67,7 @@ class EmployeeRLAgent:
         
         if self.state == "FOCUSED":
             if self.dept == "Engineering":
-                app_name = "GitHub (Code Commit & Pull)" if random.random() > 0.4 else "Jira & Confluence Board"
+                app_name = "Git (Code Commit & Pull)" if random.random() > 0.4 else "Jira & Confluence Board"
                 bandwidth = random.uniform(0.6, 2.2)
             elif self.dept == "IT Ops":
                 app_name = "Intranet Database Query (SQL)"

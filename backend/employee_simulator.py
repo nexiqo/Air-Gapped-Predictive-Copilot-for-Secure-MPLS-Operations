@@ -38,7 +38,7 @@ NORMAL_APPS = [
     {"name": "Microsoft Teams (Screen Share)", "bw_min": 1.5, "bw_max": 5.0, "status": "Active"},
     {"name": "Outlook Mail Sync", "bw_min": 0.05, "bw_max": 0.5, "status": "Active"},
     {"name": "Jira & Confluence Board", "bw_min": 0.1, "bw_max": 0.8, "status": "Active"},
-    {"name": "GitHub (Code Commit & Pull)", "bw_min": 0.2, "bw_max": 1.5, "status": "Active"},
+    {"name": "Git (Code Commit & Pull)", "bw_min": 0.2, "bw_max": 1.5, "status": "Active"},
     {"name": "Intranet Database Query (SQL)", "bw_min": 0.5, "bw_max": 3.0, "status": "Active"},
     {"name": "Slack Chat Client", "bw_min": 0.01, "bw_max": 0.1, "status": "Active"},
     {"name": "General Web Browsing", "bw_min": 0.1, "bw_max": 1.2, "status": "Active"},
